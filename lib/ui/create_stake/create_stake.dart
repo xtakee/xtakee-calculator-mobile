@@ -8,7 +8,6 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
-import '../../util/log.dart';
 import '../../util/process_indicator.dart';
 import '../commons.dart';
 
