@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/domain/model/previous_stake.dart';
 
-import '../domain/model/tag.dart';
 import 'dimen.dart';
 
 extension ExtDouble on double {

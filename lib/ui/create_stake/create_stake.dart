@@ -24,7 +24,7 @@ class _State extends State<CreateStake> {
   bool canValidate = false;
   final ProcessIndicator _processIndicator = ProcessIndicator();
 
-  final _licenceController = TextEditingController(text: "U2FsdGVkX18JwSBIAfZq7Q6YP7rD5OPW4qWLda8X9D4X2VpUtTObRaTYjdUEKF+hacEoogng5zYsRudW/lVEKSYXJ+f3p3eSTav0lCEkz4E4xyDFQIxUQyogNR9nzj0IxTr4jKZ2CYtJYpY8ZPfYuQkJfqYiUgv3SToqXoyWu+sq0/0qaVbaVYNhMyZP00s0//XPknGirzMmWEZyUDUFPLHXIju0ptpd2xLuIR79J94=");
+  final _licenceController = TextEditingController();
 
   @override
   void dispose() {

@@ -2,15 +2,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stake_calculator/data/mapper/odds_json_mapper.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/irepository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/log.dart';
 
-import '../../../data/mapper/odd_json_mapper.dart';
-import '../../../domain/model/tag.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
