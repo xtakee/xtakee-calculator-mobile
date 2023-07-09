@@ -1,0 +1,17 @@
+import 'package:stake_calculator/domain/model/odd.dart';
+import 'package:stake_calculator/util/mapper.dart';
+
+class OddJsonMapper extends Mapper<Map<String, dynamic>, Odd> {
+  @override
+  Odd from(Map<String, dynamic> from) =>
+      Odd(odd: from['odd'], tag: from['tag'], name: from['name']);
+
+  @override
+  Map<String, dynamic> to(Odd from) {
+    final map = <String, dynamic>{};
+    map['odd'] = from.odd;
+    map['name'] = from.name;
+    map['tag'] = from.tag;
+    return map;
+  }
+}
