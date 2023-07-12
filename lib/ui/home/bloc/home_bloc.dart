@@ -17,7 +17,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final _repository = GetIt.instance<IRepository>();
 
-  void getStake() => add(GetStake());
+  void getStake({bool cache = false}) => add(GetStake(cache: cache));
 
   void saveTag(Odd odd) => add(SaveTag(odd: odd));
 
@@ -40,9 +40,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final odds = await _repository.saveTag(odd: event.odd);
         final stake = await _repository.getStake(cached: true);
 
+        emit(OnTagAdded(odds: odds, stake: stake));
         emit(OnDataLoaded(odds: odds, stake: stake));
       } catch (error) {
-        Log.d(error);
+        emit(OnError(message: "Error adding tag. Try again"));
       }
     });
 
@@ -73,7 +74,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetStake>((event, emit) async {
       emit(OnLoading());
       try {
-        final stake = await _repository.getStake();
+        final stake = await _repository.getStake(cached: event.cache);
         final odds = await _repository.getTags();
 
         emit(OnDataLoaded(odds: odds, stake: stake));
@@ -114,7 +115,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         final Odd error = event.odds.error;
         if (error.odd! > -1) {
-          emit(OnError(message: "Odd must be at least 1.01 for ${error.tag}"));
+          emit(OnError(message: "Odd must be at least 1.01 for ${error.name}"));
           final temp = await _repository.getStake(cached: true);
           final odds = await _repository.getTags();
 

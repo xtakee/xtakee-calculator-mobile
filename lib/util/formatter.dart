@@ -9,7 +9,8 @@ class Formatter {
       fractionDigits: 2,
       compactFormatType: CompactFormatType.short);
 
-  static String format(double money) {
+  static String format(double money, {String symbol = '#'}) {
+
     return MoneyFormatter(amount: money, settings: _setting)
         .output
         .symbolOnLeft;

@@ -9,6 +9,7 @@ import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import 'package:stake_calculator/util/dxt.dart';
+import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 
 class Setting extends StatefulWidget {
@@ -61,9 +62,20 @@ class _State extends State<Setting> {
         iconTheme: const IconThemeData(
           color: Colors.white, //change your color here
         ),
-        title: const Text(
-          "Settings",
-          style: TextStyle(color: Colors.white),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Settings",
+              textScaleFactor: scale,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            GestureDetector(
+              onTap: ()=> _save(),
+              child: const Icon(Icons.check),
+            )
+          ],
         ),
         backgroundColor: primaryColor,
       ),
@@ -110,33 +122,39 @@ class _State extends State<Setting> {
               },
               builder: (context, state) => Container(
                 color: Colors.white,
-                margin: EdgeInsets.symmetric(horizontal: 24.w),
+                //margin: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 32.h,
-                        ),
-                        XTextField(
-                            label: "Profit", controller: _profitController),
-                        Container(
-                          height: 16,
-                        ),
-                        XTextField(
-                            label: "Loss Tolerance",
-                            controller: _toleranceController),
-                        Container(
-                          height: 16,
-                        ),
-                        XTextField(
-                            label: "Starting Stake",
-                            controller: _startingStakeController),
-                        Container(
-                          height: 16,
-                        ),
-                        XSwitch(
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 24.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 32.h,
+                          ),
+                          XTextField(
+                              label: "Profit", controller: _profitController),
+                          Container(
+                            height: 24.h,
+                          ),
+                          XTextField(
+                              label: "Loss Tolerance",
+                              controller: _toleranceController),
+                          Container(
+                            height: 24.h,
+                          ),
+                          XTextField(
+                              label: "Starting Stake",
+                              controller: _startingStakeController),
+                          Container(
+                            height: 16.h,
+                          ),
+                        ],
+                      ),
+                    ),
+                    _switch(
+                        child: XSwitch(
                             label: "Decay",
                             activeColor: primaryColor,
                             value: decay,
@@ -145,7 +163,10 @@ class _State extends State<Setting> {
                                 decay = x;
                               });
                             }),
-                        XSwitch(
+                        description:
+                            "Reduce profit as your consecutive failing rounds increases to reduce risk exposure."),
+                    _switch(
+                        child: XSwitch(
                             label: "Forfeit Losses",
                             activeColor: primaryColor,
                             value: forfeitLosses,
@@ -154,7 +175,10 @@ class _State extends State<Setting> {
                                 forfeitLosses = x;
                               });
                             }),
-                        XSwitch(
+                        description:
+                            "Recovery mode is disabled with forfeit losses enabled. Resets on loss tolerance reached"),
+                    _switch(
+                        child: XSwitch(
                             label: "Clear losses on reset",
                             activeColor: primaryColor,
                             value: clearLosses,
@@ -164,43 +188,28 @@ class _State extends State<Setting> {
                                 //bloc.setClearLoss(status: x);
                               });
                             }),
-                        _recyclePanel(),
+                        description:
+                            "Losses will be cleared on every cycle reset"),
+                    _recyclePanel(),
+                    Column(
+                      children: [
                         Container(
                           height: 32.h,
                         ),
                         GestureDetector(
-                          onTap: () {
-                            _bloc.updateStake(
-                                clearLosses: clearLosses,
-                                profit: double.parse(
-                                    _profitController.text.isNotEmpty
-                                        ? _profitController.text
-                                        : "0.0"),
-                                tolerance: double.parse(
-                                    _toleranceController.text.isNotEmpty
-                                        ? _toleranceController.text
-                                        : "0.0"),
-                                decay: decay,
-                                statingStake: double.parse(
-                                    _startingStakeController.text.isNotEmpty
-                                        ? _startingStakeController.text
-                                        : "0.0"),
-                                forfeit: forfeitLosses,
-                                isMultiple: multiStake,
-                                restrictRounds:
-                                    _roundsController.text.isNotEmpty
-                                        ? int.parse(_roundsController.text)
-                                        : 0);
-                          },
+                          onTap: () => _save(),
                           child: Container(
                             height: 50.h,
+                            margin: EdgeInsets.only(
+                                left: 24.w, right: 24.w, bottom: 16.h),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: primaryColor,
                                 borderRadius: BorderRadius.circular(10)),
-                            child: const Text(
+                            child: Text(
                               "Save Changes",
-                              style: TextStyle(
+                              textScaleFactor: scale,
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
@@ -220,30 +229,83 @@ class _State extends State<Setting> {
     );
   }
 
-  Widget _recycle_fields() => ExpandablePanel(
+  void _save() {
+    _bloc.updateStake(
+        clearLosses: clearLosses,
+        profit: double.parse(
+            _profitController.text.isNotEmpty ? _profitController.text : "0.0"),
+        tolerance: double.parse(_toleranceController.text.isNotEmpty
+            ? _toleranceController.text
+            : "0.0"),
+        decay: decay,
+        statingStake: double.parse(_startingStakeController.text.isNotEmpty
+            ? _startingStakeController.text
+            : "0.0"),
+        forfeit: forfeitLosses,
+        isMultiple: multiStake,
+        restrictRounds: _roundsController.text.isNotEmpty
+            ? (restrictRounds ? int.parse(_roundsController.text) : 0)
+            : 0);
+  }
+
+  Widget _recycleFields() => ExpandablePanel(
       expand: restrictRounds,
       child: Column(
         children: [
           Container(
-            height: 16.h,
-          ),
-          XTextField(label: "Rounds", controller: _roundsController),
+            margin: EdgeInsets.only(left: 24.w, right: 24.w, top: 16.h),
+            child: XTextField(label: "Rounds", controller: _roundsController),
+          )
         ],
       ));
+
+  Widget _switch(
+          {required Widget child,
+          required String description,
+          bool divider = true}) =>
+      Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                child,
+                Text(
+                  description,
+                  textScaleFactor: scale,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(fontSize: 14, color: Colors.black38),
+                ),
+              ],
+            ),
+          ),
+          if (divider)
+            Container(
+              margin: EdgeInsets.only(top: 10.h),
+              height: 1,
+              color: Colors.black12,
+            )
+        ],
+      );
 
   Widget _recyclePanel() => Container(
         child: Column(
           children: [
-            XSwitch(
-                label: "Restrict Rounds",
-                activeColor: primaryColor,
-                value: restrictRounds,
-                onChanged: (x) {
-                  setState(() {
-                    restrictRounds = x;
-                  });
-                }),
-            _recycle_fields()
+            _switch(
+                divider: false,
+                child: XSwitch(
+                    label: "Restrict Rounds",
+                    activeColor: primaryColor,
+                    value: restrictRounds,
+                    onChanged: (x) {
+                      setState(() {
+                        restrictRounds = x;
+                      });
+                    }),
+                description:
+                    "Set maximum rounds after which calculator resets"),
+            _recycleFields()
           ],
         ),
       );

@@ -3,7 +3,11 @@ part of 'home_bloc.dart';
 @immutable
 abstract class HomeEvent {}
 
-class GetStake extends HomeEvent {}
+class GetStake extends HomeEvent {
+  final bool cache;
+
+  GetStake({required this.cache});
+}
 
 class CreateStake extends HomeEvent {
   final List<Odd> odds;

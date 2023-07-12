@@ -23,11 +23,11 @@ void main() async {
   await configureDependencies();
 
   HttpOverrides.global = _HttpOverrides();
-  runApp(const MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   // This widget is the root of your application.
   @override

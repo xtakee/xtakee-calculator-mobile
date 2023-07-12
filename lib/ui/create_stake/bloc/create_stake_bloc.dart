@@ -23,7 +23,7 @@ class CreateStakeBloc extends Bloc<CreateStakeEvent, CreateStakeState> {
       try {
         emit(OnLoading());
         await _repository.validateLicence(event.licence);
-        _repository.saveTag(odd: Odd(name: 'default', odd: 1.10));
+        _repository.saveTag(odd: Odd(name: 'default', odd: 0));
         emit(OnSuccess());
       } catch (error) {
         emit(OnError(message: "There was an error validating your licence. Try again"));

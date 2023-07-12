@@ -10,8 +10,8 @@ final logger = PrettyDioLogger(
     responseHeader: true,
     compact: false);
 
-const String baseUrlDebug = "http://192.168.0.100:2021/v1";
-const String baseUrlRemote = "https://api.staging.surfye.com/v1";
+const String baseUrlDebug = "http://192.168.176.123:2021/v1";
+const String baseUrlRemote = "https://api.staging.xtakee.com/v1";
 
 _bearerAuthInterceptor(Cache cache) =>
     QueuedInterceptorsWrapper(onRequest: (options, interceptorHandler) async {
@@ -27,7 +27,7 @@ _bearerAuthInterceptor(Cache cache) =>
     });
 
 Dio dioClient(Cache cache) {
-  Dio dio = Dio(BaseOptions(baseUrl: baseUrlDebug));
+  Dio dio = Dio(BaseOptions(baseUrl: baseUrlRemote));
 
   dio.interceptors.add(logger);
   dio.interceptors.add(_bearerAuthInterceptor(cache));

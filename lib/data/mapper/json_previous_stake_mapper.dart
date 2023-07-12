@@ -6,7 +6,7 @@ class JsonPreviousStakeMapper
     extends Mapper<Map<String, dynamic>, PreviousStake> {
   @override
   PreviousStake from(Map<String, dynamic> from) => PreviousStake(
-      value: from['value'] * 1.0, odd: from['odd'] * 1.0, id: from['_id']);
+      value: from['value'] * 1.0, odd: from['odd'] * 1.0, id: from['_id'], lot: from['lot'] * 1.0);
 
   @override
   Map<String, dynamic> to(PreviousStake from) {
@@ -14,6 +14,7 @@ class JsonPreviousStakeMapper
     map['odd'] = from.odd;
     map['value'] = from.value;
     map['_id'] = from.id;
+    map['lot'] = from.lot;
     return map;
   }
 }

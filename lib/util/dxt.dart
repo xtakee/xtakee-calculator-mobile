@@ -17,7 +17,7 @@ extension ExtInt on int {
 }
 
 extension ExtPreviosStake on PreviousStake {
-  num? get expectedWin => value! * odd!;
+  num? get expectedWin => value! * odd! * lot!;
 }
 
 extension ExtTags on List<Odd> {
@@ -31,6 +31,8 @@ extension ExtTags on List<Odd> {
     odd.tag = this[position].tag;
     this[position] = odd;
   }
+
+  String string() => map((e) => e.name).join(", ");
 }
 
 extension ExtOds on List<Odd> {

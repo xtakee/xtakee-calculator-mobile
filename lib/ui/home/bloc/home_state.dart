@@ -31,8 +31,17 @@ class OnDataLoaded extends HomeState {
   Stake stake;
   List<Odd> odds;
 
-  OnDataLoaded(
-      {required this.odds, required this.stake});
+  OnDataLoaded({required this.odds, required this.stake});
+
+  @override
+  List<Object?> get props => [stake, odds];
+}
+
+class OnTagAdded extends HomeState {
+  Stake stake;
+  List<Odd> odds;
+
+  OnTagAdded({required this.odds, required this.stake});
 
   @override
   List<Object?> get props => [stake, odds];

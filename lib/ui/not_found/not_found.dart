@@ -3,6 +3,8 @@ import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/ui/create_stake/create_stake.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
+import '../../util/dimen.dart';
+
 class NotFound extends StatefulWidget {
   const NotFound({super.key});
 
@@ -24,9 +26,10 @@ class _State extends State<NotFound> {
               margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     "You do not have a licence key. Kindly enter your licence key to continue",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    textScaleFactor: scale,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
                   Container(
@@ -44,9 +47,10 @@ class _State extends State<NotFound> {
                       decoration: BoxDecoration(
                           color: Colors.blue,
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Text(
+                      child: Text(
                         "Enter Licence",
-                        style: TextStyle(
+                        textScaleFactor: scale,
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),

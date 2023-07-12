@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:stake_calculator/util/log.dart';
 
 class ApiErrorHandler {
   static ApiException parse(data) {
@@ -11,7 +12,7 @@ class ApiErrorHandler {
         case DioExceptionType.badResponse:
           return NotFound();
         default:
-          return NotFound();
+          return NetworkError();
       }
     } else {
       return NetworkError();

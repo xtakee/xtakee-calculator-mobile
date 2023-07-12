@@ -8,6 +8,8 @@ class Stake {
     double? losses,
     double? profit,
     int? cycle,
+    int? coins,
+    int? stakes,
     int? next,
     double? tolerance,
     double? overflow,
@@ -41,6 +43,8 @@ class Stake {
     _forfeiture = forfeiture;
     _forfeited = forfeited;
     _id = id;
+    _coins = coins;
+    _stakes = stakes;
     _decay = decay;
     _restrictRounds = restrictRounds;
     _startingStake = startingStake;
@@ -54,6 +58,8 @@ class Stake {
   double? _profit;
   int? _cycle;
   int? _next;
+  int? _coins;
+  int? _stakes;
   bool? _decay;
   int? _restrictRounds;
   double? _tolerance;
@@ -80,6 +86,10 @@ class Stake {
   double? get profit => _profit;
 
   int? get cycle => _cycle;
+
+  int? get coins => _coins;
+
+  int? get stakes => _stakes;
 
   int? get restrictRounds => _restrictRounds;
 

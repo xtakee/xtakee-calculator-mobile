@@ -12,7 +12,6 @@ import 'package:stake_calculator/domain/model/amount.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/domain/remote/IService.dart';
 
-import '../../util/log.dart';
 import '../mapper/json_create_stake_request_mapper.dart';
 import '../mapper/json_licence_response_mapper.dart';
 import '../model/api_response_state.dart';
@@ -96,7 +95,6 @@ class Service extends IService {
       final response = await client.delete('/stake/tag/$tagId');
       return JsonStakeMapper().from(response.data['data']);
     } catch (error) {
-      Log.e(error);
       throw ApiErrorHandler.parse(error);
     }
   }

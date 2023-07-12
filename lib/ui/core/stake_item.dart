@@ -16,12 +16,16 @@ class StakeItem extends StatelessWidget {
   final Function(Odd odd, int position) onDelete;
   final Function(Odd odd, int position) onUpdate;
   final bool isOnlyItem;
+  final FocusNode? oddFocusNode;
+  final FocusNode? tagFocusNode;
   final bool isLast;
   final int position;
 
   const StakeItem(
       {super.key,
       required this.isLast,
+      this.oddFocusNode,
+      this.tagFocusNode,
       required this.position,
       required this.onDelete,
       required this.onUpdate,
@@ -43,7 +47,9 @@ class StakeItem extends StatelessWidget {
               Expanded(
                 child: XTextField(
                     inputType: TextInputType.text,
+                    textCapitalization: TextCapitalization.characters,
                     controller: tagController,
+                    focusNode: tagFocusNode,
                     label: "Tag",
                     onChanged: (s) {
                       String odd = oddController.text;
@@ -61,6 +67,7 @@ class StakeItem extends StatelessWidget {
                 child: XTextField(
                     enable: true,
                     label: "Odd",
+                    focusNode: oddFocusNode,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
                           RegExp(r'^[0-9]+.?[0-9]*'))

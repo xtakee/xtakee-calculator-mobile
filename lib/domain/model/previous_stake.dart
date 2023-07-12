@@ -11,19 +11,23 @@ import 'dart:convert';
 /// tag : "CRY"
 
 class PreviousStake {
-  PreviousStake({num? odd, num? value, String? id}) {
+  PreviousStake({num? odd, num? value, String? id, num? lot}) {
     _odd = odd;
     _value = value;
     _id = id;
+    _lot = lot;
   }
 
   num? _odd;
+  num? _lot;
   num? _value;
   String? _id;
 
   num? get odd => _odd;
 
   num? get value => _value;
+
+  num? get lot => _lot;
 
   String? get id => _id;
 }

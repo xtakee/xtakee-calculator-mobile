@@ -121,6 +121,7 @@ class Repository extends IRepository {
 
     return await service.deleteTag(tagId: tag.tag ?? "").then((value) {
       tags.delete(position);
+      cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
       cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
       return value;
     });
