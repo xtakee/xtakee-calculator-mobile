@@ -1,9 +1,8 @@
-import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 
 import '../../../domain/irepository.dart';
@@ -23,7 +22,7 @@ class CreateStakeBloc extends Bloc<CreateStakeEvent, CreateStakeState> {
       try {
         emit(OnLoading());
         await _repository.validateLicence(event.licence);
-        _repository.saveTag(odd: Odd(name: 'default', odd: 0));
+        _repository.saveTag(odd: Odd(name: 'Default', odd: 0));
         emit(OnSuccess());
       } catch (error) {
         emit(OnError(message: "There was an error validating your licence. Try again"));

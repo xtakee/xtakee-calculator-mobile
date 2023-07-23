@@ -28,12 +28,12 @@ class _State extends State<Pip> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white.withOpacity(0.1),
       body: Container(
         alignment: Alignment.center,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: primaryColor, width: 1)),
         child: Stack(
@@ -88,12 +88,13 @@ class _State extends State<Pip> {
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black54),
+                                      color: Colors.white),
                                 ),
                                 AutoSizeText(
                                   Formatter.format(win.toDouble()),
                                   style: const TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -109,12 +110,13 @@ class _State extends State<Pip> {
                                   "Losses:",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black54),
+                                      color: Colors.white),
                                 ),
                                 AutoSizeText(
                                   Formatter.format(losses * 1.0),
                                   style: const TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -131,12 +133,13 @@ class _State extends State<Pip> {
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black54),
+                                      color: Colors.white),
                                 ),
                                 AutoSizeText(
                                   "#$next",
                                   style: const TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -150,7 +153,7 @@ class _State extends State<Pip> {
                                   style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.black54),
+                                      color: Colors.white),
                                 ),
                                 Flexible(
                                     child: AutoSizeText(
@@ -160,6 +163,7 @@ class _State extends State<Pip> {
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontSize: 12,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ))
                               ],

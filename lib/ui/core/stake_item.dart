@@ -1,18 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:stake_calculator/domain/model/previous_stake.dart';
 import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/core/xtext_field.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../domain/model/odd.dart';
-import '../../util/log.dart';
 
 class StakeItem extends StatelessWidget {
   final TextEditingController tagController;
   final TextEditingController oddController;
-  final PreviousStake previousStake;
   final Function(Odd odd, int position) onDelete;
   final Function(Odd odd, int position) onUpdate;
   final bool isOnlyItem;
@@ -30,7 +27,6 @@ class StakeItem extends StatelessWidget {
       required this.onDelete,
       required this.onUpdate,
       required this.isOnlyItem,
-      required this.previousStake,
       required this.oddController,
       required this.tagController});
 
@@ -72,15 +68,18 @@ class StakeItem extends StatelessWidget {
                       FilteringTextInputFormatter.allow(
                           RegExp(r'^[0-9]+.?[0-9]*'))
                     ],
+                    onClear: () {
+                      onUpdate(
+                          Odd(odd: 0.00, name: tagController.text), position);
+                    },
                     onChanged: (s) {
-                      Log.d(s);
                       onUpdate(
                           Odd(
                               odd: double.parse(s.isEmpty ? "0" : s),
                               name: tagController.text),
                           position);
                     },
-                    inputType: TextInputType.number,
+                    inputType: const TextInputType.numberWithOptions(decimal: true),
                     controller: oddController),
               ),
               Container(
@@ -94,7 +93,7 @@ class StakeItem extends StatelessWidget {
                             odd: double.parse(oddController.text.isEmpty
                                 ? "0.00"
                                 : oddController.text),
-                            tag: tagController.text),
+                            name: tagController.text),
                         position);
                   },
                   child: const Icon(
@@ -112,15 +111,6 @@ class StakeItem extends StatelessWidget {
           Container(
             height: 10.h,
           )
-          // if (!isLast)
-          //   Container(
-          //     height: 2.h,
-          //     color: Color(0xFFE0E0E0),
-          //     margin: EdgeInsets.only(
-          //         top: 16.h,
-          //         bottom: 5.h,
-          //         left: 64.w, right: 64.w),
-          //   )
         ],
       ));
 }

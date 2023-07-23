@@ -5,7 +5,8 @@ import 'package:stake_calculator/domain/model/previous_stake.dart';
 class Stake {
   Stake({
     PreviousStake? previousStake,
-    double? losses,
+    this.losses,
+    this.gameType,
     double? profit,
     int? cycle,
     int? coins,
@@ -29,7 +30,6 @@ class Stake {
     int? v,
   }) {
     _previousStake = previousStake;
-    _losses = losses;
     _profit = profit;
     _cycle = cycle;
     _next = next;
@@ -54,7 +54,8 @@ class Stake {
   }
 
   PreviousStake? _previousStake;
-  double? _losses;
+  double? losses;
+  int? gameType;
   double? _profit;
   int? _cycle;
   int? _next;
@@ -78,8 +79,6 @@ class Stake {
   int? _v;
 
   PreviousStake? get previousStake => _previousStake;
-
-  double? get losses => _losses;
 
   double? get startingStake => _startingStake;
 

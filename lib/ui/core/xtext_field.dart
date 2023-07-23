@@ -9,6 +9,7 @@ import '../commons.dart';
 
 class XTextField extends StatefulWidget {
   final TextEditingController controller;
+  final Function()? onClear;
   final Function(String s)? onChanged;
   final TextCapitalization textCapitalization;
   final List<TextInputFormatter>? inputFormatters;
@@ -32,6 +33,7 @@ class XTextField extends StatefulWidget {
       this.enable = true,
       this.inputFormatters,
       this.onChanged,
+      this.onClear,
       required this.controller}) {
     height = (height ?? 45).h;
   }
@@ -42,6 +44,18 @@ class XTextField extends StatefulWidget {
 
 class _State extends State<XTextField> {
   bool showClear = false;
+
+  @override
+  void initState() {
+    widget.focusNode?.addListener(() {
+      if (widget.focusNode!.hasFocus && widget.controller.text.isNotEmpty) {
+        setState(() {
+          showClear = true;
+        });
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => (widget.lines == 1)
@@ -81,19 +95,24 @@ class _State extends State<XTextField> {
           border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(5)),
-          suffixIcon: GestureDetector(
-            onTap: () {
-              if (showClear) {
+          suffixIcon: Visibility(
+            visible: showClear && widget.showSuffix,
+            child: GestureDetector(
+              onTap: () {
                 widget.focusNode?.requestFocus();
                 widget.controller.clear();
-              }
-            },
-            child: Icon(
-              Icons.clear,
-              color: showClear ? Colors.black45 : primaryBackground,
+                if (widget.onClear != null) {
+                  widget.onClear!();
+                }
+              },
+              child: const Icon(
+                Icons.clear,
+                color: Colors.black45,
+              ),
             ),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: widget.lines == 1 ? 0 : 10.h),
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w, vertical: widget.lines == 1 ? 0 : 10.h),
         ),
       );
 }

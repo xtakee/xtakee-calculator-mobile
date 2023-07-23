@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:stake_calculator/util/log.dart';
 
 class ApiErrorHandler {
   static ApiException parse(data) {
@@ -10,7 +9,17 @@ class ApiErrorHandler {
         case DioExceptionType.receiveTimeout:
           return NetworkError();
         case DioExceptionType.badResponse:
-          return NotFound();
+          var message = data.message ?? "";
+          if (message.contains("401") || message.contains("404")) {
+            return NotFound();
+          } else if (message.contains("402")) {
+            return Forbidden(
+                message: "Insufficient balance. Kindly buy more coins");
+          } else if (message.contains("500")) {
+            return UnKnown();
+          } else {
+            return NetworkError();
+          }
         default:
           return NetworkError();
       }
@@ -20,12 +29,27 @@ class ApiErrorHandler {
   }
 }
 
-abstract class ApiException implements Exception {}
+abstract class ApiException implements Exception {
+  final String message;
 
-class NotFound extends ApiException {}
+  ApiException({required this.message});
 
-class UnKnown extends ApiException {}
+  @override
+  String toString() => message;
+}
 
-class Forbidden extends ApiException {}
+class NotFound extends ApiException {
+  NotFound({super.message = "No valid resource found for request"});
+}
 
-class NetworkError extends ApiException {}
+class UnKnown extends ApiException {
+  UnKnown({super.message = "An unknown error occurred. Kindly try again"});
+}
+
+class Forbidden extends ApiException {
+  Forbidden({required super.message});
+}
+
+class NetworkError extends ApiException {
+  NetworkError({super.message = "Internet connection error"});
+}

@@ -11,6 +11,7 @@ class JsonResetRequestMapper
   Map<String, dynamic> to(ResetRequest from) {
     final map = <String, dynamic>{};
     map['losses'] = from.losses;
+    map['won'] = from.won;
 
     return map;
   }

@@ -6,8 +6,7 @@ import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/irepository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
-import 'package:stake_calculator/util/log.dart';
-
+import 'package:stake_calculator/util/game_type.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -21,18 +20,44 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void saveTag(Odd odd) => add(SaveTag(odd: odd));
 
+  void setGameType({required GameType type}) => add(SetGameType(type: type));
+
   void updateTag(Odd odd, int position) =>
       add(UpdateTag(odd: odd, position: position));
 
-  void deleteTag(int position) => add(DeleteTag(position: position));
+  void deleteTag({required int position, bool won = false}) =>
+      add(DeleteTag(position: position, won: won));
 
   void setClearLoss({required bool status}) =>
       add(SetClearLoss(status: status));
 
-  void resetStake() => add(ResetStake());
+  void resetStake({bool won = false}) => add(ResetStake(won: won));
 
   void compute({required int cycle, required List<Odd> odds}) =>
       add(CreateStake(odds: odds, cycle: cycle));
+
+  Stake _getSinglesAmount(
+      {required List<Odd> tags, required Stake stake, bool isSingle = false}) {
+    if (!isSingle)
+      return stake..previousStake?.totalWin = stake.previousStake!.expectedWin!;
+
+    num product =
+        tags.reduce((a, b) => Odd(odd: (a.odd ?? 0) * (b.odd ?? 0))).odd ?? 0;
+
+    num totalWin = product * (stake.previousStake?.value ?? 0);
+
+    return stake
+      ..previousStake?.totalWin = totalWin
+      ..losses = (stake.previousStake?.value ?? 0) * 1.0;
+  }
+
+  Stake _getStake({required Stake stake, required List<Odd> tags}) {
+    final gameType = _repository.getGameType();
+
+    return _getSinglesAmount(
+        tags: tags, stake: stake, isSingle: gameType == GameType.SINGLE.index)
+      ..gameType = gameType;
+  }
 
   HomeBloc() : super(HomeInitial()) {
     on<SaveTag>((event, emit) async {
@@ -40,21 +65,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final odds = await _repository.saveTag(odd: event.odd);
         final stake = await _repository.getStake(cached: true);
 
-        emit(OnTagAdded(odds: odds, stake: stake));
-        emit(OnDataLoaded(odds: odds, stake: stake));
+        emit(
+            OnTagAdded(odds: odds, stake: _getStake(stake: stake, tags: odds)));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } catch (error) {
         emit(OnError(message: "Error adding tag. Try again"));
+      }
+    });
+
+    on<SetGameType>((event, emit) async {
+      final tags = await _repository.getTags();
+      final stake = await _repository.getStake(cached: true);
+
+      final Odd error = tags.error;
+      if (error.odd! > -1) {
+        emit(OnError(message: "Odd must be at least 1.01 for ${error.name}"));
+
+        emit(OnDataLoaded(
+            odds: tags, stake: _getStake(stake: stake, tags: tags)));
+        return;
+      }
+      try {
+        await _repository.saveGameType(type: event.type.index);
+        emit(OnDataLoaded(
+            odds: tags, stake: _getStake(stake: stake, tags: tags)));
+      } catch (error) {
+        emit(OnError(message: "Error computing stake. Try again"));
       }
     });
 
     on<DeleteTag>((event, emit) async {
       emit(OnLoading());
       try {
-        final stake = await _repository.deleteTag(position: event.position);
+        final stake = await _repository.deleteTag(
+            position: event.position, won: event.won);
         final odds = await _repository.getTags();
-        emit(OnDataLoaded(odds: odds, stake: stake));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } catch (error) {
-        Log.e(error);
         emit(OnError(message: "Error deleting tag. Try again"));
       }
     });
@@ -65,25 +114,38 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             odd: event.odd, position: event.position);
         final stake = await _repository.getStake(cached: true);
 
-        emit(OnDataLoaded(odds: odds, stake: stake));
-      } catch (error) {
-        Log.d(error);
-      }
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
+      } catch (error) {}
     });
 
     on<GetStake>((event, emit) async {
-      emit(OnLoading());
+      if (!event.cache) {
+        emit(OnLoading());
+      }
       try {
         final stake = await _repository.getStake(cached: event.cache);
         final odds = await _repository.getTags();
 
-        emit(OnDataLoaded(odds: odds, stake: stake));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(OnCreateStake());
+        } else {
+
+          try {
+            final stake = await _repository.getStake(cached: true);
+            final odds = await _repository.getTags();
+            emit(OnError(message: error.toString()));
+            emit(OnDataLoaded(
+                odds: odds, stake: _getStake(stake: stake, tags: odds)));
+          } catch (e) {
+            emit(OnCreateStake());
+          }
+
         }
       } catch (error) {
-        Log.e(error);
         emit(OnError(message: error.toString()));
       }
     });
@@ -95,19 +157,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ResetStake>((event, emit) async {
       try {
         emit(OnLoading());
-        await _repository.resetStake();
-        final stake = await _repository.getStake();
+        final stake = await _repository.resetStake(won: event.won);
         final odds = await _repository.getTags();
 
-        emit(OnDataLoaded(odds: odds, stake: stake));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(OnCreateStake());
         } else {
-          emit(OnError(message: error.toString()));
+          emit(OnError(message: error.message));
         }
-      } catch (error) {
-        Log.d(error);
       }
     });
 
@@ -119,21 +179,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           final temp = await _repository.getStake(cached: true);
           final odds = await _repository.getTags();
 
-          emit(OnDataLoaded(odds: odds, stake: temp));
+          emit(OnDataLoaded(
+              odds: odds, stake: _getStake(stake: temp, tags: odds)));
           return;
         }
         emit(OnLoading());
-        await _repository.computeStake(odds: event.odds, cycle: event.cycle);
-        final stake = await _repository.getStake();
+        final stake = await _repository.computeStake(
+            odds: event.odds, cycle: event.cycle);
         final odds = await _repository.getTags();
 
-        emit(OnDataLoaded(odds: odds, stake: stake));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(OnCreateStake());
           return;
         }
-        emit(OnError(message: "Error computing stake amount. Try again"));
+
+        final stake = await _repository.getStake(cached: true);
+        final odds = await _repository.getTags();
+
+        emit(OnError(message: error.message));
+        emit(OnDataLoaded(
+            odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } catch (error) {
         emit(OnError(message: "Error computing stake amount. Try again"));
       }

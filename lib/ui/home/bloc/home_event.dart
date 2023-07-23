@@ -22,7 +22,10 @@ class SetClearLoss extends HomeEvent {
   SetClearLoss({required this.status});
 }
 
-class ResetStake extends HomeEvent {}
+class ResetStake extends HomeEvent {
+  final bool won;
+  ResetStake({required this.won});
+}
 
 class SaveTag extends HomeEvent {
   final Odd odd;
@@ -32,8 +35,15 @@ class SaveTag extends HomeEvent {
 
 class DeleteTag extends HomeEvent {
   final int position;
+  final bool won;
 
-  DeleteTag({required this.position});
+  DeleteTag({required this.position, required this.won});
+}
+
+class SetGameType extends HomeEvent {
+  final GameType type;
+
+  SetGameType({required this.type});
 }
 
 class UpdateTag extends HomeEvent {

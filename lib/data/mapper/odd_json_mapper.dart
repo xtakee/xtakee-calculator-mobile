@@ -4,7 +4,7 @@ import 'package:stake_calculator/util/mapper.dart';
 class OddJsonMapper extends Mapper<Map<String, dynamic>, Odd> {
   @override
   Odd from(Map<String, dynamic> from) =>
-      Odd(odd: from['odd'], tag: from['tag'], name: from['name']);
+      Odd(odd: from['odd'], tag: from['tag'], name: from['name'], won: from['won'], id: from['_id']);
 
   @override
   Map<String, dynamic> to(Odd from) {
@@ -12,6 +12,8 @@ class OddJsonMapper extends Mapper<Map<String, dynamic>, Odd> {
     map['odd'] = from.odd;
     map['name'] = from.name;
     map['tag'] = from.tag;
+    map['won'] = from.won;
+    map['_id'] = from.id;
     return map;
   }
 }

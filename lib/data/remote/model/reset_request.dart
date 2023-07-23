@@ -1,13 +1,9 @@
-import 'dart:convert';
-/// session : "647fc1da744a8daddd2f6538"
-/// losses : true
-ResetRequest resetRequestFromJson(String str) => ResetRequest.fromJson(json.decode(str));
-String resetRequestToJson(ResetRequest data) => json.encode(data.toJson());
 
 class ResetRequest {
   ResetRequest({
-      bool? losses}){
+      bool? losses, bool? won}){
     _losses = losses;
+    _won = won;
 }
 
   ResetRequest.fromJson(dynamic json) {
@@ -15,12 +11,8 @@ class ResetRequest {
   }
 
   bool? _losses;
+  bool? _won;
 
   bool? get losses => _losses;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['losses'] = _losses;
-    return map;
-  }
+  bool? get won => _won;
 }

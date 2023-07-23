@@ -1,16 +1,18 @@
 import 'package:dio/dio.dart';
-import 'package:stake_calculator/data/mapper/json_amount_mapper.dart';
+import 'package:stake_calculator/data/mapper/json_bet_history_response_mapper.dart';
+import 'package:stake_calculator/data/mapper/json_bundle_mapper.dart';
 import 'package:stake_calculator/data/mapper/json_reset_request_mapper.dart';
 import 'package:stake_calculator/data/mapper/json_stake_mapper.dart';
 import 'package:stake_calculator/data/mapper/json_stake_request_mapper.dart';
 import 'package:stake_calculator/data/mapper/json_update_request_mapper.dart';
+import 'package:stake_calculator/data/remote/model/bet_history_response.dart';
 import 'package:stake_calculator/data/remote/model/create_stake_request.dart';
 import 'package:stake_calculator/data/remote/model/reset_request.dart';
 import 'package:stake_calculator/data/remote/model/stake_request.dart';
 import 'package:stake_calculator/data/remote/model/update_request.dart';
-import 'package:stake_calculator/domain/model/amount.dart';
+import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
-import 'package:stake_calculator/domain/remote/IService.dart';
+import 'package:stake_calculator/domain/remote/iservice.dart';
 
 import '../mapper/json_create_stake_request_mapper.dart';
 import '../mapper/json_licence_response_mapper.dart';
@@ -23,11 +25,11 @@ class Service extends IService {
   Service({required this.client});
 
   @override
-  Future<Amount> computeStake(StakeRequest request) async {
+  Future<Stake> computeStake(StakeRequest request) async {
     try {
       final response = await client.post('/stake/compute',
           data: JsonStakeRequestMapper().to(request));
-      return JsonAmountMapper().from(response.data['data']);
+      return JsonStakeMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);
     }
@@ -90,10 +92,36 @@ class Service extends IService {
   }
 
   @override
-  Future<Stake> deleteTag({required String tagId}) async {
+  Future<Stake> deleteTag({required String tagId, required bool won}) async {
     try {
-      final response = await client.delete('/stake/tag/$tagId');
+      final data = <String, dynamic>{};
+      data['tag'] = tagId;
+      data['won'] = won;
+      final response = await client.delete('/stake/tag', data: data);
       return JsonStakeMapper().from(response.data['data']);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<BetHistoryResponse> getHistory(
+      {required int page, required int limit}) async {
+    try {
+      final response =
+          await client.get('/stake/history?limit=$limit&page=$page');
+      return JsonBetHistoryResponseMapper().from(response.data['data']);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<List<Bundle>> getBundles() async {
+    try {
+      final response = await client.get('/bundle?type=bundle');
+      return List<Bundle>.from(
+          response.data['data'].map((e) => JsonBundleMapper().from(e)));
     } catch (error) {
       throw ApiErrorHandler.parse(error);
     }

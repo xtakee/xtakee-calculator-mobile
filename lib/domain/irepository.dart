@@ -1,4 +1,6 @@
-import 'model/amount.dart';
+import 'package:stake_calculator/domain/model/bundle.dart';
+
+import '../data/remote/model/bet_history_response.dart';
 import 'model/odd.dart';
 import 'model/stake.dart';
 
@@ -8,7 +10,7 @@ abstract class IRepository {
   Future<Stake> createSession(
       {required double profit, required double tolerance});
 
-  Future<Amount> computeStake({required List<Odd> odds, required int cycle});
+  Future<Stake> computeStake({required List<Odd> odds, required int cycle});
 
   Future<Stake> updateState(
       {double? profit,
@@ -20,7 +22,7 @@ abstract class IRepository {
       required bool isMultiple,
       required int restrictRounds});
 
-  Future<Stake> resetStake();
+  Future<Stake> resetStake({bool won = false});
 
   Future<Stake> validateLicence(String licence);
 
@@ -28,7 +30,16 @@ abstract class IRepository {
 
   Future<List<Odd>> saveTag({required Odd odd});
 
-  Future<Stake> deleteTag({required int position});
+  Future<List<Bundle>> getBundles();
+
+  Future<void> saveGameType({required int type});
+
+  Future<BetHistoryResponse> getHistory(
+      {required int page, required int limit});
+
+  int getGameType();
+
+  Future<Stake> deleteTag({required int position, bool won = false});
 
   Future<List<Odd>> updateTag({required Odd odd, required int position});
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:stake_calculator/util/config.dart';
 
 import '../domain/cache.dart';
 
@@ -10,8 +11,7 @@ final logger = PrettyDioLogger(
     responseHeader: true,
     compact: false);
 
-const String baseUrlDebug = "http://192.168.176.123:2021/v1";
-const String baseUrlRemote = "https://api.staging.xtakee.com/v1";
+const String baseUrlDebug = "http://192.168.1.30:2021/v1";
 
 _bearerAuthInterceptor(Cache cache) =>
     QueuedInterceptorsWrapper(onRequest: (options, interceptorHandler) async {
@@ -23,11 +23,13 @@ _bearerAuthInterceptor(Cache cache) =>
       };
 
       options.headers['Authorization'] = 'Bearer $token';
+      options.receiveTimeout = const Duration(seconds: 10);
+      options.sendTimeout = const Duration(seconds: 10);
       return interceptorHandler.next(options);
     });
 
 Dio dioClient(Cache cache) {
-  Dio dio = Dio(BaseOptions(baseUrl: baseUrlRemote));
+  Dio dio = Dio(BaseOptions(baseUrl: Config.baseUrl));
 
   dio.interceptors.add(logger);
   dio.interceptors.add(_bearerAuthInterceptor(cache));

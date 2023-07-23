@@ -60,7 +60,7 @@ class _State extends State<Setting> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: const IconThemeData(
-          color: Colors.white, //change your color here
+          color: Colors.black, //change your color here
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,7 +69,7 @@ class _State extends State<Setting> {
               "Settings",
               textScaleFactor: scale,
               style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
+                  color: Colors.black, fontWeight: FontWeight.bold),
             ),
             GestureDetector(
               onTap: ()=> _save(),
@@ -77,10 +77,11 @@ class _State extends State<Setting> {
             )
           ],
         ),
-        backgroundColor: primaryColor,
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
         child: ListView(
+          shrinkWrap: true,
           children: [
             BlocConsumer(
               listener: (context, state) {
@@ -200,8 +201,7 @@ class _State extends State<Setting> {
                           onTap: () => _save(),
                           child: Container(
                             height: 50.h,
-                            margin: EdgeInsets.only(
-                                left: 24.w, right: 24.w, bottom: 16.h),
+                            margin: EdgeInsets.only(left: 24.w, right: 24.w, bottom: 24.h),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: primaryColor,
@@ -211,7 +211,7 @@ class _State extends State<Setting> {
                               textScaleFactor: scale,
                               style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),

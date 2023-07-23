@@ -9,6 +9,9 @@
 .history
 .svn/
 pubspec.lock
+/dump.rdb
+/pubspec.lock
+/ios/Podfile.lock
 migrate_working_dir/
 
 # IntelliJ related

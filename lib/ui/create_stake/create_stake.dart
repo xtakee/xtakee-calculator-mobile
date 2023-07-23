@@ -88,7 +88,7 @@ class _State extends State<CreateStake> {
                                   height: 10.h,
                                 ),
                                 Text(
-                                  "Kindly paste a valid licence key to continue",
+                                  "Paste a valid licence key to continue",
                                   textScaleFactor: widthScale,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
@@ -150,6 +150,21 @@ class _State extends State<CreateStake> {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
+                              ),
+                            ),
+                            Container(
+                              height: 24.h,
+                            ),
+                            GestureDetector(
+                              child: RichText(
+                                softWrap: true,
+                                overflow: TextOverflow.clip,
+                                text: const TextSpan(
+                                    text: "Don't have a licence? ",
+                                    style: TextStyle(color: Colors.black45, fontSize: 16),
+                                    children: [
+                                      TextSpan(text: "Create", style: TextStyle(color: primaryColor, fontSize: 16, fontWeight: FontWeight.w600))
+                                    ]),
                               ),
                             ),
                             Container(

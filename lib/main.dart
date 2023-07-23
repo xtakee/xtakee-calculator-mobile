@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/home/home.dart';
+import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dimen.dart';
 
 import 'di/injector.dart';
@@ -20,10 +21,11 @@ class _HttpOverrides extends HttpOverrides {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Config.init();
   await configureDependencies();
 
   HttpOverrides.global = _HttpOverrides();
-  runApp(App());
+  runApp(const App());
 }
 
 class App extends StatelessWidget {

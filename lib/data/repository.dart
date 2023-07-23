@@ -1,34 +1,40 @@
 import 'dart:convert';
 
 import 'package:stake_calculator/data/mapper/json_stake_mapper.dart';
-import 'package:stake_calculator/data/mapper/odd_json_mapper.dart';
 import 'package:stake_calculator/data/mapper/odds_json_mapper.dart';
+import 'package:stake_calculator/data/remote/model/bet_history_response.dart';
 import 'package:stake_calculator/data/remote/model/create_stake_request.dart';
 import 'package:stake_calculator/data/remote/model/reset_request.dart';
 import 'package:stake_calculator/data/remote/model/stake_request.dart';
 import 'package:stake_calculator/data/remote/model/update_request.dart';
 import 'package:stake_calculator/domain/irepository.dart';
-import 'package:stake_calculator/domain/model/amount.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
-import 'package:stake_calculator/domain/remote/IService.dart';
+import 'package:stake_calculator/domain/remote/iservice.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../domain/cache.dart';
+import '../domain/model/bundle.dart';
 import '../domain/model/odd.dart';
-import '../util/log.dart';
 
 class Repository extends IRepository {
   IService service;
   Cache cache;
 
+  List<Bundle> bundles = [];
+
   Repository({required this.service, required this.cache});
 
   @override
-  Future<Amount> computeStake({required List<Odd> odds, int? cycle}) async {
+  Future<Stake> computeStake({required List<Odd> odds, int? cycle}) async {
     final stake =
         JsonStakeMapper().from(jsonDecode(cache.getString(PREF_STAKE, '')));
+
     return await service
-        .computeStake(StakeRequest(odds: odds, cycle: stake.next));
+        .computeStake(StakeRequest(odds: odds, cycle: stake.next))
+        .then((value) {
+      cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
+      return value;
+    });
   }
 
   @override
@@ -44,9 +50,11 @@ class Repository extends IRepository {
   }
 
   @override
-  Future<Stake> resetStake() async {
+  Future<Stake> resetStake({bool won = false}) async {
     final losses = cache.getBool(PREF_CLEAR_LOSS, false);
-    return await service.resetStake(ResetRequest(losses: losses)).then((value) {
+    return await service
+        .resetStake(ResetRequest(losses: losses, won: won))
+        .then((value) {
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
       return value;
     });
@@ -115,11 +123,13 @@ class Repository extends IRepository {
   }
 
   @override
-  Future<Stake> deleteTag({required int position}) async {
+  Future<Stake> deleteTag({required int position, bool won = false}) async {
     List<Odd> tags = await _getTags();
     final tag = tags.get(position);
 
-    return await service.deleteTag(tagId: tag.tag ?? "").then((value) {
+    return await service
+        .deleteTag(tagId: tag.tag ?? "", won: won)
+        .then((value) {
       tags.delete(position);
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
       cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
@@ -148,5 +158,31 @@ class Repository extends IRepository {
 
     await cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
     return tags;
+  }
+
+  @override
+  Future<void> saveGameType({required int type}) async {
+    cache.set(PREF_GAME_TYPE, type);
+  }
+
+  @override
+  int getGameType() {
+    return cache.getInt(PREF_GAME_TYPE, 0);
+  }
+
+  @override
+  Future<BetHistoryResponse> getHistory(
+      {required int page, required int limit}) async {
+    return await service.getHistory(page: page, limit: limit);
+  }
+
+  @override
+  Future<List<Bundle>> getBundles() async {
+    if (bundles.isNotEmpty) return Future.value(bundles);
+
+    return await service.getBundles().then((value) {
+      bundles = value;
+      return value;
+    });
   }
 }

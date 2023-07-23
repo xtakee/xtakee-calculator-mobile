@@ -1,13 +1,17 @@
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
-import 'package:stake_calculator/domain/model/previous_stake.dart';
+import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
+import 'package:stake_calculator/ui/core/xdelete_tag_warning.dart';
+import 'package:stake_calculator/ui/core/xdrawer.dart';
 import 'package:stake_calculator/ui/home/bloc/home_bloc.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
-import 'package:stake_calculator/ui/setting/setting.dart';
+import 'package:stake_calculator/ui/wallet/wallet.dart';
+import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
+import 'package:stake_calculator/util/game_type.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
@@ -15,7 +19,10 @@ import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 import '../commons.dart';
 import '../core/stake_item.dart';
+import '../core/xbutton.dart';
 import '../core/xcard.dart';
+import '../core/xchip.dart';
+import '../core/xreset_warning.dart';
 import '../not_found/not_found.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
@@ -29,14 +36,19 @@ class Home extends StatefulWidget {
 }
 
 class _State extends State<Home> {
-  late final ProcessIndicator _processIndicator = ProcessIndicator();
+  final ProcessIndicator _processIndicator = ProcessIndicator();
   final bloc = HomeBloc();
   bool isMultiple = false;
   final listKey = const Key("key");
+  GameType selectedGameType = GameType.MULTIPLE;
+  GameType defaultGameType = GameType.values[1];
+  List<GameType> gameTypes = const [GameType.MULTIPLE, GameType.SINGLE];
 
   List<int> aspectRatio = [16, 9];
   late Floating floating;
   bool isPipAvailable = false;
+  bool showCelebration = false;
+  bool isWin = false;
 
   final ScrollController _controller = ScrollController();
 
@@ -63,24 +75,48 @@ class _State extends State<Home> {
     });
   }
 
+  void _disposeAllFocus() {
+    tagFocusNodes.forEach((key, value) {
+      value.dispose();
+    });
+
+    oddFocusNodes.forEach((key, value) {
+      value.dispose();
+    });
+  }
+
+  void _clearAllFocus() {
+    tagFocusNodes.forEach((key, value) {
+      if (value.hasFocus) {
+        value.unfocus();
+      }
+    });
+
+    oddFocusNodes.forEach((key, value) {
+      if (value.hasFocus) {
+        value.unfocus();
+      }
+    });
+  }
+
   @override
   void dispose() {
     bloc.close();
-    oddControllers.clear();
-    tagControllers.clear();
-    tagFocusNodes.clear();
-    oddFocusNodes.clear();
+    _disposeAllFocus();
     super.dispose();
   }
 
   _scrollBottom() {
-    _controller
-        .animateTo(
-      MediaQuery.of(context).size.height,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    )
-        .then((value) {
+    // _controller
+    //     .animateTo(
+    //   MediaQuery.of(context).size.height,
+    //   curve: Curves.easeOut,
+    //   duration: const Duration(milliseconds: 300),
+    // )
+    //     .then((value) {
+    //   tagFocusNodes[odds.last.tag.toString()]?.requestFocus();
+    // });
+    Future.delayed(const Duration(milliseconds: 200)).then((value) {
       tagFocusNodes[odds.last.tag.toString()]?.requestFocus();
     });
   }
@@ -88,57 +124,54 @@ class _State extends State<Home> {
   @override
   Widget build(BuildContext context) {
     setScale(MediaQuery.of(context).size);
-    return PiPSwitcher(childWhenEnabled: const Pip(), childWhenDisabled: _screen());
+    return PiPSwitcher(
+        childWhenEnabled: const Pip(), childWhenDisabled: _screen());
+  }
+
+  void _showCelebration() {
+    Future.delayed(const Duration(milliseconds: 200)).then((value) {
+      _clearAllFocus();
+      setState(() {
+        showCelebration = true;
+        isWin = false;
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 2)).then((value) {
+      setState(() {
+        showCelebration = false;
+      });
+    });
   }
 
   Widget _screen() => Scaffold(
-        backgroundColor: primaryBackground,
+        backgroundColor: backgroundAccent,
+        drawer: xDrawer(context),
+        drawerEnableOpenDragGesture: true,
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          forceMaterialTransparency: true,
+          foregroundColor: backgroundAccent,
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    Res.logo_with_name,
-                    color: Colors.white,
-                    height: 28.h,
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Visibility(
-                    visible: isPipAvailable,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          floating.enable(aspectRatio: const Rational(3, 2));
-                          Future.delayed(const Duration(seconds: 3)).then((value) {
-                            bloc.getStake(cache: true);
-                          });
-                        });
-                      },
-                      child: const Icon(
-                        Icons.picture_in_picture_alt,
-                        color: Colors.white,
-                      ),
-                    ),
+              Visibility(
+                visible: isPipAvailable,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      floating.enable(aspectRatio: const Rational(3, 2));
+                    });
+                  },
+                  child: const Icon(
+                    Icons.picture_in_picture_alt,
+                    color: Colors.black,
                   ),
-                  Container(
-                    width: 16.w,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      await AppRouter.gotoWidget(const Setting(), context);
-                    },
-                    child: const Icon(Icons.settings, color: Colors.white),
-                  ),
-                ],
+                ),
               )
             ],
           ),
-          backgroundColor: primaryColor,
+          backgroundColor: backgroundAccent,
         ),
         body: MultiBlocListener(
           listeners: [
@@ -147,7 +180,12 @@ class _State extends State<Home> {
                 if (state is OnLoading) {
                   _processIndicator.show(context);
                 } else if (state is OnDataLoaded) {
-                  _processIndicator.dismiss();
+                  _processIndicator.dismiss().then((value) {
+                    if (isWin) {
+                      _showCelebration();
+                    }
+                  });
+                  selectedGameType = GameType.values[state.stake.gameType ?? 0];
                   odds = state.odds;
                 } else if (state is OnCreateStake) {
                   _processIndicator.dismiss().then((value) => {
@@ -172,102 +210,102 @@ class _State extends State<Home> {
               child: Stack(
                 children: [
                   Positioned(
+                    top: 0, right: 0, left: 0,
                     child: Container(
-                      color: primaryColor,
+                      color: backgroundAccent,
                       height: 50.h,
                     ),
                   ),
-                  Column(
-                    children: [
-                      Expanded(
-                          child: Container(
-                        width: double.infinity,
-                        margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: primaryBackground,
-                        ),
-                        child: _page(),
-                      )),
-                      Container(
-                        width: double.infinity,
-                        height: 50.h,
-                        color: primaryBackground,
-                        margin: EdgeInsets.only(
-                            top: 16.h, left: 16.w, right: 16.w, bottom: 16.h),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                bloc.resetStake();
-                              },
-                              child: Container(
-                                height: 50.h,
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.black12),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Icon(
-                                  Icons.restart_alt_outlined,
-                                  color: primaryColor,
-                                ),
+                  Container(
+                    color: primaryBackground,
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.only(left: 16.w, right: 16.w),
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: primaryBackground,
                               ),
-                            ),
-                            Container(
-                              width: 16.w,
-                            ),
-                            Expanded(
-                                child: GestureDetector(
-                              onTap: () {
-                                bloc.compute(cycle: 1, odds: odds);
-                              },
-                              child: Container(
-                                height: 50.h,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: primaryColor,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Text(
-                                  "Calculate",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
+                              child: _page(),
                             )),
-                            Container(
-                              width: 16.w,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                bloc.saveTag(
-                                    Odd(name: "#${odds.length + 1}", odd: 0));
-                              },
-                              child: Container(
-                                height: 50.h,
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: Colors.black12),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: const Icon(
-                                  Icons.add,
-                                  color: primaryColor,
+                        Container(
+                          width: double.infinity,
+                          height: 50.h,
+                          color: primaryBackground,
+                          margin: EdgeInsets.only(
+                              top: 16.h, left: 16.w, right: 16.w, bottom: 16.h),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  XBottomSheet(context,
+                                      child: XResetWarning(onReset: () {
+                                        bloc.resetStake();
+                                      }, onWon: () {
+                                        bloc.resetStake(won: true);
+                                        isWin = true;
+                                      })).show();
+                                },
+                                child: Container(
+                                  height: 50.h,
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.black12),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Icon(
+                                    Icons.restart_alt_outlined,
+                                    color: primaryColor,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                width: 16.w,
+                              ),
+                              Expanded(
+                                  child: XButton(
+                                    label: "Calculate",
+                                    onClick: () => bloc.compute(cycle: 1, odds: odds),
+                                  )),
+                              Container(
+                                width: 16.w,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  if (odds.length == 1) {
+                                    selectedGameType = defaultGameType;
+                                  }
+                                  bloc.saveTag(
+                                      Odd(name: "", odd: 0));
+                                },
+                                child: Container(
+                                  height: 50.h,
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.black12),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    ),
+                  ),
+                  if (showCelebration)
+                    Positioned.fill(child: Lottie.asset(Res.hurry_animation))
                 ],
               ),
             ),
@@ -308,29 +346,31 @@ class _State extends State<Home> {
               ),
               BlocBuilder(
                 builder: (context, state) {
-                  double tolerance = 0;
                   int coins = 0;
                   if (state is OnDataLoaded) {
                     coins =
                         (state.stake.coins ?? 0) - (state.stake.stakes ?? 0);
-                    tolerance = state.stake.tolerance ?? 0;
                   }
-                  return Row(
-                    children: [
-                      //const Text("Tolerance: "),
-                      SvgPicture.asset(Res.coins, width: 16.h),
-                      Container(
-                        width: 5.w,
-                      ),
-                      Text(
-                        "$coins",
-                        textScaleFactor: scale,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
-                            fontSize: 16),
-                      )
-                    ],
+                  return GestureDetector(
+                    onTap: () => AppRouter.gotoWidget(const Wallet(), context),
+                    child: Row(
+                      children: [
+                        //const Text("Tolerance: "),
+                        Lottie.asset(Res.coins_animation,
+                            height: 20.h, width: 20.w),
+                        Container(
+                          width: 5.w,
+                        ),
+                        Text(
+                          "$coins",
+                          textScaleFactor: scale,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: primaryColor,
+                              fontSize: 16),
+                        )
+                      ],
+                    ),
                   );
                 },
                 bloc: bloc,
@@ -338,8 +378,8 @@ class _State extends State<Home> {
             ],
           ),
           Container(
-            height: 5,
-            margin: EdgeInsets.only(top: 10.h),
+            height: 2,
+            margin: EdgeInsets.only(top: 5.h),
             color: const Color(0xFFEFEFEF),
             width: double.infinity,
           ),
@@ -352,8 +392,8 @@ class _State extends State<Home> {
                   textScaleFactor: scale,
                   style: const TextStyle(
                       color: Colors.black54,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16),
                 ),
                 BlocBuilder(
                   builder: (context, state) {
@@ -366,8 +406,8 @@ class _State extends State<Home> {
                       textScaleFactor: scale,
                       style: const TextStyle(
                           color: primaryColor,
-                          fontSize: 38,
-                          fontWeight: FontWeight.w900),
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800),
                     );
                   },
                   bloc: bloc,
@@ -392,7 +432,7 @@ class _State extends State<Home> {
                   int next = 1;
 
                   if (state is OnDataLoaded) {
-                    win = state.stake.previousStake?.expectedWin ?? 0.00;
+                    win = state.stake.previousStake?.totalWin ?? 0.00;
                     losses = (state.stake.losses ?? 0);
                     next = state.stake.cycle ?? 0;
                   }
@@ -409,19 +449,19 @@ class _State extends State<Home> {
                                 "Expected Win:",
                                 textScaleFactor: scale,
                                 style: const TextStyle(
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
                               Text(
                                 Formatter.format(win.toDouble()),
                                 textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.green.withOpacity(0.9)),
                               )
                             ],
-                          ),
-                          Container(
-                            height: 5,
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -431,6 +471,7 @@ class _State extends State<Home> {
                                 "Losses:",
                                 textScaleFactor: scale,
                                 style: const TextStyle(
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
@@ -438,12 +479,9 @@ class _State extends State<Home> {
                                 Formatter.format(losses * 1.0),
                                 textScaleFactor: scale,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                    fontWeight: FontWeight.bold, fontSize: 14),
                               )
                             ],
-                          ),
-                          Container(
-                            height: 5.h,
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -453,6 +491,7 @@ class _State extends State<Home> {
                                 "Round:",
                                 textScaleFactor: scale,
                                 style: const TextStyle(
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
@@ -460,7 +499,7 @@ class _State extends State<Home> {
                                 "#$next",
                                 textScaleFactor: scale,
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                    fontWeight: FontWeight.bold, fontSize: 14),
                               )
                             ],
                           ),
@@ -469,9 +508,29 @@ class _State extends State<Home> {
                 },
                 bloc: bloc,
               )),
-          Container(
-            height: 5.h,
-          ),
+          BlocBuilder(
+              bloc: bloc,
+              builder: (_, state) {
+                return ExpandablePanel(
+                    expand: odds.length > 1,
+                    child: XCard(
+                      elevation: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          XChip(
+                            choices: gameTypes.map((e) => e.name).toList(),
+                            defaultSelected: selectedGameType.name,
+                            onSelectedChanged: (choice) {
+                              bloc.setGameType(
+                                  type: GameType.values
+                                      .firstWhere((e) => e.name == choice));
+                            },
+                          )
+                        ],
+                      ),
+                    ));
+              }),
           BlocBuilder(
               bloc: bloc,
               builder: (context, state) => XCard(
@@ -489,7 +548,11 @@ class _State extends State<Home> {
                           oddControllers.putIfAbsent(
                               odd.tag.toString(),
                               () => TextEditingController(
-                                  text: double.parse((odd.odd ?? 0).toString()) <= 0 ? "" : odd.odd?.toString()));
+                                  text:
+                                      double.parse((odd.odd ?? 0).toString()) <=
+                                              0
+                                          ? ""
+                                          : odd.odd?.toString()));
 
                           tagControllers.putIfAbsent(
                               odd.tag.toString(),
@@ -506,12 +569,24 @@ class _State extends State<Home> {
                               isLast: odds.length == (index + 1),
                               position: index,
                               onDelete: (tag, pos) {
-                                bloc.deleteTag(pos);
+                                XBottomSheet(context,
+                                        child: XDeleteTagWarning(
+                                            onDelete: (_, pos) {
+                                              bloc.deleteTag(
+                                                  position: pos, won: false);
+                                            },
+                                            onWon: (_, pos) {
+                                              bloc.deleteTag(
+                                                  position: pos, won: true);
+                                              isWin = true;
+                                            },
+                                            position: pos,
+                                            tag: tag))
+                                    .show();
                               },
                               onUpdate: (tag, pos) {
                                 bloc.updateTag(tag, pos);
                               },
-                              previousStake: PreviousStake(),
                               oddFocusNode: oddFocusNodes[odd.tag.toString()],
                               tagFocusNode: tagFocusNodes[odd.tag.toString()],
                               oddController:

@@ -9,6 +9,7 @@ const String PREF_RECYCLE = "PREF_RECYCLE";
 const String PREF_DECAY = "PREF_DECAY";
 const String PREF_CLEAR_LOSS = "PREF_CLEAR_LOSS";
 const String PREF_STAKE_TYPE = "PREF_STAKE_TYPE";
+const String PREF_GAME_TYPE = "PREF_GAME_TYPE";
 
 abstract class Cache {
   Future<bool> set(String key, Object value);
