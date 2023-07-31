@@ -31,7 +31,7 @@ class XResetWarning extends StatelessWidget {
                     const TextSpan(
                         text:
                             "This will reset your rounds. Kindly tell us why.\n",
-                        style: TextStyle(color: Colors.black45, fontSize: 16)),
+                        style: TextStyle(color: Colors.black, fontSize: 16)),
                     TextSpan(
                         text: "Please note this is not reversible",
                         style: TextStyle(

@@ -31,3 +31,13 @@ class OnDataLoaded extends WalletState {
   @override
   List<Object?> get props => [stake];
 }
+
+class OnPaymentsLoaded extends WalletState {
+  final List<Transaction> transactions;
+  final Stake stake;
+
+  const OnPaymentsLoaded({required this.transactions, required this.stake});
+
+  @override
+  List<Object?> get props => [transactions, stake];
+}

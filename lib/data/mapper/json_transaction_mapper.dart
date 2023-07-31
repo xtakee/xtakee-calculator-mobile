@@ -9,6 +9,8 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
       channel: from['channel'],
       charge: from['charge'],
       status: from['status'],
+      createdAt: from['createdAt'],
+      updatedAt: from['updatedAt'],
       auth: from['auth'],
       id: from['_id'],
       account: from['account'] != null
@@ -39,6 +41,8 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
       map['bundle'] = JsonBundleMapper().to(from.bundle!);
     }
     map['reference'] = from.reference;
+    map['createdAt'] = from.createdAt;
+    map['updateAt'] = from.updatedAt;
     map['description'] = from.description;
     map['message'] = from.message;
     map['type'] = from.type;

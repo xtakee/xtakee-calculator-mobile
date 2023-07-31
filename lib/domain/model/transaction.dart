@@ -4,6 +4,8 @@ import 'package:stake_calculator/domain/model/bundle.dart';
 class Transaction {
   Transaction({
     String? channel,
+    String? createdAt,
+    String? updatedAt,
     String? auth,
     num? charge,
     String? status,
@@ -18,6 +20,8 @@ class Transaction {
   }) {
     _channel = channel;
     _charge = charge;
+    _createdAt = createdAt;
+    _updatedAt = updatedAt;
     _status = status;
     _auth = auth;
     _id = id;
@@ -31,6 +35,8 @@ class Transaction {
   }
 
   String? _channel;
+  String? _createdAt;
+  String? _updatedAt;
   String? _auth;
   num? _charge;
   String? _status;
@@ -44,6 +50,10 @@ class Transaction {
   String? _type;
 
   String? get channel => _channel;
+
+  String? get createdAt => _createdAt;
+
+  String? get updatedAt => _updatedAt;
 
   String? get auth => _auth;
 

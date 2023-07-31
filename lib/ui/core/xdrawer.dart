@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stake_calculator/ui/commons.dart';
+import 'package:stake_calculator/ui/core/xdialog.dart';
+import 'package:stake_calculator/ui/core/xwarning_dialog.dart';
 import 'package:stake_calculator/ui/history/bet_history.dart';
+import 'package:stake_calculator/ui/not_found/not_found.dart';
+import 'package:stake_calculator/ui/payment/payment.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../res.dart';
@@ -53,12 +57,13 @@ Drawer xDrawer(BuildContext context) => Drawer(
                 ),
                 leading: const Icon(Icons.history),
               ),
-              const ListTile(
-                title: Text(
+              ListTile(
+                onTap: () => _nav(context, widget: const Payment()),
+                title: const Text(
                   "Transactions",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
-                leading: Icon(Icons.mobile_friendly_outlined),
+                leading: const Icon(Icons.mobile_friendly_outlined),
               )
             ],
           ),
@@ -79,12 +84,54 @@ Drawer xDrawer(BuildContext context) => Drawer(
                   leading: const Icon(Icons.settings),
                   onTap: () => _nav(context, widget: const Setting()),
                 ),
+                ListTile(
+                  onTap: () {},
+                  title: const Text(
+                    "Help",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  leading: const Icon(Icons.help_outline_rounded),
+                ),
                 const ListTile(
                   title: Text(
                     "About",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   leading: Icon(Icons.info_outline),
+                ),
+                Container(
+                  height: 10.h,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    XDialog(context,
+                            child: XWarningDialog(
+                                onNegative: () {},
+                                onPositive: () => AppRouter.gotoWidget(
+                                    const NotFound(), context,
+                                    clearStack: true),
+                                description:
+                                    "Are you sure? You will need to provide your licence to login later",
+                                positive: "Logout",
+                                title: "Logout?"))
+                        .show();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Logout",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18.sp),
+                      ),
+                      Container(
+                        width: 10.w,
+                      ),
+                      const Icon(Icons.logout)
+                    ],
+                  ),
                 )
               ],
             ),

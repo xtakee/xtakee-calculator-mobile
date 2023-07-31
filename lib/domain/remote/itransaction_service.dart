@@ -1,9 +1,20 @@
+import 'package:stake_calculator/data/remote/model/transaction_history_response.dart';
+
+import '../model/mandate.dart';
 import '../model/transaction.dart';
 
 abstract class ITransactionService {
-  Future<List<Transaction>> getTransactions({required int page, required int limit});
+  Future<TransactionHistoryResponse> getTransactions(
+      {required int page, required int limit});
 
   Future<Transaction> createTransaction({required String bundle});
 
   Future<Transaction> completeTransaction({required String reference});
+
+  Future<List<Mandate>> getMandates();
+
+  Future<void> deleteMandate({required String mandate});
+
+  Future<Transaction> chargeMandate(
+      {required String mandate, required String bundle, required String url});
 }

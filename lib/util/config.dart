@@ -1,27 +1,39 @@
-enum MODE { DEBUG, RELEASE }
+import 'dart:io';
+
+enum Flavor { development, production }
+
+class HttpOverride extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 class Config {
-  static MODE buildMode = MODE.RELEASE;
-  static const String _payLiveKey =
-      "pk_live_9833f8c67365af28857226560114ba0dfd2840b3";
-  static const String _payDebugKey =
-      "pk_test_d01119fbf70385fea4fd1347fbcb61520a137534";
+  String appName = "";
+  String baseUrl = "";
+  Flavor flavor = Flavor.development;
+  String payStackPubKey = "";
 
-  static const String _baseUrlDebug = "https://api.staging.xtakee.com/v1";
-  //static const String _baseUrlDebug = "http://192.168.1.23:2021/v1";
-  static const String _baseUrlLive = "https://api.xtakee.com/v1";
+  static Config shared = Config.create();
 
-  static String get payStackKey =>
-      buildMode == MODE.DEBUG ? _payDebugKey : _payLiveKey;
-
-  static String get baseUrl => buildMode == MODE.DEBUG ? _baseUrlDebug : _baseUrlLive;
-
-  static bool _setDebugMode() {
-    buildMode = MODE.DEBUG;
-    return true;
+  factory Config.create(
+      {String baseUrl = "",
+      String appName = "",
+      Flavor flavor = Flavor.development,
+      String payStackPubKey = ""}) {
+    return shared = Config(
+        appName: appName,
+        flavor: flavor,
+        baseUrl: baseUrl,
+        payStackPubKey: payStackPubKey);
   }
 
-  static init() {
-    assert(_setDebugMode());
-  }
+  Config(
+      {required this.flavor,
+      required this.payStackPubKey,
+      required this.baseUrl,
+      required this.appName});
 }

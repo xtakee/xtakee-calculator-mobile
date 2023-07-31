@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // for date format
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/domain/model/previous_stake.dart';
+import 'package:stake_calculator/res.dart';
+import 'package:stake_calculator/ui/commons.dart';
 
 import 'dimen.dart';
 
@@ -58,8 +61,39 @@ extension ExtOds on List<Odd> {
 }
 
 extension ExtString on String {
-  String toDate() => DateFormat.yMMMMd().format(DateTime.parse(this));
+  String toDate() => DateFormat.yMMMd().format(DateTime.parse(this));
+
   String orEmpty() => this ?? "";
+
+  String toTitleCase() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+
+  String toCard() {
+    switch (this) {
+      case "visa":
+        return Res.visa_card;
+      case "verve":
+        return Res.verve_card;
+      case "master":
+        return Res.master_card;
+      default:
+        return Res.master_card;
+    }
+  }
+
+  Color toColor() {
+    switch (this) {
+      case "success":
+        return colorGreen;
+      case "attempted":
+        return Colors.orange;
+      case "failed":
+        return Colors.redAccent;
+      default:
+        return Colors.redAccent;
+    }
+  }
 }
 
 extension ExtNullString on String? {

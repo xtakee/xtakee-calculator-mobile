@@ -2,29 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:stake_calculator/ui/commons.dart';
-import 'package:stake_calculator/ui/history/bloc/history_bloc.dart';
-import 'package:stake_calculator/ui/history/component/empty_history_page.dart';
-import 'package:stake_calculator/ui/history/component/history_item.dart';
+import 'package:stake_calculator/domain/model/transaction.dart';
+import 'package:stake_calculator/ui/payment/bloc/payment_bloc.dart';
+import 'package:stake_calculator/ui/payment/component/transaction_item.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
-import '../../domain/model/history.dart';
 import '../../util/dimen.dart';
+import '../history/component/empty_history_page.dart';
 
-class BetHistory extends StatefulWidget {
-  const BetHistory({super.key});
+class Payment extends StatefulWidget {
+  const Payment({super.key});
 
   @override
   State<StatefulWidget> createState() => _State();
 }
 
-class _State extends State<BetHistory> {
-  final bloc = HistoryBloc();
-
+class _State extends State<Payment> {
+  final bloc = PaymentBloc();
   final _pageSize = 20;
-  List<History> _history = [];
+  List<Transaction> _transactions = [];
 
-  final PagingController<int, History> _pagingController =
+  final PagingController<int, Transaction> _pagingController =
       PagingController(firstPageKey: 0);
 
   final RefreshController _refreshController =
@@ -32,17 +30,18 @@ class _State extends State<BetHistory> {
 
   @override
   void initState() {
-    _pagingController.addPageRequestListener((pageKey) {
-      bloc.getHistory(limit: _pageSize, page: pageKey);
-    });
     super.initState();
+
+    _pagingController.addPageRequestListener((pageKey) {
+      bloc.getTransactions(page: pageKey, limit: _pageSize);
+    });
   }
 
   @override
   void dispose() {
+    super.dispose();
     bloc.close();
     _refreshController.dispose();
-    super.dispose();
   }
 
   @override
@@ -53,7 +52,7 @@ class _State extends State<BetHistory> {
             color: Colors.black, //change your color here
           ),
           title: Text(
-            "History",
+            "Transactions",
             textScaleFactor: scale,
             style: const TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold),
@@ -65,14 +64,17 @@ class _State extends State<BetHistory> {
               bloc: bloc,
               builder: (_, state) {
                 if (state is OnDataLoaded) {
-                  _history = state.data.docs ?? [];
+                  _transactions = state.data.docs ?? [];
+                  _refreshController.refreshCompleted();
+
+                  _transactions = state.data.docs ?? [];
                   final response = state.data;
-                  final isLastPage = _history.length < _pageSize;
+                  final isLastPage = _transactions.length < _pageSize;
                   if (isLastPage) {
-                    _pagingController.appendLastPage(_history);
+                    _pagingController.appendLastPage(_transactions);
                   } else {
                     _pagingController.appendPage(
-                        _history, response.nextPage!.toInt());
+                        _transactions, response.nextPage!.toInt());
                   }
 
                   _refreshController.refreshCompleted();
@@ -85,21 +87,24 @@ class _State extends State<BetHistory> {
                 return SmartRefresher(
                   controller: _refreshController,
                   enablePullDown: true,
-                  onRefresh: () => bloc.getHistory(limit: _pageSize, page: 0),
-                  child: _history.isEmpty
-                      ? const EmptyHistoryPage()
+                  onRefresh: () => bloc.getTransactions(limit: 20, page: 0),
+                  child: _transactions.isEmpty
+                      ? const EmptyHistoryPage(
+                          text: "You have not made any payment",
+                        )
                       : PagedListView.separated(
                           shrinkWrap: true,
-                          builderDelegate: PagedChildBuilderDelegate<History>(
-                            itemBuilder: (context, item, index) =>
-                                HistoryItem(history: item),
-                          ),
-                          pagingController: _pagingController,
-                          separatorBuilder: (_, index) => Container(
-                            height: 1.h,
-                            color: primaryBackground,
+                          builderDelegate:
+                              PagedChildBuilderDelegate<Transaction>(
+                                  itemBuilder: (context, item, index) =>
+                                      TransactionItem(transaction: item)),
+                          separatorBuilder: (BuildContext context, int index) =>
+                              Container(
+                            height: 0.5.h,
+                            color: Colors.black12.withOpacity(0.1),
                             margin: EdgeInsets.only(left: 32.w),
                           ),
+                          pagingController: _pagingController,
                         ),
                 );
               },

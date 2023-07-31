@@ -11,8 +11,6 @@ final logger = PrettyDioLogger(
     responseHeader: true,
     compact: false);
 
-const String baseUrlDebug = "http://192.168.1.30:2021/v1";
-
 _bearerAuthInterceptor(Cache cache) =>
     QueuedInterceptorsWrapper(onRequest: (options, interceptorHandler) async {
       String token = cache.getString(PREF_AUTHORIZATION_, "");
@@ -29,9 +27,11 @@ _bearerAuthInterceptor(Cache cache) =>
     });
 
 Dio dioClient(Cache cache) {
-  Dio dio = Dio(BaseOptions(baseUrl: Config.baseUrl));
+  Dio dio = Dio(BaseOptions(baseUrl: Config.shared.baseUrl));
 
-  dio.interceptors.add(logger);
+  if(Config.shared.flavor == Flavor.development) {
+    dio.interceptors.add(logger);
+  }
   dio.interceptors.add(_bearerAuthInterceptor(cache));
   return dio;
 }

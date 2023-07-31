@@ -3,6 +3,7 @@ import 'package:stake_calculator/domain/model/bundle.dart';
 import '../data/remote/model/bet_history_response.dart';
 import 'model/odd.dart';
 import 'model/stake.dart';
+import 'model/transaction.dart';
 
 abstract class IRepository {
   Future<Stake> getStake({bool cached = false});

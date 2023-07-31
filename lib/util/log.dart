@@ -1,20 +1,25 @@
-
 import 'package:logger/logger.dart';
 
+import 'config.dart';
+
 class Log {
-  static final _logger = Logger(
-    printer: PrettyPrinter()
-  );
+  static final _logger = Logger(printer: PrettyPrinter());
 
   static void d(dynamic message) {
-    _logger.d(message);
+    if (Config.shared.flavor == Flavor.development) {
+      _logger.d(message);
+    }
   }
 
   static void i(dynamic message) {
-   _logger.i(message);
+    if (Config.shared.flavor == Flavor.development) {
+      _logger.i(message);
+    }
   }
 
   static void e(dynamic message) {
-    _logger.e(message);
+    if (Config.shared.flavor == Flavor.development) {
+      _logger.e(message);
+    }
   }
 }

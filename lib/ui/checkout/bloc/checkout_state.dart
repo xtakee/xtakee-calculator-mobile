@@ -40,3 +40,12 @@ class OnComplete extends CheckoutState {
   @override
   List<Object?> get props => [transaction];
 }
+
+class OnMandates extends CheckoutState {
+  final List<Mandate> mandates;
+
+  const OnMandates({required this.mandates});
+
+  @override
+  List<Object?> get props => [mandates];
+}

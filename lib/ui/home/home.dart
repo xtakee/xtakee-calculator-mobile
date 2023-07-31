@@ -35,7 +35,7 @@ class Home extends StatefulWidget {
   }
 }
 
-class _State extends State<Home> {
+class _State extends State<Home> with TickerProviderStateMixin {
   final ProcessIndicator _processIndicator = ProcessIndicator();
   final bloc = HomeBloc();
   bool isMultiple = false;
@@ -210,7 +210,9 @@ class _State extends State<Home> {
               child: Stack(
                 children: [
                   Positioned(
-                    top: 0, right: 0, left: 0,
+                    top: 0,
+                    right: 0,
+                    left: 0,
                     child: Container(
                       color: backgroundAccent,
                       height: 50.h,
@@ -222,15 +224,15 @@ class _State extends State<Home> {
                       children: [
                         Expanded(
                             child: Container(
-                              width: double.infinity,
-                              margin: EdgeInsets.only(left: 16.w, right: 16.w),
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: primaryBackground,
-                              ),
-                              child: _page(),
-                            )),
+                          width: double.infinity,
+                          margin: EdgeInsets.only(left: 16.w, right: 16.w),
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: primaryBackground,
+                          ),
+                          child: _page(),
+                        )),
                         Container(
                           width: double.infinity,
                           height: 50.h,
@@ -253,7 +255,8 @@ class _State extends State<Home> {
                                 },
                                 child: Container(
                                   height: 50.h,
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
@@ -270,9 +273,10 @@ class _State extends State<Home> {
                               ),
                               Expanded(
                                   child: XButton(
-                                    label: "Calculate",
-                                    onClick: () => bloc.compute(cycle: 1, odds: odds),
-                                  )),
+                                label: "Calculate",
+                                onClick: () =>
+                                    bloc.compute(cycle: 1, odds: odds),
+                              )),
                               Container(
                                 width: 16.w,
                               ),
@@ -281,12 +285,12 @@ class _State extends State<Home> {
                                   if (odds.length == 1) {
                                     selectedGameType = defaultGameType;
                                   }
-                                  bloc.saveTag(
-                                      Odd(name: "", odd: 0));
+                                  bloc.saveTag(Odd(name: "", odd: 0));
                                 },
                                 child: Container(
                                   height: 50.h,
-                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       color: Colors.white,
@@ -315,6 +319,7 @@ class _State extends State<Home> {
 
   Widget _amount() => XCard(
       elevation: 0,
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [

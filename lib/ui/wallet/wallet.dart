@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/transaction.dart';
 import 'package:stake_calculator/ui/core/empty_page.dart';
+import 'package:stake_calculator/ui/payment/payment.dart';
 import 'package:stake_calculator/ui/wallet/bloc/wallet_bloc.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
@@ -12,7 +13,7 @@ import '../../res.dart';
 import '../../util/dimen.dart';
 import '../../util/formatter.dart';
 import '../commons.dart';
-import 'component/transaction_item.dart';
+import '../payment/component/transaction_item.dart';
 import 'fund_wallet/fund_wallet.dart';
 
 class Wallet extends StatefulWidget {
@@ -25,10 +26,8 @@ class Wallet extends StatefulWidget {
 class _State extends State<Wallet> {
   final scrollController = ScrollController();
 
-  static const collapsedBarHeight = 60.0;
-  static const expandedBarHeight = 250.0;
-
-  List<Transaction> transactions = [];
+  double collapsedBarHeight = 60.0.h;
+  double expandedBarHeight = 230.0.h;
 
   bool isCollapsed = false;
   bool didAddFeedback = false;
@@ -39,6 +38,7 @@ class _State extends State<Wallet> {
   void initState() {
     super.initState();
     bloc.getStake();
+    bloc.getPayments();
   }
 
   @override
@@ -108,7 +108,7 @@ class _State extends State<Wallet> {
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     padding:
-                        EdgeInsets.only(left: 32.w, top: 90.h, right: 32.w),
+                        EdgeInsets.only(left: 16.w, top: 64.h, right: 16.w),
                     child: _wallet(),
                   ),
                 ),
@@ -116,7 +116,8 @@ class _State extends State<Wallet> {
               SliverToBoxAdapter(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height),
+                      minHeight: MediaQuery.of(context).size.height -
+                          (collapsedBarHeight * 1.3)),
                   child: Material(
                     elevation: 5,
                     color: Colors.white,
@@ -131,16 +132,22 @@ class _State extends State<Wallet> {
                     child: BlocBuilder(
                         bloc: bloc,
                         builder: (_, state) {
-                          return transactions.isNotEmpty
-                              ? ListView.builder(
+                          return bloc.transactions.isNotEmpty
+                              ? ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: 10,
-                                  itemBuilder: (_, state) {
+                                  itemCount: bloc.transactions.length,
+                                  itemBuilder: (_, index) {
                                     return TransactionItem(
-                                      transaction: Transaction(),
+                                      transaction: bloc.transactions[index],
                                     );
-                                  })
+                                  },
+                                  separatorBuilder: (_, index) => Container(
+                                    height: 1.h,
+                                    color: primaryBackground,
+                                    margin: EdgeInsets.only(left: 32.w),
+                                  ),
+                                )
                               : EmptyPage(
                                   description:
                                       "You do not have any transactions",
@@ -177,10 +184,13 @@ class _State extends State<Wallet> {
                         if (state is OnDataLoaded) {
                           balance = (state.stake.coins ?? 0) -
                               (state.stake.stakes ?? 0);
+                        } else if (state is OnPaymentsLoaded) {
+                          balance = (state.stake.coins ?? 0) -
+                              (state.stake.stakes ?? 0);
                         }
 
                         return Text(
-                          Formatter.format(balance * 1.0),
+                          balance.toString(),
                           textScaleFactor: scale,
                           style: const TextStyle(
                               color: Colors.black87,
@@ -222,18 +232,42 @@ class _State extends State<Wallet> {
               ),
               Opacity(
                 opacity: 0.6,
-                child: Lottie.asset(Res.wallet),
+                child: Lottie.asset(Res.coins_animation, animate: false,height: 76.h),
               )
             ],
           ),
-          // Container(
-          //   margin: const EdgeInsets.symmetric(vertical: 10),
-          //   child: Text(
-          //     "Transactions",
-          //     textScaleFactor: scale,
-          //     style: const TextStyle(fontSize: 16),
-          //   ),
-          // )
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Recent Transactions",
+                  textScaleFactor: scale,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                GestureDetector(
+                  onTap: () => AppRouter.gotoWidget(const Payment(), context),
+                  child: Row(
+                    children: [
+                      Text(
+                        "View All",
+                        textScaleFactor: scale,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: primaryColor,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
         ],
       );
 }

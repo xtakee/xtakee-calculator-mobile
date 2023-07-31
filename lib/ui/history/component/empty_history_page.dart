@@ -6,7 +6,8 @@ import 'package:stake_calculator/util/dxt.dart';
 import '../../../util/dimen.dart';
 
 class EmptyHistoryPage extends StatelessWidget {
-  const EmptyHistoryPage({super.key});
+  final String text;
+  const EmptyHistoryPage({super.key, this.text = "You have not made any bet"});
 
 
   @override
@@ -28,7 +29,7 @@ class EmptyHistoryPage extends StatelessWidget {
             ),
             // const Icon(Icons.file_copy, size: 72, color: primaryColor),
             Text(
-              "You have not made any bet",
+              text,
               textScaleFactor: scale,
               style: const TextStyle(fontSize: 18),
             ),

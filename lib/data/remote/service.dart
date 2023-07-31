@@ -49,7 +49,7 @@ class Service extends IService {
   @override
   Future<Stake> getStake() async {
     try {
-      final response = await client.get('/stake');
+      final response = await client.get('/stake/me');
       return JsonStakeMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);

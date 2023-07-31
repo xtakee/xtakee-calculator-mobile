@@ -130,10 +130,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(OnDataLoaded(
             odds: odds, stake: _getStake(stake: stake, tags: odds)));
       } on ApiException catch (error) {
-        if (error is NotFound) {
+        if (error is NotFound || error is BadRequest) {
           emit(OnCreateStake());
         } else {
-
           try {
             final stake = await _repository.getStake(cached: true);
             final odds = await _repository.getTags();
@@ -143,7 +142,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           } catch (e) {
             emit(OnCreateStake());
           }
-
         }
       } catch (error) {
         emit(OnError(message: error.toString()));

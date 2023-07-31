@@ -21,3 +21,18 @@ class CompleteTransaction extends CheckoutEvent {
   @override
   List<Object?> get props => [reference];
 }
+
+class ChargeMandate extends CheckoutEvent {
+  final String mandate;
+  final String bundle;
+
+  const ChargeMandate({required this.mandate, required this.bundle});
+
+  @override
+  List<Object?> get props => [bundle, mandate];
+}
+
+class GetMandates extends CheckoutEvent {
+  @override
+  List<Object?> get props => [];
+}

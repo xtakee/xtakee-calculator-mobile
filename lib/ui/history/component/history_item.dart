@@ -20,10 +20,9 @@ class HistoryItem extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         margin: EdgeInsets.only(top: 5.h, left: 16.w, right: 16.w),
         child: XCard(
-          backgroundColor: Colors.white,
           elevation: 0,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
               children: [
                 SizedBox(

@@ -17,11 +17,13 @@ class ApiErrorHandler {
                 message: "Insufficient balance. Kindly buy more coins");
           } else if (message.contains("500")) {
             return UnKnown();
+          } else if (message.contains("400")) {
+            return BadRequest();
           } else {
-            return NetworkError();
+            return UnKnown();
           }
         default:
-          return NetworkError();
+          return UnKnown();
       }
     } else {
       return NetworkError();
@@ -40,6 +42,10 @@ abstract class ApiException implements Exception {
 
 class NotFound extends ApiException {
   NotFound({super.message = "No valid resource found for request"});
+}
+
+class BadRequest extends ApiException {
+  BadRequest({super.message = "Error processing your request"});
 }
 
 class UnKnown extends ApiException {

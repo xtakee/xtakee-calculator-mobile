@@ -1,13 +1,13 @@
-import '../../../domain/model/history.dart';
+import 'package:stake_calculator/domain/model/transaction.dart';
 
-class BetHistoryResponse {
-  BetHistoryResponse(
-      {List<History>? docs,
+class TransactionHistoryResponse {
+  TransactionHistoryResponse(
+      {List<Transaction>? docs,
       num? totalDocs,
       num? count,
+      num? page,
       num? nextPage,
       num? prevPage,
-      num? page,
       num? limit}) {
     _docs = docs;
     _totalDocs = totalDocs;
@@ -18,15 +18,15 @@ class BetHistoryResponse {
     _prevPage = prevPage;
   }
 
-  List<History>? _docs;
+  List<Transaction>? _docs;
   num? _totalDocs;
   num? _count;
   num? _page;
+  num? _limit;
   num? _nextPage;
   num? _prevPage;
-  num? _limit;
 
-  List<History>? get docs => _docs;
+  List<Transaction>? get docs => _docs;
 
   num? get totalDocs => _totalDocs;
 

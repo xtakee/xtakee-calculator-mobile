@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/ui/checkout/checkout.dart';
 import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/core/xbutton.dart';
@@ -11,6 +12,7 @@ import 'package:stake_calculator/util/formatter.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../../domain/model/bundle.dart';
+import '../../../res.dart';
 import '../../../util/dimen.dart';
 import '../../../util/process_indicator.dart';
 
@@ -136,18 +138,8 @@ class _State extends State<FundWallet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
-                      decoration: BoxDecoration(
-                          color: colorGreen,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: const Text("#",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ),
+                    Lottie.asset(Res.coins_animation,
+                        height: 32.h, width: 32.w),
                     Container(
                       width: 5.w,
                     ),

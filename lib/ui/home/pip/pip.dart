@@ -99,9 +99,6 @@ class _State extends State<Pip> {
                                 )
                               ],
                             ),
-                            Container(
-                              height: 3,
-                            ),
                             Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,9 +117,6 @@ class _State extends State<Pip> {
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
-                            ),
-                            Container(
-                              height: 3,
                             ),
                             Row(
                               mainAxisSize: MainAxisSize.max,
@@ -162,7 +156,7 @@ class _State extends State<Pip> {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 10,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ))

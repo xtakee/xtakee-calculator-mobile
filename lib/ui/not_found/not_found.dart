@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/create_stake/create_stake.dart';
@@ -7,6 +8,7 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
+import 'package:stake_calculator/domain/cache.dart' as storage;
 import '../../util/dimen.dart';
 
 class NotFound extends StatefulWidget {
@@ -17,6 +19,13 @@ class NotFound extends StatefulWidget {
 }
 
 class _State extends State<NotFound> {
+  final _cache = GetIt.instance<storage.Cache>();
+
+  @override
+  void initState() {
+    super.initState();
+    _cache.reset();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
