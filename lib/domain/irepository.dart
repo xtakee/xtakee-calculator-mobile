@@ -20,14 +20,20 @@ abstract class IRepository {
       required bool decay,
       required bool clearLosses,
       required bool forfeit,
+      required bool keepTag,
       required bool isMultiple,
       required int restrictRounds});
 
   Future<Stake> resetStake({bool won = false});
 
+  Future<bool> limitWarningShown();
+  Future<bool> streakWarningShown();
+
   Future<Stake> validateLicence(String licence);
 
   Future<bool> getClearLoss();
+
+  Future<bool> getKeepTag();
 
   Future<List<Odd>> saveTag({required Odd odd});
 

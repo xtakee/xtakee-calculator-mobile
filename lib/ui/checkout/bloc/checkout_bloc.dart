@@ -15,8 +15,8 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   Mandate? selected;
   List<Mandate> mandates = [];
 
-  void createTransaction({required String bundle}) =>
-      add(CreateTransaction(bundle: bundle));
+  void createTransaction({required String bundle, required String gateway}) =>
+      add(CreateTransaction(bundle: bundle, gateway: gateway));
 
   void chargeMandate({required String bundle}) =>
       add(ChargeMandate(mandate: selected!.id!, bundle: bundle));
@@ -30,8 +30,8 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     on<CreateTransaction>((event, emit) async {
       emit(OnLoading());
       try {
-        final transaction =
-            await _repository.createTransaction(bundle: event.bundle);
+        final transaction = await _repository.createTransaction(
+            bundle: event.bundle, gateway: event.gateway);
         emit(OnSuccess(transaction: transaction));
       } catch (error) {
         emit(OnError(message: error.toString()));
@@ -46,7 +46,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
         emit(OnComplete(transaction: transaction));
       } catch (error) {
-        emit(OnError(message: error.toString()));
+        emit(OnTimeOutError());
       }
     });
 
@@ -68,7 +68,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             await _repository.completeTransaction(reference: event.reference);
         emit(OnComplete(transaction: transaction));
       } catch (error) {
-        emit(OnError(message: error.toString()));
+        emit(OnTimeOutError());
       }
     });
   }

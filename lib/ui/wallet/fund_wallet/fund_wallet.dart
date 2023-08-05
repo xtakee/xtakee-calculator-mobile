@@ -139,7 +139,7 @@ class _State extends State<FundWallet> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Lottie.asset(Res.coins_animation,
-                        height: 32.h, width: 32.w),
+                        height: 32.h, width: 32.w, animate: false),
                     Container(
                       width: 5.w,
                     ),

@@ -12,7 +12,9 @@ void main() async {
 
   Config.create(
       baseUrl: baseProductionUrl,
+      flavor: Flavor.production,
       payStackPubKey: payStackProductionKey,
+      flwPubKey: flutterWaveProductionKey,
       appName: "Xtakee");
 
   await configureDependencies();
@@ -20,4 +22,3 @@ void main() async {
   HttpOverrides.global = HttpOverride();
   runApp(const App());
 }
-

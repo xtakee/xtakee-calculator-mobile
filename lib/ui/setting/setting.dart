@@ -5,12 +5,14 @@ import 'package:stake_calculator/ui/core/xswitch.dart';
 import 'package:stake_calculator/ui/core/xtext_field.dart';
 import 'package:stake_calculator/ui/home/home.dart';
 import 'package:stake_calculator/ui/setting/bloc/setting_bloc.dart';
+import 'package:stake_calculator/ui/setting/component/setting_warning.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import 'package:stake_calculator/util/dxt.dart';
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
+import '../core/xdialog.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -26,6 +28,7 @@ class _State extends State<Setting> {
   bool forfeitLosses = false;
   bool decay = false;
   bool clearLosses = false;
+  bool keepTags = false;
   bool multiStake = false;
 
   final ProcessIndicator _processIndicator = ProcessIndicator();
@@ -72,7 +75,7 @@ class _State extends State<Setting> {
                   color: Colors.black, fontWeight: FontWeight.bold),
             ),
             GestureDetector(
-              onTap: ()=> _save(),
+              onTap: () => _save(),
               child: const Icon(Icons.check),
             )
           ],
@@ -88,6 +91,7 @@ class _State extends State<Setting> {
                 if (state is OnDataLoaded) {
                   decay = state.stake.decay!;
                   clearLosses = state.clearLosses;
+                  keepTags = state.keepTag;
 
                   String? profit = state.stake.profit!.toString();
                   _profitController.text = profit ?? "";
@@ -163,6 +167,20 @@ class _State extends State<Setting> {
                               setState(() {
                                 decay = x;
                               });
+
+                              if (!decay) {
+                                XDialog(context,
+                                    child: const SettingWarning(
+                                      description: Text(
+                                        "You are about to turn off decay. It is highly recommended to keep it turned on.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16),
+                                      ),
+                                      title: 'Disable Decay?',
+                                    )).show();
+                              }
                             }),
                         description:
                             "Reduce profit as your consecutive failing rounds increases to reduce risk exposure."),
@@ -186,11 +204,23 @@ class _State extends State<Setting> {
                             onChanged: (x) {
                               setState(() {
                                 clearLosses = x;
-                                //bloc.setClearLoss(status: x);
                               });
                             }),
                         description:
                             "Losses will be cleared on every cycle reset"),
+                    _switch(
+                        child: XSwitch(
+                            label: "Keep tag on delete",
+                            activeColor: primaryColor,
+                            value: keepTags,
+                            onChanged: (x) {
+                              setState(() {
+                                keepTags = x;
+                                //bloc.setClearLoss(status: x);
+                              });
+                            }),
+                        description:
+                            "Tags will be persisted on delete after a win. This gives more profit with a higher risk"),
                     _recyclePanel(),
                     Column(
                       children: [
@@ -201,7 +231,8 @@ class _State extends State<Setting> {
                           onTap: () => _save(),
                           child: Container(
                             height: 50.h,
-                            margin: EdgeInsets.only(left: 24.w, right: 24.w, bottom: 24.h),
+                            margin: EdgeInsets.only(
+                                left: 24.w, right: 24.w, bottom: 24.h),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 color: primaryColor,
@@ -238,6 +269,7 @@ class _State extends State<Setting> {
             ? _toleranceController.text
             : "0.0"),
         decay: decay,
+        keepTag: keepTags,
         statingStake: double.parse(_startingStakeController.text.isNotEmpty
             ? _startingStakeController.text
             : "0.0"),

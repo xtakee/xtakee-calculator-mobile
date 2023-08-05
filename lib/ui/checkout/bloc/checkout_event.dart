@@ -6,11 +6,12 @@ abstract class CheckoutEvent extends Equatable {
 
 class CreateTransaction extends CheckoutEvent {
   final String bundle;
+  final String gateway;
 
-  const CreateTransaction({required this.bundle});
+  const CreateTransaction({required this.bundle, required this.gateway});
 
   @override
-  List<Object?> get props => [bundle];
+  List<Object?> get props => [bundle, gateway];
 }
 
 class CompleteTransaction extends CheckoutEvent {

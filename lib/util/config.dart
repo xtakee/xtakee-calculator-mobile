@@ -16,6 +16,7 @@ class Config {
   String baseUrl = "";
   Flavor flavor = Flavor.development;
   String payStackPubKey = "";
+  String flwPubKey = "";
 
   static Config shared = Config.create();
 
@@ -23,17 +24,20 @@ class Config {
       {String baseUrl = "",
       String appName = "",
       Flavor flavor = Flavor.development,
-      String payStackPubKey = ""}) {
+      String payStackPubKey = "",
+      String flwPubKey = ""}) {
     return shared = Config(
         appName: appName,
         flavor: flavor,
         baseUrl: baseUrl,
+        flwPubKey: flwPubKey,
         payStackPubKey: payStackPubKey);
   }
 
   Config(
       {required this.flavor,
       required this.payStackPubKey,
+      required this.flwPubKey,
       required this.baseUrl,
       required this.appName});
 }

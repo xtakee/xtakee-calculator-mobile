@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart'; // for date format
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/domain/model/previous_stake.dart';
@@ -70,15 +71,36 @@ extension ExtString on String {
   }
 
   String toCard() {
-    switch (this) {
+    switch (toLowerCase()) {
       case "visa":
+      case "visacard":
         return Res.visa_card;
       case "verve":
+      case "vervecard":
         return Res.verve_card;
       case "master":
+      case "mastercard":
         return Res.master_card;
       default:
         return Res.master_card;
+    }
+  }
+
+  Widget toGateway() {
+    switch (this) {
+      case "paystack":
+        return SvgPicture.asset(
+          Res.paystack,
+          height: 15.h,
+        );
+      case "flutterwave":
+        return Image.asset(
+          Res.flutterwave,
+          height: 24.h,
+          width: 24.w,
+          fit: BoxFit.fill,
+        );
+      default: return Container();
     }
   }
 

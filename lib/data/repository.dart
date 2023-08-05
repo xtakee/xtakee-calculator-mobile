@@ -68,9 +68,11 @@ class Repository extends IRepository {
       required bool isMultiple,
       required bool clearLosses,
       required double startingStake,
+      required bool keepTag,
       required bool forfeit,
       required int restrictRounds}) async {
     cache.set(PREF_CLEAR_LOSS, clearLosses);
+    cache.set(PREF_KEEP_TAG, keepTag);
 
     return await service
         .updateState(UpdateRequest(
@@ -130,7 +132,10 @@ class Repository extends IRepository {
     return await service
         .deleteTag(tagId: tag.tag ?? "", won: won)
         .then((value) {
-      tags.delete(position);
+      final keepTag = cache.getBool(PREF_KEEP_TAG, false);
+      if (!keepTag) {
+        tags.delete(position);
+      }
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
       cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
       return value;
@@ -184,5 +189,20 @@ class Repository extends IRepository {
       bundles = value;
       return value;
     });
+  }
+
+  @override
+  Future<bool> getKeepTag() async {
+    return Future.value(cache.getBool(PREF_KEEP_TAG, false));
+  }
+
+  @override
+  Future<bool> limitWarningShown() async {
+    return Future.value(cache.getBool(PREF_LIMIT_WARNING, false));
+  }
+
+  @override
+  Future<bool> streakWarningShown() async {
+    return Future.value(cache.getBool(PREF_STREAK_WARNING, false));
   }
 }

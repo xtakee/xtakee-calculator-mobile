@@ -21,8 +21,8 @@ _bearerAuthInterceptor(Cache cache) =>
       };
 
       options.headers['Authorization'] = 'Bearer $token';
-      options.receiveTimeout = const Duration(seconds: 10);
-      options.sendTimeout = const Duration(seconds: 10);
+      options.receiveTimeout = const Duration(seconds: 30);
+      options.sendTimeout = const Duration(seconds: 30);
       return interceptorHandler.next(options);
     });
 

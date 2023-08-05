@@ -18,9 +18,10 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: EdgeInsets.only(top: 5.h, left: 16.w, right: 16.w),
+        margin: EdgeInsets.only(left: 16.w, right: 16.w),
         child: XCard(
           elevation: 0,
+          backgroundColor: primaryBackground.withOpacity(0.2),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
@@ -56,7 +57,7 @@ class HistoryItem extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  color: primaryBackground,
+                  color: primaryColor.withOpacity(0.1),
                   margin: EdgeInsets.only(bottom: 10.h),
                   height: 1.h,
                 ),

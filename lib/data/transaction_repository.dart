@@ -14,8 +14,8 @@ class TransactionRepository extends ITransactionRepository {
   TransactionRepository({required this.service, required this.cache});
 
   @override
-  Future<Transaction> createTransaction({required String bundle}) async {
-    return await service.createTransaction(bundle: bundle);
+  Future<Transaction> createTransaction({required String bundle, required String gateway}) async {
+    return await service.createTransaction(bundle: bundle, gateway: gateway);
   }
 
   @override

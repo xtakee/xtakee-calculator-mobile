@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../util/dimen.dart';
@@ -8,6 +10,7 @@ class XButton extends StatelessWidget {
   final String label;
   final Function() onClick;
   final bool enabled;
+  final bool loading;
   double? height;
   final EdgeInsetsGeometry? margin;
   final Color backgroundColor;
@@ -19,6 +22,7 @@ class XButton extends StatelessWidget {
       required this.onClick,
       this.backgroundColor = primaryColor,
       this.margin,
+      this.loading = false,
       this.enabled = true}) {
     height = height ?? 50.h;
   }
@@ -33,12 +37,16 @@ class XButton extends StatelessWidget {
           decoration: BoxDecoration(
               color: enabled ? backgroundColor : Colors.black12,
               borderRadius: BorderRadius.circular(10)),
-          child: Text(
-            label,
-            textScaleFactor: scale,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+          child: loading
+              ? Transform.scale(scale: 1.5,child: Lottie.asset(Res.linear_loader),)
+              : Text(
+                  label,
+                  textScaleFactor: scale,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
         ),
       );
 }

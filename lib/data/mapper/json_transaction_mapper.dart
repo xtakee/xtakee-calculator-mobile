@@ -9,6 +9,7 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
       channel: from['channel'],
       charge: from['charge'],
       status: from['status'],
+      gateway: from['gateway'],
       createdAt: from['createdAt'],
       updatedAt: from['updatedAt'],
       auth: from['auth'],
@@ -45,6 +46,7 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
     map['updateAt'] = from.updatedAt;
     map['description'] = from.description;
     map['message'] = from.message;
+    map['gateway'] = from.gateway;
     map['type'] = from.type;
     return map;
   }

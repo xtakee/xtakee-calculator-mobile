@@ -21,6 +21,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           required bool decay,
           required bool clearLosses,
           required bool isMultiple,
+          required bool keepTag,
           required double statingStake,
           required int restrictRounds,
           required bool forfeit}) =>
@@ -31,6 +32,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           isMultiple: isMultiple,
           staringStake: statingStake,
           decay: decay,
+          keepTag: keepTag,
           forfeit: forfeit,
           restrictRounds: restrictRounds));
 
@@ -38,7 +40,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
     on<GetStake>((event, emit) async {
       final stake = await _repository.getStake(cached: true);
       final bool clearLosses = await _repository.getClearLoss();
-      emit(OnDataLoaded(stake: stake, clearLosses: clearLosses));
+      final bool keepTag = await _repository.getKeepTag();
+      emit(OnDataLoaded(stake: stake, clearLosses: clearLosses, keepTag: keepTag));
     });
 
     on<UpdateStake>((event, emit) async {
@@ -63,6 +66,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
             isMultiple: event.isMultiple,
             tolerance: event.tolerance,
             profit: event.profit,
+            keepTag: event.keepTag,
             startingStake: event.staringStake,
             forfeit: event.forfeit,
             restrictRounds: event.restrictRounds,

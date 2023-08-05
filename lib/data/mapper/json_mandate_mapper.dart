@@ -12,6 +12,7 @@ class JsonMandateMapper extends Mapper<Map<String, dynamic>, Mandate> {
           : null,
       expiryMonth: from['expiryMonth'],
       expiryYear: from['expiryYear'],
+      gateway: from['gateway'],
       cardType: from['cardType'],
       reusable: from['reusable'],
       channel: from['channel'],
@@ -32,6 +33,7 @@ class JsonMandateMapper extends Mapper<Map<String, dynamic>, Mandate> {
     map['expiryYear'] = from.expiryYear;
     map['cardType'] = from.cardType;
     map['reusable'] = from.reusable;
+    map['gateway'] = from.gateway;
     map['channel'] = from.channel;
     map['brand'] = from.brand;
     map['bank'] = from.bank;

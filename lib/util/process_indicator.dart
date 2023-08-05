@@ -4,7 +4,7 @@ import 'log.dart';
 
 bool _isShowing = false;
 String _dialogMessage = "";
-BuildContext? _context, _dismissingContext;
+BuildContext? _context;
 
 // ignore: must_be_immutable
 class _Body extends StatefulWidget {
@@ -79,16 +79,16 @@ class ProcessIndicator {
     return _isShowing;
   }
 
-  Future<bool> dismiss() {
-    return Future.delayed(const Duration(milliseconds: 150), () {
-      if (_isShowing) {
+  Future<bool> dismiss({bool force = false}) {
+    return Future.delayed(Duration(milliseconds: force ? 0 : 150), () {
+      if (_isShowing || force) {
         try {
           _isShowing = false;
-          if (Navigator.of(_dismissingContext!).canPop()) {
-            Navigator.of(_dismissingContext!).pop();
+          if (Navigator.of(_context!).canPop()) {
+            Navigator.of(_context!).pop();
           }
           return Future.value(true);
-        } catch (_) {
+        } catch (e) {
           return Future.value(false);
         }
       } else {
@@ -113,7 +113,7 @@ class ProcessIndicator {
         context: cntx,
         pageBuilder: (BuildContext context, Animation animation,
             Animation secondaryAnimation) {
-          _dismissingContext = context;
+          _context = context;
 
           return WillPopScope(
             onWillPop: () {

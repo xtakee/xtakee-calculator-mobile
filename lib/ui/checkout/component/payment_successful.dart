@@ -5,7 +5,7 @@ import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
-import '../home/home.dart';
+import '../../home/home.dart';
 
 class PaymentSuccessful extends StatelessWidget {
   const PaymentSuccessful({super.key});
@@ -16,7 +16,7 @@ class PaymentSuccessful extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(Res.pay_success),
+            Lottie.asset(Res.pay_success, repeat: false),
             const Text(
               "Payment Successful",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),

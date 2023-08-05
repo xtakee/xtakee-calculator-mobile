@@ -24,7 +24,8 @@ void main() async {
   Config.create(
       baseUrl: baseDevelopmentUrl,
       payStackPubKey: payStackDevelopmentKey,
-      appName: "Xtakee");
+      flwPubKey: flutterWaveDevelopmentKey,
+      appName: "Xtakee-Debug");
 
   await configureDependencies();
 

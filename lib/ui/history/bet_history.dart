@@ -96,7 +96,7 @@ class _State extends State<BetHistory> {
                           ),
                           pagingController: _pagingController,
                           separatorBuilder: (_, index) => Container(
-                            height: 1.h,
+                            height: 0,
                             color: primaryBackground,
                             margin: EdgeInsets.only(left: 32.w),
                           ),

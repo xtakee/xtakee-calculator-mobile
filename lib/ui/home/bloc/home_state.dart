@@ -13,6 +13,26 @@ class OnCreateStake extends HomeState {
   List<Object?> get props => [];
 }
 
+class OnShowStreakWarning extends HomeState {
+  final List<Odd> odds;
+  final int cycle;
+
+  OnShowStreakWarning({required this.cycle, required this.odds});
+
+  @override
+  List<Object?> get props => [];
+}
+
+class OnShowLimitWarning extends HomeState {
+  final List<Odd> odds;
+  final int cycle;
+
+  OnShowLimitWarning({required this.cycle, required this.odds});
+
+  @override
+  List<Object?> get props => [odds, cycle];
+}
+
 class OnError extends HomeState {
   final String message;
 

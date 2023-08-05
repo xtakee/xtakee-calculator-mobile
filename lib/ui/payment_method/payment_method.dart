@@ -88,84 +88,97 @@ class _State extends State<PaymentMethod> {
 
   Widget _method(BuildContext context,
           {required Mandate mandate, bool isSelected = false}) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      Stack(
         children: [
-          Expanded(
-              child: XCard(
-                  elevation: 0,
-                  margin: EdgeInsets.only(top: 5.h),
-                  onTap: () {
-                    widget.onSelected(mandate);
-                    AppRouter.goBack(context);
-                  },
-                  backgroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            mandate.brand!.toCard(),
-                            height: 24.h,
-                          ),
-                          Container(
-                            height: 24.h,
-                            color: primaryBackground,
-                            width: 1.h,
-                            margin: EdgeInsets.symmetric(horizontal: 10.w),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${mandate.brand!.toTitleCase()} Card",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "*********** ${mandate.last4}",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.black),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      Radio(
-                        value: isSelected,
-                        groupValue: true,
-                        onChanged: (x) {},
-                        activeColor: primaryColor,
-                      )
-                    ],
-                  ))),
-          Container(
-            width: 5.w,
-          ),
-          GestureDetector(
-            onTap: () => XDialog(context,
-                    child: XWarningDialog(
-                        onNegative: () {},
-                        onPositive: () =>
-                            bloc.deleteMandate(mandate: mandate.id!),
-                        description:
-                            "Are you sure you want to delete this card?",
-                        positive: "Delete",
-                        title: "Delete?"))
-                .show(),
-            child: const Icon(
-              Icons.delete,
-              color: Colors.redAccent,
+          Padding(
+            padding: EdgeInsets.only(top: 3.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                    child: XCard(
+                        elevation: 0,
+                        margin: EdgeInsets.only(top: 5.h),
+                        onTap: () {
+                          widget.onSelected(mandate);
+                          AppRouter.goBack(context);
+                        },
+                        backgroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.h, horizontal: 8.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  mandate.brand!.toCard(),
+                                  height: 24.h,
+                                ),
+                                Container(
+                                  height: 24.h,
+                                  color: primaryBackground,
+                                  width: 1.h,
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 10.w),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${mandate.brand!.toTitleCase()} Card",
+                                      textScaleFactor: scale,
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black),
+                                    ),
+                                    Text(
+                                      "*********** ${mandate.last4}",
+                                      textScaleFactor: scale,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            Radio(
+                              value: isSelected,
+                              groupValue: true,
+                              onChanged: (x) {},
+                              activeColor: primaryColor,
+                            )
+                          ],
+                        ))),
+                Container(
+                  width: 5.w,
+                ),
+                GestureDetector(
+                  onTap: () => XDialog(context,
+                          child: XWarningDialog(
+                              onNegative: () {},
+                              onPositive: () =>
+                                  bloc.deleteMandate(mandate: mandate.id!),
+                              description:
+                                  "Are you sure you want to delete this card?",
+                              positive: "Delete",
+                              title: "Delete?"))
+                      .show(),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.redAccent,
+                  ),
+                )
+              ],
             ),
-          )
+          ),
+          Positioned(
+              top: 3.h,
+              left: 0,
+              child: widget.selected!.gateway!.toGateway())
         ],
       );
 }

@@ -18,6 +18,11 @@ class OnError extends CheckoutState {
   List<Object?> get props => [message];
 }
 
+class OnTimeOutError extends CheckoutState {
+  @override
+  List<Object?> get props => [];
+}
+
 class OnLoading extends CheckoutState {
   @override
   List<Object?> get props => [];

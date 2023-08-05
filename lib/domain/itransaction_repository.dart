@@ -7,7 +7,8 @@ abstract class ITransactionRepository {
   Future<TransactionHistoryResponse> getTransactions(
       {required int page, required int limit});
 
-  Future<Transaction> createTransaction({required String bundle});
+  Future<Transaction> createTransaction(
+      {required String bundle, required String gateway});
 
   Future<Transaction> completeTransaction({required String reference});
 

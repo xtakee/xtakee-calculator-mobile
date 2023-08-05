@@ -2,11 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:stake_calculator/data/mapper/json_stake_mapper.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/irepository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/log.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -28,18 +30,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void deleteTag({required int position, bool won = false}) =>
       add(DeleteTag(position: position, won: won));
 
-  void setClearLoss({required bool status}) =>
-      add(SetClearLoss(status: status));
-
   void resetStake({bool won = false}) => add(ResetStake(won: won));
 
-  void compute({required int cycle, required List<Odd> odds}) =>
-      add(CreateStake(odds: odds, cycle: cycle));
+  void compute(
+          {required int cycle, required List<Odd> odds, bool force = false}) =>
+      add(CreateStake(odds: odds, cycle: cycle, force: force));
 
   Stake _getSinglesAmount(
       {required List<Odd> tags, required Stake stake, bool isSingle = false}) {
-    if (!isSingle)
+    if (!isSingle || tags.length == 1) {
       return stake..previousStake?.totalWin = stake.previousStake!.expectedWin!;
+    }
 
     num product =
         tags.reduce((a, b) => Odd(odd: (a.odd ?? 0) * (b.odd ?? 0))).odd ?? 0;
@@ -52,11 +53,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Stake _getStake({required Stake stake, required List<Odd> tags}) {
-    final gameType = _repository.getGameType();
+    int gameType = _repository.getGameType();
+    if (tags.length == 1) {
+      _repository.saveGameType(type: 1);
+      gameType = 1;
+    }
 
     return _getSinglesAmount(
         tags: tags, stake: stake, isSingle: gameType == GameType.SINGLE.index)
       ..gameType = gameType;
+  }
+
+  double _getApproximateLosses({required Stake stake}) {
+    double profit = stake.profit! * stake.next!;
+    double amount = (profit + stake.losses!) / (stake.previousStake!.odd! - 1);
+    return (amount < stake.startingStake! ? stake.startingStake! : amount) +
+        stake.losses!;
   }
 
   HomeBloc() : super(HomeInitial()) {
@@ -148,10 +160,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
-    on<SetClearLoss>((event, emit) {
-      _repository.saveClearLoss(status: event.status);
-    });
-
     on<ResetStake>((event, emit) async {
       try {
         emit(OnLoading());
@@ -172,15 +180,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<CreateStake>((event, emit) async {
       try {
         final Odd error = event.odds.error;
+        final temp = await _repository.getStake(cached: true);
+
         if (error.odd! > -1) {
           emit(OnError(message: "Odd must be at least 1.01 for ${error.name}"));
-          final temp = await _repository.getStake(cached: true);
           final odds = await _repository.getTags();
 
           emit(OnDataLoaded(
               odds: odds, stake: _getStake(stake: temp, tags: odds)));
           return;
         }
+
+        if (!event.force) {
+          final losses = _getApproximateLosses(stake: temp);
+
+          if (losses >= temp.tolerance!) {
+            emit(OnShowLimitWarning(odds: event.odds, cycle: event.cycle));
+            return;
+          } else if (temp.restrictRounds! > 0 &&
+              (temp.cycle! >= temp.restrictRounds!)) {
+            emit(OnShowStreakWarning(odds: event.odds, cycle: event.cycle));
+            return;
+          }
+        }
+
         emit(OnLoading());
         final stake = await _repository.computeStake(
             odds: event.odds, cycle: event.cycle);

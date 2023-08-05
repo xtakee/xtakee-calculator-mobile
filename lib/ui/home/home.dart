@@ -5,8 +5,11 @@ import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
 import 'package:stake_calculator/ui/core/xdelete_tag_warning.dart';
+import 'package:stake_calculator/ui/core/xdialog.dart';
 import 'package:stake_calculator/ui/core/xdrawer.dart';
 import 'package:stake_calculator/ui/home/bloc/home_bloc.dart';
+import 'package:stake_calculator/ui/home/component/limit_warning.dart';
+import 'package:stake_calculator/ui/home/component/streak_warning.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
 import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
@@ -103,6 +106,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
   void dispose() {
     bloc.close();
     _disposeAllFocus();
+    _processIndicator.dismiss();
     super.dispose();
   }
 
@@ -197,6 +201,30 @@ class _State extends State<Home> with TickerProviderStateMixin {
                       message: state.message, snackType: SnackType.ERROR));
                 } else if (state is OnTagAdded) {
                   _scrollBottom();
+                } else if (state is OnShowLimitWarning) {
+                  XDialog(context,
+                      child: LimitWarning(
+                        onOk: () => bloc.resetStake(won: false),
+                        description: Text(
+                          "It is highly advised to not chase losses. We will reset your rounds. Kindly take a break and try again later",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 16.sp),
+                        ),
+                        title: 'Loss Limit Reached',
+                      )).show();
+                } else if (state is OnShowStreakWarning) {
+                  XDialog(context,
+                      child: StreakWarning(
+                        onOk: () => bloc.compute(cycle: state.cycle, odds: state.odds, force: true),
+                        description: Text(
+                          "You are on a losing streak. We will reset your rounds. We highly recommend taking a break and do not chase losses",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 16.sp),
+                        ),
+                        title: 'Rounds Limit Reached',
+                      )).show();
                 } else {
                   _processIndicator.dismiss();
                 }

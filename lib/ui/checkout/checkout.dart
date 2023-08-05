@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutterwave_standard/core/flutterwave.dart';
+import 'package:flutterwave_standard/models/requests/customer.dart';
+import 'package:flutterwave_standard/models/requests/customizations.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/transaction.dart';
 import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/checkout/bloc/checkout_bloc.dart';
-import 'package:stake_calculator/ui/checkout/payment_successful.dart';
+import 'package:stake_calculator/ui/checkout/component/payment_processor.dart';
+import 'package:stake_calculator/ui/checkout/component/payment_successful.dart';
+import 'package:stake_calculator/ui/checkout/component/payment_timeout.dart';
 import 'package:stake_calculator/ui/core/xcard.dart';
 import 'package:stake_calculator/ui/debit_card/debit_card.dart';
 import 'package:stake_calculator/util/config.dart';
@@ -34,6 +39,7 @@ class Checkout extends StatefulWidget {
 class _State extends State<Checkout> {
   final bloc = CheckoutBloc();
   bool isNewCard = false;
+  bool isLoading = false;
 
   final payStack = PaystackPlugin();
   final ProcessIndicator _processIndicator = ProcessIndicator();
@@ -59,7 +65,8 @@ class _State extends State<Checkout> {
           child: BlocBuilder(
               bloc: bloc,
               builder: (_, state) => XButton(
-                    enabled: bloc.mandates.isNotEmpty,
+                    enabled: bloc.mandates.isNotEmpty && !isLoading,
+                    loading: isLoading,
                     label: "Continue",
                     onClick: () =>
                         bloc.chargeMandate(bundle: widget.selectedBundle.id!),
@@ -91,17 +98,25 @@ class _State extends State<Checkout> {
                     message: state.message, snackType: SnackType.ERROR);
               });
             } else if (state is OnSuccess) {
-              _processIndicator.dismiss().then((value) {
-                _processCardPayment(transaction: state.transaction);
+              _processIndicator.dismiss().then((_) {
+                if (state.transaction.gateway == Processor.paystack.name) {
+                  _processPayStackPayment(transaction: state.transaction);
+                } else if (state.transaction.gateway ==
+                    Processor.flutterwave.name) {
+                  _processFlwPayment(transaction: state.transaction);
+                }
               });
             } else if (state is OnComplete) {
-              _processIndicator.dismiss().then((value) {
+              _processIndicator.dismiss().then((_) {
                 XDialog(context,
                         child: const PaymentSuccessful(), dismissible: false)
                     .show();
               });
             } else if (state is OnMandates) {
               _processIndicator.dismiss().then((value) {});
+            } else if (state is OnTimeOutError) {
+              _processIndicator.dismiss().then((_) =>
+                  XDialog(context, child: const PaymentTimeout()).show());
             }
           },
           builder: (_, state) {
@@ -116,7 +131,16 @@ class _State extends State<Checkout> {
                 Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    child: _paymentMethod())
+                    child: Stack(
+                      children: [
+                        _paymentMethod(),
+                        if (isLoading)
+                          Positioned.fill(
+                              child: Container(
+                            color: primaryBackground.withOpacity(0.5),
+                          ))
+                      ],
+                    ))
               ],
             ));
           },
@@ -134,104 +158,124 @@ class _State extends State<Checkout> {
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             Container(
-              margin: EdgeInsets.only(top: 16.h),
+              margin: EdgeInsets.only(top: 10.h),
             ),
             if (bloc.mandates.isNotEmpty)
               ExpandablePanel(
                   expand: true,
-                  child: XCard(
-                      elevation: 0,
-                      borderSide: isNewCard
-                          ? BorderSide.none
-                          : BorderSide(color: primaryColor, width: 0.5.w),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () => setState(() {
-                              isNewCard = false;
-                            }),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 5.h),
+                        child: XCard(
+                            elevation: 0,
+                            borderSide: isNewCard
+                                ? BorderSide.none
+                                : BorderSide(color: primaryColor, width: 0.5.w),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 10.h, horizontal: 8.w),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  bloc.selected!.brand!.toCard(),
-                                  height: 24.h,
+                                GestureDetector(
+                                  onTap: () => setState(() {
+                                    isNewCard = false;
+                                  }),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        bloc.selected!.brand!.toCard(),
+                                        height: 24.h,
+                                      ),
+                                      Container(
+                                        height: 24.h,
+                                        color: primaryBackground,
+                                        width: 1.h,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${bloc.selected!.brand!.toTitleCase()} Card",
+                                            textScaleFactor: scale,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black),
+                                          ),
+                                          Text(
+                                            "*********** ${bloc.selected!.last4}",
+                                            textScaleFactor: scale,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.black),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                Container(
-                                  height: 24.h,
-                                  color: primaryBackground,
-                                  width: 1.h,
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 10.w),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${bloc.selected!.brand!.toTitleCase()} Card",
-                                      textScaleFactor: scale,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black),
-                                    ),
-                                    Text(
-                                      "*********** ${bloc.selected!.last4}",
+                                GestureDetector(
+                                  onTap: () => XBottomSheet(context,
+                                      backgroundColor: primaryBackground,
+                                      child: PaymentMethod(
+                                        mandates: bloc.mandates,
+                                        selected: bloc.selected,
+                                        onDeleted: (id) {
+                                          setState(() {
+                                            bloc.mandates.removeWhere(
+                                                (element) => element.id == id);
+
+                                            bloc.selected =
+                                                bloc.mandates.firstOrNull;
+                                          });
+                                        },
+                                        onSelected: (mandate) {
+                                          setState(() {
+                                            bloc.selected = mandate;
+                                          });
+                                        },
+                                      )).show(),
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 10.w),
+                                    child: Text(
+                                      "Change",
                                       textScaleFactor: scale,
                                       style: const TextStyle(
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.black),
-                                    )
-                                  ],
+                                          fontWeight: FontWeight.w600,
+                                          color: primaryColor),
+                                    ),
+                                  ),
                                 )
                               ],
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () => XBottomSheet(context,
-                                backgroundColor: primaryBackground,
-                                child: PaymentMethod(
-                                  mandates: bloc.mandates,
-                                  selected: bloc.selected,
-                                  onDeleted: (id) {
-                                    setState(() {
-                                      bloc.mandates.removeWhere(
-                                          (element) => element.id == id);
-
-                                      bloc.selected = bloc.mandates.first;
-                                    });
-                                  },
-                                  onSelected: (mandate) {
-                                    setState(() {
-                                      bloc.selected = mandate;
-                                    });
-                                  },
-                                )).show(),
-                            child: Container(
-                              margin: EdgeInsets.only(right: 10.w),
-                              child: Text(
-                                "Change",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: primaryColor),
-                              ),
-                            ),
-                          )
-                        ],
-                      ))),
+                            )),
+                      ),
+                      if (bloc.selected!.gateway != null)
+                        Positioned(
+                            top: 0,
+                            right: 0,
+                            child: bloc.selected!.gateway!.toGateway())
+                    ],
+                  )),
             XCard(
                 elevation: 0,
                 borderSide: !isNewCard
                     ? BorderSide.none
                     : BorderSide(color: primaryColor, width: 0.5.w),
                 onTap: () {
-                  bloc.createTransaction(
-                      bundle: widget.selectedBundle.id ?? "");
+                  XBottomSheet(context, backgroundColor: primaryBackground,
+                      child: PaymentProcessor(
+                    onSelected: (x) {
+                      bloc.createTransaction(
+                          bundle: widget.selectedBundle.id ?? "",
+                          gateway: x.name);
+                    },
+                  )).show();
                 },
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
                 child: Column(
@@ -246,7 +290,7 @@ class _State extends State<Checkout> {
                             color: primaryColor,
                           ),
                           Text(
-                            " New Card",
+                            " New Payment Method",
                             textScaleFactor: scale,
                             style: const TextStyle(
                                 fontSize: 16,
@@ -321,7 +365,39 @@ class _State extends State<Checkout> {
         ),
       );
 
-  void _processCardPayment({required Transaction transaction}) {
+  void _setLoading(bool status) => setState(() {
+        isLoading = status;
+      });
+
+  void _processFlwPayment({required Transaction transaction}) {
+    final Customer customer = Customer(email: transaction.account!.email!);
+
+    final Flutterwave flw = Flutterwave(
+        context: context,
+        publicKey: Config.shared.flwPubKey,
+        currency: "NGN",
+        txRef: transaction.reference!,
+        amount: (transaction.amount ?? 0).toString(),
+        customer: customer,
+        paymentOptions: "ussd, card, barter, payattitude",
+        customization: Customization(),
+        isTestMode: Config.shared.flavor == Flavor.development,
+        redirectUrl: "url");
+
+    _setLoading(true);
+
+    flw.charge().then((response) {
+      _setLoading(false);
+      if (response.success == true) {
+        bloc.completeTransaction(reference: response.txRef ?? "");
+      }
+    }).catchError((error) {
+      _setLoading(false);
+      showSnack(context, message: error.toString(), snackType: SnackType.ERROR);
+    });
+  }
+
+  void _processPayStackPayment({required Transaction transaction}) {
     Charge charge = Charge()
       ..amount = (transaction.amount ?? 0).toInt() * 100
       ..currency = "NGN"

@@ -12,14 +12,9 @@ class GetStake extends HomeEvent {
 class CreateStake extends HomeEvent {
   final List<Odd> odds;
   final int cycle;
+  final bool force;
 
-  CreateStake({required this.odds, required this.cycle});
-}
-
-class SetClearLoss extends HomeEvent {
-  final bool status;
-
-  SetClearLoss({required this.status});
+  CreateStake({required this.odds, required this.cycle, this.force = false});
 }
 
 class ResetStake extends HomeEvent {

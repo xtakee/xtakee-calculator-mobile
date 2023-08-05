@@ -30,9 +30,10 @@ class OnSuccess extends SettingState {
 class OnDataLoaded extends SettingState {
   final Stake stake;
   final bool clearLosses;
+  final bool keepTag;
 
-  OnDataLoaded({required this.stake, required this.clearLosses});
+  OnDataLoaded({required this.stake, required this.clearLosses, required this.keepTag});
 
   @override
-  List<Object?> get props => [stake, clearLosses];
+  List<Object?> get props => [stake, clearLosses, keepTag];
 }

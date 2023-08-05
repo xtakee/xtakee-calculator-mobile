@@ -15,10 +15,11 @@ class TransactionService extends ITransactionService {
   TransactionService({required this.client});
 
   @override
-  Future<Transaction> createTransaction({required String bundle}) async {
+  Future<Transaction> createTransaction({required String bundle, required String gateway}) async {
     try {
       final data = <String, dynamic>{};
       data['bundle'] = bundle;
+      data['gateway'] = gateway;
 
       final response = await client.post('/transaction', data: data);
       return JsonTransactionMapper().from(response.data['data']);
