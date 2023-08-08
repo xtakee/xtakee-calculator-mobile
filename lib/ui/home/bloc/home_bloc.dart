@@ -2,13 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stake_calculator/data/mapper/json_stake_mapper.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/irepository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/game_type.dart';
-import 'package:stake_calculator/util/log.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -19,6 +17,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final _repository = GetIt.instance<IRepository>();
 
   void getStake({bool cache = false}) => add(GetStake(cache: cache));
+
+  bool isHomeToured() => _repository.getHomeTour();
+
+  void setHomeToured() => _repository.setHomeTour(status: true);
 
   void saveTag(Odd odd) => add(SaveTag(odd: odd));
 

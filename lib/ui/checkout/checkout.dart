@@ -18,6 +18,7 @@ import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
+import 'package:stake_calculator/util/log.dart';
 
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
@@ -82,8 +83,7 @@ class _State extends State<Checkout> {
           title: Text(
             "Checkout",
             textScaleFactor: scale,
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold),
+            style: const TextStyle(color: Colors.black),
           ),
         ),
         body: SafeArea(
@@ -381,14 +381,14 @@ class _State extends State<Checkout> {
         customer: customer,
         paymentOptions: "ussd, card, barter, payattitude",
         customization: Customization(),
-        isTestMode: Config.shared.flavor == Flavor.development,
+        isTestMode: false,
         redirectUrl: "url");
 
     _setLoading(true);
 
     flw.charge().then((response) {
       _setLoading(false);
-      if (response.success == true) {
+      if (response.success == true || response.status == "completed") {
         bloc.completeTransaction(reference: response.txRef ?? "");
       }
     }).catchError((error) {
@@ -408,7 +408,8 @@ class _State extends State<Checkout> {
     payStack
         .checkout(context,
             //fullscreen: true,
-            method: CheckoutMethod.selectable, // Defaults to CheckoutMethod.selectable
+            method: CheckoutMethod.selectable,
+            // Defaults to CheckoutMethod.selectable
             charge: charge,
             hideEmail: true,
             logo: SvgPicture.asset(

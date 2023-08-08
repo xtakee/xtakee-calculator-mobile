@@ -3,11 +3,17 @@ class Res {
   static const String animated_coins = "assets/animated_coins.json";
   static const String animation_caution = "assets/animation_caution.json";
   static const String animation_spray_new = "assets/animation_spray_new.json";
+  static const String bet_smarter = "assets/bet_smarter.svg";
+  static const String calc_risk = "assets/calc_risk.svg";
   static const String coins = "assets/coins.svg";
   static const String coins_animation = "assets/coins_animation.json";
   static const String empty = "assets/empty.json";
   static const String flutterwave = "assets/flutterwave.png";
   static const String hurry_animation = "assets/hurry_animation.json";
+  static const String intro_background = "assets/intro_background.svg";
+  static const String intro_st1 = "assets/intro_st1.svg";
+  static const String intro_st2 = "assets/intro_st2.svg";
+  static const String intro_st3 = "assets/intro_st3.svg";
   static const String keys = "assets/keys.json";
   static const String licence_lock = "assets/licence_lock.json";
   static const String linear_loader = "assets/linear_loader.json";

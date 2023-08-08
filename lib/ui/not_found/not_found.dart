@@ -7,6 +7,7 @@ import 'package:stake_calculator/ui/create_stake/create_stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
+import '../../domain/irepository.dart';
 import '../../res.dart';
 import 'package:stake_calculator/domain/cache.dart' as storage;
 import '../../util/dimen.dart';
@@ -20,11 +21,13 @@ class NotFound extends StatefulWidget {
 
 class _State extends State<NotFound> {
   final _cache = GetIt.instance<storage.Cache>();
+  final _repository = GetIt.instance<IRepository>();
 
   @override
   void initState() {
     super.initState();
     _cache.reset();
+    _repository.setOnBoarding(status: true);
   }
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _State extends State<NotFound> {
             children: [
               Column(
                 children: [
-                  Lottie.asset(Res.licence_lock),
+                  Lottie.asset(Res.licence_lock, repeat: false),
                   Container(
                     margin: const EdgeInsets.only(top: 16, left: 16, right: 16),
                     child: Column(

@@ -3,10 +3,21 @@ import 'package:stake_calculator/domain/model/bundle.dart';
 import '../data/remote/model/bet_history_response.dart';
 import 'model/odd.dart';
 import 'model/stake.dart';
-import 'model/transaction.dart';
 
 abstract class IRepository {
   Future<Stake> getStake({bool cached = false});
+
+  bool getOnBoarding();
+
+  bool getHomeTour();
+
+  bool getSettingTour();
+
+  Future<void> setOnBoarding({bool status = false});
+
+  Future<void> setHomeTour({bool status = false});
+
+  Future<void> setSettingTour({bool status = false});
 
   Future<Stake> createSession(
       {required double profit, required double tolerance});
@@ -27,6 +38,7 @@ abstract class IRepository {
   Future<Stake> resetStake({bool won = false});
 
   Future<bool> limitWarningShown();
+
   Future<bool> streakWarningShown();
 
   Future<Stake> validateLicence(String licence);

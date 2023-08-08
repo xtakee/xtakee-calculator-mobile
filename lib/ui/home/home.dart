@@ -22,12 +22,15 @@ import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 import '../commons.dart';
 import '../core/stake_item.dart';
+import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
 import '../core/xbutton.dart';
 import '../core/xcard.dart';
 import '../core/xchip.dart';
 import '../core/xreset_warning.dart';
 import '../not_found/not_found.dart';
 import 'package:stake_calculator/util/dxt.dart';
+
+import 'component/home_tour.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -42,10 +45,25 @@ class _State extends State<Home> with TickerProviderStateMixin {
   final ProcessIndicator _processIndicator = ProcessIndicator();
   final bloc = HomeBloc();
   bool isMultiple = false;
-  final listKey = const Key("key");
   GameType selectedGameType = GameType.MULTIPLE;
   GameType defaultGameType = GameType.values[1];
   List<GameType> gameTypes = const [GameType.MULTIPLE, GameType.SINGLE];
+
+  /*
+  * Tour guide keys
+   */
+  final GlobalKey drawerNavKey = GlobalKey();
+  final GlobalKey pipKey = GlobalKey();
+  final GlobalKey profitKey = GlobalKey();
+  final GlobalKey coinsKey = GlobalKey();
+  final GlobalKey amountKey = GlobalKey();
+  final GlobalKey summaryKey = GlobalKey();
+  final GlobalKey tagKey = GlobalKey();
+  final GlobalKey resetKey = GlobalKey();
+  final GlobalKey calculateKey = GlobalKey();
+  final GlobalKey addTagKey = GlobalKey();
+
+  late TutorialCoachMark _pageTour;
 
   List<int> aspectRatio = [16, 9];
   late Floating floating;
@@ -62,12 +80,38 @@ class _State extends State<Home> with TickerProviderStateMixin {
 
   List<Odd> odds = [];
 
+  void _initialPageTour() {
+    _pageTour = TutorialCoachMark(
+        targets: homeTour(
+            drawerNavKey: drawerNavKey,
+            pipKey: pipKey,
+            profitKey: profitKey,
+            coinsKey: coinsKey,
+            amountKey: amountKey,
+            summaryKey: summaryKey,
+            tagKey: tagKey,
+            resetKey: resetKey,
+            calculateKey: calculateKey,
+            addTagKey: addTagKey),
+        colorShadow: primaryColor,
+        textStyleSkip:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        paddingFocus: 10.h,
+        hideSkip: false,
+        opacityShadow: 0.9,
+        onFinish: () => bloc.setHomeToured(),
+        onSkip: () => bloc.setHomeToured());
+  }
+
+  void _showTour() => Future.delayed(
+      const Duration(seconds: 1), () => _pageTour.show(context: context));
+
   @override
   void initState() {
+    super.initState();
     floating = Floating();
     _requestPipAvailable();
     bloc.getStake();
-    super.initState();
   }
 
   void _requestPipAvailable() async {
@@ -167,8 +211,9 @@ class _State extends State<Home> with TickerProviderStateMixin {
                       floating.enable(aspectRatio: const Rational(3, 2));
                     });
                   },
-                  child: const Icon(
+                  child: Icon(
                     Icons.picture_in_picture_alt,
+                    key: pipKey,
                     color: Colors.black,
                   ),
                 ),
@@ -181,6 +226,13 @@ class _State extends State<Home> with TickerProviderStateMixin {
           listeners: [
             BlocListener(
               listener: (BuildContext context, state) {
+                if (state is OnDataLoaded || state is OnError) {
+                  if (!bloc.isHomeToured()) {
+                    _initialPageTour();
+                    _showTour();
+                  }
+                }
+
                 if (state is OnLoading) {
                   _processIndicator.show(context);
                 } else if (state is OnDataLoaded) {
@@ -216,7 +268,8 @@ class _State extends State<Home> with TickerProviderStateMixin {
                 } else if (state is OnShowStreakWarning) {
                   XDialog(context,
                       child: StreakWarning(
-                        onOk: () => bloc.compute(cycle: state.cycle, odds: state.odds, force: true),
+                        onOk: () => bloc.compute(
+                            cycle: state.cycle, odds: state.odds, force: true),
                         description: Text(
                           "You are on a losing streak. We will reset your rounds. We highly recommend taking a break and do not chase losses",
                           textAlign: TextAlign.center,
@@ -282,6 +335,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                                       })).show();
                                 },
                                 child: Container(
+                                  key: resetKey,
                                   height: 50.h,
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 16.w),
@@ -300,11 +354,12 @@ class _State extends State<Home> with TickerProviderStateMixin {
                                 width: 16.w,
                               ),
                               Expanded(
+                                  key: calculateKey,
                                   child: XButton(
-                                label: "Calculate",
-                                onClick: () =>
-                                    bloc.compute(cycle: 1, odds: odds),
-                              )),
+                                    label: "Calculate",
+                                    onClick: () =>
+                                        bloc.compute(cycle: 1, odds: odds),
+                                  )),
                               Container(
                                 width: 16.w,
                               ),
@@ -316,6 +371,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                                   bloc.saveTag(Odd(name: "", odd: 0));
                                 },
                                 child: Container(
+                                  key: addTagKey,
                                   height: 50.h,
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 16.w),
@@ -362,6 +418,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                     profit = state.stake.profit ?? 0;
                   }
                   return Row(
+                    key: profitKey,
                     children: [
                       const Text("Profit: "),
                       Text(
@@ -387,10 +444,11 @@ class _State extends State<Home> with TickerProviderStateMixin {
                   return GestureDetector(
                     onTap: () => AppRouter.gotoWidget(const Wallet(), context),
                     child: Row(
+                      key: coinsKey,
                       children: [
                         //const Text("Tolerance: "),
                         Lottie.asset(Res.coins_animation,
-                            height: 20.h, width: 20.w),
+                            height: 20.h, width: 20.w, repeat: false),
                         Container(
                           width: 5.w,
                         ),
@@ -419,6 +477,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
           Container(
             margin: EdgeInsets.only(top: 10.h),
             child: Column(
+              key: amountKey,
               children: [
                 Text(
                   "Amount to stake",
@@ -472,6 +531,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                   return Container(
                       margin: EdgeInsets.only(left: 16.w, right: 16.w),
                       child: Column(
+                        key: summaryKey,
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Row(
@@ -568,7 +628,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
               bloc: bloc,
               builder: (context, state) => XCard(
                   elevation: 0,
-                  key: listKey,
+                  key: tagKey,
                   child: Container(
                     margin: EdgeInsets.only(top: 16.h),
                     child: ListView.builder(

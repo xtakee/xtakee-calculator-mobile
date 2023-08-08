@@ -205,4 +205,25 @@ class Repository extends IRepository {
   Future<bool> streakWarningShown() async {
     return Future.value(cache.getBool(PREF_STREAK_WARNING, false));
   }
+
+  @override
+  bool getOnBoarding() => cache.getBool(PREF_ONBOARDED, false);
+
+  @override
+  Future<void> setOnBoarding({bool status = false}) async =>
+      cache.set(PREF_ONBOARDED, status);
+
+  @override
+  bool getHomeTour() => cache.getBool(PREF_HOME_TOUR, false);
+
+  @override
+  bool getSettingTour() => cache.getBool(PREF_SETTING_TOUR, false);
+
+  @override
+  Future<void> setHomeTour({bool status = false}) =>
+      cache.set(PREF_HOME_TOUR, status);
+
+  @override
+  Future<void> setSettingTour({bool status = false}) =>
+      cache.set(PREF_SETTING_TOUR, status);
 }

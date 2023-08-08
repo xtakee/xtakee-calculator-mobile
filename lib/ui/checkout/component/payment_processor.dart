@@ -37,18 +37,18 @@ class PaymentProcessor extends StatelessWidget {
                 ),
                 label: "Flutterwave",
                 onTap: () => onSelected(Processor.flutterwave)),
-            _type(context,
-                icon: Container(
-                  height: 24.h,
-                  width: 24.w,
-                  padding: EdgeInsets.only(right: 6.w, left: 3.w),
-                  child: SvgPicture.asset(
-                    Res.paystack,
-                    height: 15.h,
-                  ),
-                ),
-                label: "Paystack",
-                onTap: () => onSelected(Processor.paystack))
+            // _type(context,
+            //     icon: Container(
+            //       height: 24.h,
+            //       width: 24.w,
+            //       padding: EdgeInsets.only(right: 6.w, left: 3.w),
+            //       child: SvgPicture.asset(
+            //         Res.paystack,
+            //         height: 15.h,
+            //       ),
+            //     ),
+            //     label: "Paystack",
+            //     onTap: () => onSelected(Processor.paystack))
           ],
         ),
       );

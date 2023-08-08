@@ -31,9 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  logger: ^1.4.0
+  logger: ^2.0.1
   flutter_bloc: ^8.1.3
-  dio: ^5.2.1+1
+  dio: ^5.3.2
   retrofit: '>=4.0.0 <5.0.0'
   pretty_dio_logger: ^1.3.1
   shared_preferences: ^2.2.0
@@ -41,6 +41,7 @@ dependencies:
   flutter_paystack: ^1.0.7
   get_it: ^7.6.0
   flutter_svg: ^2.0.7
+  grouped_list: ^5.1.2
   equatable:
   auto_size_text: ^3.0.0
   draggable_fab: ^0.1.4
@@ -85,11 +86,17 @@ flutter:
     - assets/animated_coins.json
     - assets/animation_caution.json
     - assets/animation_spray_new.json
+    - assets/bet_smarter.svg
+    - assets/calc_risk.svg
     - assets/coins.svg
     - assets/coins_animation.json
     - assets/empty.json
     - assets/flutterwave.png
     - assets/hurry_animation.json
+    - assets/intro_background.svg
+    - assets/intro_st1.svg
+    - assets/intro_st2.svg
+    - assets/intro_st3.svg
     - assets/keys.json
     - assets/licence_lock.json
     - assets/linear_loader.json

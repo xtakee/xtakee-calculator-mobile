@@ -20,5 +20,5 @@ void main() async {
   await configureDependencies();
 
   HttpOverrides.global = HttpOverride();
-  runApp(const App());
+  runApp(App());
 }

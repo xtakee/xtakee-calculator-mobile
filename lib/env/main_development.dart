@@ -30,6 +30,5 @@ void main() async {
   await configureDependencies();
 
   HttpOverrides.global = _HttpOverrides();
-  runApp(const App());
+  runApp(App());
 }
-

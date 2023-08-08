@@ -12,7 +12,9 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
+import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
 import '../core/xdialog.dart';
+import 'component/setting_tour.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -31,6 +33,29 @@ class _State extends State<Setting> {
   bool keepTags = false;
   bool multiStake = false;
 
+  //tour config
+  final GlobalKey profitKey = GlobalKey();
+  final GlobalKey lossKey = GlobalKey();
+  final GlobalKey startStakeKey = GlobalKey();
+
+  late TutorialCoachMark _pageTour;
+
+  void _initialPageTour() {
+    _pageTour = TutorialCoachMark(
+        targets: settingTour(
+            profitKey: profitKey,
+            lossesKey: lossKey,
+            startingStakeKey: startStakeKey),
+        colorShadow: primaryColor,
+        textStyleSkip:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        paddingFocus: 10,
+        hideSkip: false,
+        opacityShadow: 0.9,
+        onFinish: () => _bloc.setSettingToured(),
+        onSkip: () => _bloc.setSettingToured());
+  }
+
   final ProcessIndicator _processIndicator = ProcessIndicator();
   final _bloc = SettingBloc();
 
@@ -40,6 +65,9 @@ class _State extends State<Setting> {
   final _toleranceController = TextEditingController();
   final _startingStakeController = TextEditingController();
   final _roundsController = TextEditingController();
+
+  void _showTour() => Future.delayed(
+      const Duration(seconds: 1), () => _pageTour.show(context: context));
 
   @override
   void dispose() {
@@ -53,8 +81,12 @@ class _State extends State<Setting> {
 
   @override
   void initState() {
-    _bloc.getStake();
     super.initState();
+    _bloc.getStake();
+    if (!_bloc.isSettingToured()) {
+      _initialPageTour();
+      _showTour();
+    }
   }
 
   @override
@@ -71,8 +103,7 @@ class _State extends State<Setting> {
             Text(
               "Settings",
               textScaleFactor: scale,
-              style: const TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Colors.black),
             ),
             GestureDetector(
               onTap: () => _save(),
@@ -139,17 +170,21 @@ class _State extends State<Setting> {
                             height: 32.h,
                           ),
                           XTextField(
-                              label: "Profit", controller: _profitController),
+                              key: profitKey,
+                              label: "Profit",
+                              controller: _profitController),
                           Container(
                             height: 24.h,
                           ),
                           XTextField(
+                              key: lossKey,
                               label: "Loss Tolerance",
                               controller: _toleranceController),
                           Container(
                             height: 24.h,
                           ),
                           XTextField(
+                              key: startStakeKey,
                               label: "Starting Stake",
                               controller: _startingStakeController),
                           Container(

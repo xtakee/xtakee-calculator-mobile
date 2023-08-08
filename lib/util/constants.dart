@@ -1,7 +1,7 @@
 
 // development constants
-//const baseDevelopmentUrl = "https://api.staging.xtakee.com/v1";
-const baseDevelopmentUrl = "http://192.168.1.9:2021/v1";
+const baseDevelopmentUrl = "https://api.xtakee.com/v1";
+//const baseDevelopmentUrl = "http://192.168.1.24:2021/v1";
 const payStackDevelopmentKey = "pk_test_d01119fbf70385fea4fd1347fbcb61520a137534";
 const flutterWaveDevelopmentKey = "FLWPUBK_TEST-4a888a930042427436d99de1949c11fc-X";
 

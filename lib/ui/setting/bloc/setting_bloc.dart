@@ -1,7 +1,8 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:meta/meta.dart';
 import 'package:stake_calculator/domain/irepository.dart';
 
 import '../../../domain/model/stake.dart';
@@ -14,6 +15,10 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
   final _repository = GetIt.instance<IRepository>();
 
   void getStake() => add(GetStake());
+
+  bool isSettingToured() => _repository.getSettingTour();
+
+  void setSettingToured() => _repository.setSettingTour(status: true);
 
   void updateStake(
           {required double profit,

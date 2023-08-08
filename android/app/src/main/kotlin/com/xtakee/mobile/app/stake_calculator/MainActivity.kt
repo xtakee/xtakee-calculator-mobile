@@ -1,4 +1,4 @@
-package com.sunday.stake.calculator.stake_calculator
+package com.xtakee.mobile.app.stake_calculator
 
 import io.flutter.embedding.android.FlutterActivity
 

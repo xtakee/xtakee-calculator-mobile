@@ -58,7 +58,8 @@ class _State extends State<FundWallet> {
           _processIndicator.dismiss();
         } else if (state is OnError) {
           _processIndicator.dismiss().then((value) => showSnack(context,
-              message: "An error occurred. Kindly try again", snackType: SnackType.ERROR));
+              message: "An error occurred. Kindly try again",
+              snackType: SnackType.ERROR));
         }
       },
       builder: (_, state) {
@@ -78,8 +79,7 @@ class _State extends State<FundWallet> {
             title: Text(
               "Buy Coins",
               textScaleFactor: scale,
-              style: const TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Colors.black),
             ),
           ),
           backgroundColor: primaryBackground,
@@ -95,7 +95,8 @@ class _State extends State<FundWallet> {
                   enabled: selectedBundle != null,
                   onClick: () => AppRouter.gotoWidget(
                       Checkout(selectedBundle: selectedBundle!), context),
-                  margin: EdgeInsets.only(bottom: 24.h, right: 16.w, left: 16.w),
+                  margin:
+                      EdgeInsets.only(bottom: 24.h, right: 16.w, left: 16.w),
                 )
               ],
             ),

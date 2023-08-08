@@ -6,6 +6,7 @@ import 'package:stake_calculator/domain/model/previous_stake.dart';
 import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/commons.dart';
 
+import '../domain/model/history.dart';
 import 'dimen.dart';
 
 extension ExtDouble on double {
@@ -120,4 +121,9 @@ extension ExtString on String {
 
 extension ExtNullString on String? {
   String orEmpty() => this ?? "";
+}
+
+extension ExtBetHistory on List<History> {
+  List<History> wins() => where((e) => e.won! > 0).toList();
+  List<History> losses() => where((e) => e.won! == 0).toList();
 }

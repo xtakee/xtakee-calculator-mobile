@@ -7,9 +7,11 @@ import 'package:stake_calculator/ui/history/bloc/history_bloc.dart';
 import 'package:stake_calculator/ui/history/component/empty_history_page.dart';
 import 'package:stake_calculator/ui/history/component/history_item.dart';
 import 'package:stake_calculator/util/dxt.dart';
+import 'package:stake_calculator/util/expandable_panel.dart';
 
 import '../../domain/model/history.dart';
 import '../../util/dimen.dart';
+import '../core/xchip.dart';
 
 class BetHistory extends StatefulWidget {
   const BetHistory({super.key});
@@ -22,7 +24,12 @@ class _State extends State<BetHistory> {
   final bloc = HistoryBloc();
 
   final _pageSize = 20;
+  final List<History> _totalHistory = [];
   List<History> _history = [];
+  final _tabsNames = ["All", "Wins", "Losses"];
+  String selectedTab = "All";
+
+  bool _showFilter = false;
 
   final PagingController<int, History> _pagingController =
       PagingController(firstPageKey: 0);
@@ -45,6 +52,17 @@ class _State extends State<BetHistory> {
     super.dispose();
   }
 
+  _filterList(String filter, List<History> items) {
+    switch (filter) {
+      case 'Wins':
+        return items.wins();
+      case 'Losses':
+        return items.losses();
+      default:
+        return items;
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: Colors.white,
@@ -52,11 +70,21 @@ class _State extends State<BetHistory> {
           iconTheme: const IconThemeData(
             color: Colors.black, //change your color here
           ),
-          title: Text(
-            "History",
-            textScaleFactor: scale,
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "History",
+                textScaleFactor: scale,
+                style: const TextStyle(color: Colors.black),
+              ),
+              GestureDetector(
+                onTap: () => setState(() {
+                  _showFilter = !_showFilter;
+                }),
+                child: const Icon(Icons.filter_list),
+              )
+            ],
           ),
           backgroundColor: Colors.white,
         ),
@@ -69,12 +97,15 @@ class _State extends State<BetHistory> {
                   final response = state.data;
                   final isLastPage = _history.length < _pageSize;
                   if (isLastPage) {
-                    _pagingController.appendLastPage(_history);
+                    _pagingController
+                        .appendLastPage(_filterList(selectedTab, _history));
                   } else {
                     _pagingController.appendPage(
-                        _history, response.nextPage!.toInt());
+                        _filterList(selectedTab, _history),
+                        response.nextPage!.toInt());
                   }
 
+                  _totalHistory.addAll(_history);
                   _refreshController.refreshCompleted();
                 }
 
@@ -82,28 +113,58 @@ class _State extends State<BetHistory> {
                   _pagingController.error = state.message;
                 }
 
-                return SmartRefresher(
-                  controller: _refreshController,
-                  enablePullDown: true,
-                  onRefresh: () => bloc.getHistory(limit: _pageSize, page: 0),
-                  child: _history.isEmpty
-                      ? const EmptyHistoryPage()
-                      : PagedListView.separated(
-                          shrinkWrap: true,
-                          builderDelegate: PagedChildBuilderDelegate<History>(
-                            itemBuilder: (context, item, index) =>
-                                HistoryItem(history: item),
-                          ),
-                          pagingController: _pagingController,
-                          separatorBuilder: (_, index) => Container(
-                            height: 0,
-                            color: primaryBackground,
-                            margin: EdgeInsets.only(left: 32.w),
-                          ),
-                        ),
+                return Column(
+                  children: [
+                    _tabs(),
+                    Expanded(
+                        child: SmartRefresher(
+                      controller: _refreshController,
+                      enablePullDown: true,
+                      onRefresh: () =>
+                          bloc.getHistory(limit: _pageSize, page: 0),
+                      child: _history.isEmpty
+                          ? const EmptyHistoryPage()
+                          : PagedListView.separated(
+                              shrinkWrap: true,
+                              builderDelegate:
+                                  PagedChildBuilderDelegate<History>(
+                                itemBuilder: (context, item, index) =>
+                                    HistoryItem(history: item),
+                              ),
+                              pagingController: _pagingController,
+                              separatorBuilder: (_, index) => Container(
+                                height: 0,
+                                color: primaryBackground,
+                                margin: EdgeInsets.only(left: 32.w),
+                              ),
+                            ),
+                    ))
+                  ],
                 );
               },
               listener: (_, state) {}),
         ),
       );
+
+  Widget _tabs() => ExpandablePanel(
+      expand: _showFilter,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          XChip(
+            choices: _tabsNames,
+            wrapAlignment: WrapAlignment.center,
+            defaultSelected: selectedTab,
+            onSelectedChanged: (String choice) {
+              setState(() {
+                selectedTab = choice;
+                int page = _pagingController.nextPageKey ?? 0;
+                _pagingController.refresh();
+                _pagingController.appendPage(
+                    _filterList(selectedTab, _totalHistory), page);
+              });
+            },
+          )
+        ],
+      ));
 }

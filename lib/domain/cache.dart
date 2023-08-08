@@ -13,6 +13,9 @@ const String PREF_GAME_TYPE = "PREF_GAME_TYPE";
 const String PREF_KEEP_TAG = "PREF_KEEP_TAG";
 const String PREF_LIMIT_WARNING = "PREF_LIMIT_WARNING";
 const String PREF_STREAK_WARNING = "PREF_STREAK_WARNING";
+const String PREF_ONBOARDED = "PREF_ONBOARDED";
+const String PREF_HOME_TOUR = "PREF_HOME_TOUR";
+const String PREF_SETTING_TOUR = "PREF_SETTING_TOUR";
 
 abstract class Cache {
   Future<bool> set(String key, Object value);

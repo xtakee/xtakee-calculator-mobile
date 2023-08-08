@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:lottie/lottie.dart';
-import 'package:stake_calculator/domain/model/transaction.dart';
 import 'package:stake_calculator/ui/core/empty_page.dart';
 import 'package:stake_calculator/ui/payment/payment.dart';
 import 'package:stake_calculator/ui/wallet/bloc/wallet_bloc.dart';
@@ -11,7 +11,6 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
-import '../../util/formatter.dart';
 import '../commons.dart';
 import '../payment/component/transaction_item.dart';
 import 'fund_wallet/fund_wallet.dart';
@@ -94,8 +93,7 @@ class _State extends State<Wallet> {
                         Text(
                           "Transactions",
                           textScaleFactor: scale,
-                          style: const TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                          style: const TextStyle(color: Colors.black),
                         )
                       ],
                     ) //CollapsedAppBarContent(movieDetails: movieDetails),
@@ -232,7 +230,8 @@ class _State extends State<Wallet> {
               ),
               Opacity(
                 opacity: 0.6,
-                child: Lottie.asset(Res.coins_animation, animate: false,height: 76.h),
+                child: Lottie.asset(Res.coins_animation,
+                    animate: false, height: 76.h),
               )
             ],
           ),
