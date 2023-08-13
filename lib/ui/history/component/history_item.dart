@@ -18,10 +18,10 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: EdgeInsets.only(left: 16.w, right: 16.w),
+        margin: EdgeInsets.only(left: 16.w, right: 16.w, top: 5.h),
         child: XCard(
           elevation: 0,
-          backgroundColor: primaryBackground.withOpacity(0.2),
+          backgroundColor: Colors.white,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
@@ -57,7 +57,7 @@ class HistoryItem extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  color: primaryColor.withOpacity(0.1),
+                  color: primaryBackground,
                   margin: EdgeInsets.only(bottom: 10.h),
                   height: 1.h,
                 ),
@@ -87,7 +87,8 @@ class HistoryItem extends StatelessWidget {
                             Container(
                               height: 5.h,
                             ),
-                            Text("${history.createdAt?.toDate()}",
+                            Text(
+                                "${history.createdAt?.toTime()}, ${history.createdAt?.toMonth()}",
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w400,
@@ -107,10 +108,10 @@ class HistoryItem extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.line_axis,
-                                  color: Colors.black54,
-                                  size: 20.h,
+                                Image.asset(
+                                  Res.games,
+                                  color: Colors.black,
+                                  width: 20.h,
                                 ),
                                 Text(" ${history.odds?.length ?? 0}",
                                     overflow: TextOverflow.ellipsis,
@@ -121,10 +122,10 @@ class HistoryItem extends StatelessWidget {
                                 Container(
                                   width: 16.w,
                                 ),
-                                SvgPicture.asset(
-                                  Res.trophy_thick,
-                                  height: 16.h,
-                                  color: Colors.black87,
+                                Image.asset(
+                                  Res.trophy,
+                                  color: Colors.black,
+                                  height: 18.h,
                                 ),
                                 Text(" ${history.odds?.wins()}",
                                     overflow: TextOverflow.ellipsis,

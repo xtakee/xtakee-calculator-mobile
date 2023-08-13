@@ -23,6 +23,7 @@ void main() async {
 
   Config.create(
       baseUrl: baseDevelopmentUrl,
+      webBaseUrl: baseDevelopmentWebUrl,
       payStackPubKey: payStackDevelopmentKey,
       flwPubKey: flutterWaveDevelopmentKey,
       appName: "Xtakee-Debug");

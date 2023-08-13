@@ -4,6 +4,7 @@ import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/home/home.dart';
 import 'package:stake_calculator/ui/onboarding/onboarding.dart';
 import 'package:stake_calculator/util/dimen.dart';
+import 'package:stake_calculator/util/log.dart';
 
 import 'domain/irepository.dart';
 

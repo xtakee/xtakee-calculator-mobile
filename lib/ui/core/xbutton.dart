@@ -12,12 +12,14 @@ class XButton extends StatelessWidget {
   final bool enabled;
   final bool loading;
   double? height;
+  final Color textColor;
   final EdgeInsetsGeometry? margin;
   final Color backgroundColor;
 
   XButton(
       {super.key,
       this.height,
+      this.textColor = Colors.white,
       required this.label,
       required this.onClick,
       this.backgroundColor = primaryColor,
@@ -38,12 +40,15 @@ class XButton extends StatelessWidget {
               color: enabled ? backgroundColor : Colors.black12,
               borderRadius: BorderRadius.circular(10)),
           child: loading
-              ? Transform.scale(scale: 1.5,child: Lottie.asset(Res.linear_loader),)
+              ? Transform.scale(
+                  scale: 1.5,
+                  child: Lottie.asset(Res.linear_loader),
+                )
               : Text(
                   label,
                   textScaleFactor: scale,
-                  style: const TextStyle(
-                      color: Colors.white,
+                  style: TextStyle(
+                      color: textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),

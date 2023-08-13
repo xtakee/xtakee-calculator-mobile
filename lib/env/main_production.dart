@@ -13,6 +13,7 @@ void main() async {
   Config.create(
       baseUrl: baseProductionUrl,
       flavor: Flavor.production,
+      webBaseUrl: baseProductionWebUrl,
       payStackPubKey: payStackProductionKey,
       flwPubKey: flutterWaveProductionKey,
       appName: "Xtakee");

@@ -1,6 +1,7 @@
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
@@ -11,6 +12,7 @@ import 'package:stake_calculator/ui/home/bloc/home_bloc.dart';
 import 'package:stake_calculator/ui/home/component/limit_warning.dart';
 import 'package:stake_calculator/ui/home/component/streak_warning.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
+import 'package:stake_calculator/ui/login/login.dart';
 import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
@@ -27,7 +29,6 @@ import '../core/xbutton.dart';
 import '../core/xcard.dart';
 import '../core/xchip.dart';
 import '../core/xreset_warning.dart';
-import '../not_found/not_found.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import 'component/home_tour.dart';
@@ -194,15 +195,20 @@ class _State extends State<Home> with TickerProviderStateMixin {
 
   Widget _screen() => Scaffold(
         backgroundColor: backgroundAccent,
-        drawer: xDrawer(context),
+        drawer: const Drawer(child: XDrawer()),
         drawerEnableOpenDragGesture: true,
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
           forceMaterialTransparency: true,
+          centerTitle: true,
           foregroundColor: backgroundAccent,
           title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              SvgPicture.asset(
+                Res.logo_with_name,
+                height: 24.h,
+              ),
               Visibility(
                 visible: isPipAvailable,
                 child: GestureDetector(
@@ -241,11 +247,11 @@ class _State extends State<Home> with TickerProviderStateMixin {
                       _showCelebration();
                     }
                   });
-                  selectedGameType = GameType.values[state.stake.gameType ?? 0];
+                  selectedGameType = GameType.values[bloc.stake.gameType ?? 0];
                   odds = state.odds;
                 } else if (state is OnCreateStake) {
                   _processIndicator.dismiss().then((value) => {
-                        AppRouter.gotoWidget(const NotFound(), context,
+                        AppRouter.gotoWidget(const Login(), context,
                             clearStack: true)
                       });
                 } else if (state is OnError) {
@@ -415,7 +421,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                 builder: (context, state) {
                   double profit = 0;
                   if (state is OnDataLoaded) {
-                    profit = state.stake.profit ?? 0;
+                    profit = bloc.stake.profit ?? 0;
                   }
                   return Row(
                     key: profitKey,
@@ -439,7 +445,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                   int coins = 0;
                   if (state is OnDataLoaded) {
                     coins =
-                        (state.stake.coins ?? 0) - (state.stake.stakes ?? 0);
+                        (bloc.stake.coins ?? 0) - (bloc.stake.stakes ?? 0);
                   }
                   return GestureDetector(
                     onTap: () => AppRouter.gotoWidget(const Wallet(), context),
@@ -491,7 +497,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                   builder: (context, state) {
                     num? amount = 0;
                     if (state is OnDataLoaded) {
-                      amount = state.stake.previousStake?.value;
+                      amount = bloc.stake.previousStake?.value;
                     }
                     return Text(
                       Formatter.format(amount! * 1.0),
@@ -524,7 +530,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
                   int next = 1;
 
                   if (state is OnDataLoaded) {
-                    win = state.stake.previousStake?.totalWin ?? 0.00;
+                    win = bloc.stake.previousStake?.totalWin ?? 0.00;
                     losses = (state.stake.losses ?? 0);
                     next = state.stake.cycle ?? 0;
                   }

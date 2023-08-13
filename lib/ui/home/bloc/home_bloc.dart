@@ -7,6 +7,8 @@ import 'package:stake_calculator/domain/irepository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/log.dart';
+import '../../../domain/model/account.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -15,6 +17,8 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final _repository = GetIt.instance<IRepository>();
+
+  Stake stake = Stake();
 
   void getStake({bool cache = false}) => add(GetStake(cache: cache));
 
@@ -77,7 +81,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<SaveTag>((event, emit) async {
       try {
         final odds = await _repository.saveTag(odd: event.odd);
-        final stake = await _repository.getStake(cached: true);
+        stake = await _repository.getStake(cached: true);
 
         emit(
             OnTagAdded(odds: odds, stake: _getStake(stake: stake, tags: odds)));
@@ -90,7 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<SetGameType>((event, emit) async {
       final tags = await _repository.getTags();
-      final stake = await _repository.getStake(cached: true);
+      stake = await _repository.getStake(cached: true);
 
       final Odd error = tags.error;
       if (error.odd! > -1) {
@@ -112,7 +116,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<DeleteTag>((event, emit) async {
       emit(OnLoading());
       try {
-        final stake = await _repository.deleteTag(
+        stake = await _repository.deleteTag(
             position: event.position, won: event.won);
         final odds = await _repository.getTags();
         emit(OnDataLoaded(
@@ -126,7 +130,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         final odds = await _repository.updateTag(
             odd: event.odd, position: event.position);
-        final stake = await _repository.getStake(cached: true);
+        stake = await _repository.getStake(cached: true);
 
         emit(OnDataLoaded(
             odds: odds, stake: _getStake(stake: stake, tags: odds)));
@@ -138,7 +142,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(OnLoading());
       }
       try {
-        final stake = await _repository.getStake(cached: event.cache);
+        stake = await _repository.getStake(cached: event.cache, tags: true);
         final odds = await _repository.getTags();
 
         emit(OnDataLoaded(
@@ -148,7 +152,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(OnCreateStake());
         } else {
           try {
-            final stake = await _repository.getStake(cached: true);
+            stake = await _repository.getStake(cached: true);
             final odds = await _repository.getTags();
             emit(OnError(message: error.toString()));
             emit(OnDataLoaded(
@@ -165,7 +169,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ResetStake>((event, emit) async {
       try {
         emit(OnLoading());
-        final stake = await _repository.resetStake(won: event.won);
+        stake = await _repository.resetStake(won: event.won);
         final odds = await _repository.getTags();
 
         emit(OnDataLoaded(
@@ -182,32 +186,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<CreateStake>((event, emit) async {
       try {
         final Odd error = event.odds.error;
-        final temp = await _repository.getStake(cached: true);
+        stake = await _repository.getStake(cached: true);
 
         if (error.odd! > -1) {
           emit(OnError(message: "Odd must be at least 1.01 for ${error.name}"));
           final odds = await _repository.getTags();
 
           emit(OnDataLoaded(
-              odds: odds, stake: _getStake(stake: temp, tags: odds)));
+              odds: odds, stake: _getStake(stake: stake, tags: odds)));
           return;
         }
 
         if (!event.force) {
-          final losses = _getApproximateLosses(stake: temp);
+          final losses = _getApproximateLosses(stake: stake);
 
-          if (losses >= temp.tolerance!) {
+          if (losses >= stake.tolerance!) {
             emit(OnShowLimitWarning(odds: event.odds, cycle: event.cycle));
             return;
-          } else if (temp.restrictRounds! > 0 &&
-              (temp.cycle! >= temp.restrictRounds!)) {
+          } else if (stake.restrictRounds! > 0 &&
+              (stake.cycle! >= stake.restrictRounds!)) {
             emit(OnShowStreakWarning(odds: event.odds, cycle: event.cycle));
             return;
           }
         }
 
         emit(OnLoading());
-        final stake = await _repository.computeStake(
+        stake = await _repository.computeStake(
             odds: event.odds, cycle: event.cycle);
         final odds = await _repository.getTags();
 
@@ -219,7 +223,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           return;
         }
 
-        final stake = await _repository.getStake(cached: true);
+        stake = await _repository.getStake(cached: true);
         final odds = await _repository.getTags();
 
         emit(OnError(message: error.message));

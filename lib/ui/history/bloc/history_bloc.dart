@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:stake_calculator/data/remote/model/bet_history_response.dart';
 
 import '../../../domain/irepository.dart';
+import '../../../domain/model/history.dart';
 import '../../../domain/model/odd.dart';
 
 part 'history_event.dart';

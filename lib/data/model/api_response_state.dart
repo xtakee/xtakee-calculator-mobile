@@ -3,6 +3,12 @@ import 'package:dio/dio.dart';
 class ApiErrorHandler {
   static ApiException parse(data) {
     if (data is DioException) {
+      String? error;
+      if (data.response != null) {
+        try {
+          error = data.response!.data['data']['errors'][0]['message'];
+        } catch (_) {}
+      }
       switch (data.type) {
         case DioExceptionType.connectionError:
         case DioExceptionType.connectionTimeout:
@@ -10,7 +16,9 @@ class ApiErrorHandler {
           return NetworkError();
         case DioExceptionType.badResponse:
           var message = data.message ?? "";
-          if (message.contains("401") || message.contains("404")) {
+          if (message.contains("401")) {
+            return UnAuthorized();
+          } else if (message.contains("401") || message.contains("404")) {
             return NotFound();
           } else if (message.contains("402")) {
             return Forbidden(
@@ -18,7 +26,7 @@ class ApiErrorHandler {
           } else if (message.contains("500")) {
             return UnKnown();
           } else if (message.contains("400")) {
-            return BadRequest();
+            return BadRequest(message: error ?? "");
           } else {
             return UnKnown();
           }
@@ -38,6 +46,10 @@ abstract class ApiException implements Exception {
 
   @override
   String toString() => message;
+}
+
+class UnAuthorized extends ApiException {
+  UnAuthorized({super.message = "UnAuthorized"});
 }
 
 class NotFound extends ApiException {

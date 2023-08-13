@@ -12,6 +12,7 @@ class Stake {
     int? coins,
     int? stakes,
     int? next,
+    int? wins,
     double? tolerance,
     double? overflow,
     double? recovery,
@@ -33,6 +34,7 @@ class Stake {
     _profit = profit;
     _cycle = cycle;
     _next = next;
+    _wins = wins;
     _tolerance = tolerance;
     _overflow = overflow;
     _recovery = recovery;
@@ -59,6 +61,7 @@ class Stake {
   double? _profit;
   int? _cycle;
   int? _next;
+  int? _wins;
   int? _coins;
   int? _stakes;
   bool? _decay;
@@ -88,13 +91,15 @@ class Stake {
 
   int? get coins => _coins;
 
-  int? get stakes => _stakes;
+  int get stakes => _stakes ?? 0;
 
   int? get restrictRounds => _restrictRounds;
 
   bool? get decay => _decay;
 
   int? get next => _next;
+
+  int get wins => _wins ?? 0;
 
   double? get tolerance => _tolerance;
 

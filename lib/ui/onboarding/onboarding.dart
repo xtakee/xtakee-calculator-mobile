@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/commons.dart';
-import 'package:stake_calculator/ui/not_found/not_found.dart';
+import 'package:stake_calculator/ui/login/login.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
@@ -113,7 +113,7 @@ class _State extends State<OnBoarding> {
 
   _start() => GestureDetector(
         onTap: () =>
-            AppRouter.gotoWidget(const NotFound(), context, clearStack: true),
+            AppRouter.gotoWidget(const Login(), context, clearStack: true),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           alignment: Alignment.center,

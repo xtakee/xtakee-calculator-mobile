@@ -33,6 +33,15 @@ class OnShowLimitWarning extends HomeState {
   List<Object?> get props => [odds, cycle];
 }
 
+class OnAccount extends HomeState {
+  final Account account;
+
+  OnAccount({required this.account});
+
+  @override
+  List<Object?> get props => [account];
+}
+
 class OnError extends HomeState {
   final String message;
 

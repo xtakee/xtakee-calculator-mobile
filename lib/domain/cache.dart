@@ -16,6 +16,7 @@ const String PREF_STREAK_WARNING = "PREF_STREAK_WARNING";
 const String PREF_ONBOARDED = "PREF_ONBOARDED";
 const String PREF_HOME_TOUR = "PREF_HOME_TOUR";
 const String PREF_SETTING_TOUR = "PREF_SETTING_TOUR";
+const String PREF_ACCOUNT = "PREF_ACCOUNT";
 
 abstract class Cache {
   Future<bool> set(String key, Object value);

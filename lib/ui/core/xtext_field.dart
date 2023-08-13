@@ -14,8 +14,11 @@ class XTextField extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final List<TextInputFormatter>? inputFormatters;
   final bool enable;
+  final bool isSecret;
   final bool showSuffix;
+  Widget? prefixIcon;
   final String label;
+  String? errorText;
   final FocusNode? focusNode;
   final int lines;
   double? height;
@@ -24,7 +27,10 @@ class XTextField extends StatefulWidget {
   XTextField(
       {super.key,
       this.lines = 1,
+      this.isSecret = false,
       this.focusNode,
+      this.errorText,
+      this.prefixIcon,
       this.textCapitalization = TextCapitalization.none,
       required this.label,
       this.height,
@@ -58,12 +64,7 @@ class _State extends State<XTextField> {
   }
 
   @override
-  Widget build(BuildContext context) => (widget.lines == 1)
-      ? SizedBox(
-          height: widget.height,
-          child: _child(),
-        )
-      : _child();
+  Widget build(BuildContext context) => _child();
 
   _child() => TextField(
         maxLines: widget.lines,
@@ -72,6 +73,7 @@ class _State extends State<XTextField> {
         keyboardType: widget.inputType,
         controller: widget.controller,
         enabled: widget.enable,
+        obscureText: widget.isSecret,
         style: const TextStyle(fontWeight: FontWeight.w500),
         inputFormatters: widget.inputFormatters,
         onChanged: (x) {
@@ -85,6 +87,8 @@ class _State extends State<XTextField> {
         decoration: InputDecoration(
           fillColor: primaryBackground,
           filled: true,
+          errorText: widget.errorText,
+          prefixIcon: widget.prefixIcon,
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(width: 0.5, color: primaryColor),
               borderRadius: BorderRadius.circular(5)),

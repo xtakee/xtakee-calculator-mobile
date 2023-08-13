@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart'; // for date format
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/domain/model/previous_stake.dart';
+import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/commons.dart';
 
@@ -23,6 +24,10 @@ extension ExtInt on int {
   double get h => getHeight(this * 1.0);
 
   double get sp => getWidth(this * 1.0);
+}
+
+extension ExtStake on Stake {
+  int get loosed => (wins - stakes) > 0 ? (wins - stakes) : 0;
 }
 
 extension ExtPreviosStake on PreviousStake {
@@ -65,6 +70,10 @@ extension ExtOds on List<Odd> {
 extension ExtString on String {
   String toDate() => DateFormat.yMMMd().format(DateTime.parse(this));
 
+  String toMonth() => DateFormat.MMMd().format(DateTime.parse(this));
+
+  String toTime() => DateFormat.jm().format(DateTime.parse(this));
+
   String orEmpty() => this ?? "";
 
   String toTitleCase() {
@@ -101,7 +110,8 @@ extension ExtString on String {
           width: 24.w,
           fit: BoxFit.fill,
         );
-      default: return Container();
+      default:
+        return Container();
     }
   }
 
@@ -125,5 +135,6 @@ extension ExtNullString on String? {
 
 extension ExtBetHistory on List<History> {
   List<History> wins() => where((e) => e.won! > 0).toList();
+
   List<History> losses() => where((e) => e.won! == 0).toList();
 }

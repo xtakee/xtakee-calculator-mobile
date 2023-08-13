@@ -1,3 +1,4 @@
+import 'package:stake_calculator/domain/model/account.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 
 import '../data/remote/model/bet_history_response.dart';
@@ -5,7 +6,7 @@ import 'model/odd.dart';
 import 'model/stake.dart';
 
 abstract class IRepository {
-  Future<Stake> getStake({bool cached = false});
+  Future<Stake> getStake({bool cached = false, bool tags = false});
 
   bool getOnBoarding();
 

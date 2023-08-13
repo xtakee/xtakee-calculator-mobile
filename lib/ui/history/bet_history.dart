@@ -65,7 +65,7 @@ class _State extends State<BetHistory> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: primaryBackground,
         appBar: AppBar(
           iconTheme: const IconThemeData(
             color: Colors.black, //change your color here

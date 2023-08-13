@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/ui/core/empty_page.dart';
 import 'package:stake_calculator/ui/payment/payment.dart';

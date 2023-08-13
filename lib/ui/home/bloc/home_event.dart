@@ -9,6 +9,8 @@ class GetStake extends HomeEvent {
   GetStake({required this.cache});
 }
 
+class GetAccount extends HomeEvent {}
+
 class CreateStake extends HomeEvent {
   final List<Odd> odds;
   final int cycle;
@@ -19,6 +21,7 @@ class CreateStake extends HomeEvent {
 
 class ResetStake extends HomeEvent {
   final bool won;
+
   ResetStake({required this.won});
 }
 

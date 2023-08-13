@@ -38,13 +38,27 @@ class Repository extends IRepository {
   }
 
   @override
-  Future<Stake> getStake({bool cached = false}) async {
+  Future<Stake> getStake({bool cached = false, bool tags = false}) async {
     if (cached) {
-      return JsonStakeMapper()
-          .from(jsonDecode(cache.getString(PREF_STAKE, '')));
+      final data = cache.getString(PREF_STAKE, '');
+      if (data.isNotEmpty) {
+        return JsonStakeMapper()
+            .from(jsonDecode(cache.getString(PREF_STAKE, '')));
+      }
     }
-    return await service.getStake().then((value) {
+    return await service.getStake().then((value) async {
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
+      if (tags && value.previousStake != null) {
+        List<Odd> list = await _getTags();
+        if (list.isEmpty) {
+          if (value.previousStake!.odds.isEmpty) {
+            list.add(Odd(name: 'Default', odd: 0));
+          } else {
+            list.addAll(value.previousStake!.odds);
+          }
+          await cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(list)));
+        }
+      }
       return value;
     });
   }
@@ -226,4 +240,5 @@ class Repository extends IRepository {
   @override
   Future<void> setSettingTour({bool status = false}) =>
       cache.set(PREF_SETTING_TOUR, status);
+
 }

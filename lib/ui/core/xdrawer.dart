@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:stake_calculator/domain/iaccount_repository.dart';
+import 'package:stake_calculator/domain/model/account.dart';
 import 'package:stake_calculator/ui/commons.dart';
+import 'package:stake_calculator/ui/core/web_launcher.dart';
 import 'package:stake_calculator/ui/core/xdialog.dart';
 import 'package:stake_calculator/ui/core/xwarning_dialog.dart';
 import 'package:stake_calculator/ui/history/bet_history.dart';
-import 'package:stake_calculator/ui/not_found/not_found.dart';
+import 'package:stake_calculator/ui/login/login.dart';
 import 'package:stake_calculator/ui/payment/payment.dart';
+import 'package:stake_calculator/ui/profile/profile.dart';
+import 'package:stake_calculator/util/constants.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../res.dart';
@@ -18,27 +25,103 @@ void _nav(BuildContext context, {required Widget widget}) {
   AppRouter.gotoWidget(widget, context);
 }
 
-Drawer xDrawer(BuildContext context) => Drawer(
-      backgroundColor: primaryBackground,
+Widget _userLoader(BuildContext context) => Shimmer.fromColors(
+      baseColor: Colors.black12,
+      highlightColor: Colors.black26,
+      enabled: true,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 16.h,
+            width: MediaQuery.of(context).size.width * 0.5,
+            margin: EdgeInsets.only(bottom: 5.h),
+            color: Colors.black12,
+          ),
+          Container(
+            height: 16.h,
+            width: MediaQuery.of(context).size.width * 0.4,
+            color: Colors.black38,
+          )
+        ],
+      ),
+    );
+
+Widget _header(BuildContext context,
+        {required Account account, bool loading = true}) =>
+    Container(
+      margin: EdgeInsets.only(right: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 38.h,
+            height: 38.h,
+            margin: EdgeInsets.only(bottom: 16.h),
+            decoration: const BoxDecoration(
+              color: backgroundAccent,
+              shape: BoxShape.circle,
+            ),
+            child: SvgPicture.asset(Res.logo),
+          ),
+          if (loading) _userLoader(context),
+          if (!loading)
+            Text(
+              account.name ?? "",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+            ),
+          if (!loading)
+            Text(
+              account.email ?? "",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 16.sp),
+            )
+        ],
+      ),
+    );
+
+class XDrawer extends StatefulWidget {
+  const XDrawer({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _State();
+}
+
+class _State extends State<XDrawer> {
+  final _repository = GetIt.instance<IAccountRepository>();
+
+  bool isLoading = true;
+  Account account = Account();
+
+  @override
+  void initState() {
+    super.initState();
+    _repository.getAccount().then((value) {
+      setState(() {
+        account = value;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                   margin: EdgeInsets.only(left: 16.w, top: 48.h, bottom: 32.h),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        Res.logo_with_name,
-                        height: 28.h,
-                      )
-                    ],
-                  )),
+                  child:
+                      _header(context, account: account, loading: isLoading)),
               Container(
                 height: 1.h,
-                color: Colors.black38,
+                color: Colors.black12,
                 margin: EdgeInsets.only(bottom: 10.h, left: 18.w),
               ),
               ListTile(
@@ -73,31 +156,56 @@ Drawer xDrawer(BuildContext context) => Drawer(
               children: [
                 Container(
                   height: 1.h,
-                  color: Colors.black38,
+                  color: Colors.black12,
                   margin: EdgeInsets.only(bottom: 10.h, left: 18.w),
+                ),
+                ListTile(
+                  title: const Text(
+                    "Profile",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  leading: const Icon(Icons.account_circle_outlined),
+                  onTap: () => _nav(context, widget: const Profile()),
                 ),
                 ListTile(
                   title: const Text(
                     "Settings",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  leading: const Icon(Icons.settings),
+                  leading: const Icon(Icons.settings_outlined),
                   onTap: () => _nav(context, widget: const Setting()),
                 ),
+                Container(
+                  height: 1.h,
+                  color: Colors.black12,
+                  margin: EdgeInsets.only(bottom: 10.h, left: 18.w),
+                ),
                 ListTile(
-                  onTap: () {},
+                  onTap: () => AppRouter.gotoWidget(
+                      const WebLauncher(path: faqs), context),
                   title: const Text(
-                    "Help",
+                    "FAQs",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   leading: const Icon(Icons.help_outline_rounded),
                 ),
-                const ListTile(
-                  title: Text(
-                    "About",
+                ListTile(
+                  onTap: () => AppRouter.gotoWidget(
+                      const WebLauncher(path: privacyPolicy), context),
+                  title: const Text(
+                    "Privacy Policy",
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  leading: Icon(Icons.info_outline),
+                  leading: const Icon(Icons.policy_outlined),
+                ),
+                ListTile(
+                  onTap: () => _nav(context,
+                      widget: const WebLauncher(path: termsAndConditions)),
+                  title: const Text(
+                    "Terms & Conditions",
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  leading: const Icon(Icons.warning_amber),
                 ),
                 Container(
                   height: 10.h,
@@ -108,7 +216,7 @@ Drawer xDrawer(BuildContext context) => Drawer(
                             child: XWarningDialog(
                                 onNegative: () {},
                                 onPositive: () => AppRouter.gotoWidget(
-                                    const NotFound(), context,
+                                    const Login(), context,
                                     clearStack: true),
                                 description:
                                     "Are you sure? You will need to provide your licence to login later",
@@ -137,5 +245,5 @@ Drawer xDrawer(BuildContext context) => Drawer(
             ),
           )
         ],
-      ),
-    );
+      );
+}
