@@ -1,6 +1,6 @@
 part of 'profile_bloc.dart';
 
-class ProfileState extends Equatable {
+class ProfileState {
   Account? account;
   Stake? stake;
   bool accountLoading;
@@ -41,28 +41,13 @@ class ProfileState extends Equatable {
       ProfileState(
           account: account ?? this.account,
           stakeError: stakeError ?? this.stakeError,
-          accountError: accountError ?? this.accountError,
-          newPassError: newPassError ?? this.newPassError,
-          oldPassError: oldPassError ?? this.oldPassError,
+          accountError: accountError,
+          newPassError: newPassError,
+          oldPassError: oldPassError,
           stake: stake ?? this.stake,
           success: success ?? this.success,
           loading: loading ?? this.loading,
           accountLoading: accountLoading ?? this.accountLoading,
           stakeLoading: stakeLoading ?? this.stakeLoading,
           error: error);
-
-  @override
-  List<Object?> get props => [
-        accountLoading,
-        account,
-        stake,
-        stakeLoading,
-        error,
-        success,
-        oldPassError,
-        newPassError,
-        stakeError,
-        loading,
-        accountError
-      ];
 }

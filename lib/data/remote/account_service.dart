@@ -63,4 +63,23 @@ class AccountService extends IAccountService {
       throw ApiErrorHandler.parse(error);
     }
   }
+
+  @override
+  Future<void> resetPassword({required Map<String, dynamic> data}) async {
+    try {
+      await client.post('/account/reset-password', data: data);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<String> sendOtp({required Map<String, dynamic> data}) async {
+    try {
+      final response = await client.post('/account/send-reset-otp', data: data);
+      return response.data['data']['signature'];
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
 }

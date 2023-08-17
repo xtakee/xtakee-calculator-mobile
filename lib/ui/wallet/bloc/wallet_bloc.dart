@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stake_calculator/domain/itransaction_repository.dart';
 
-import '../../../domain/irepository.dart';
+import '../../../domain/istake_repository.dart';
 import '../../../domain/model/stake.dart';
 import '../../../domain/model/transaction.dart';
 
@@ -14,7 +14,7 @@ part 'wallet_event.dart';
 part 'wallet_state.dart';
 
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
-  final _repository = GetIt.instance<IRepository>();
+  final _repository = GetIt.instance<IStakeRepository>();
   final _txRepository = GetIt.instance<ITransactionRepository>();
 
   List<Transaction> transactions = [];

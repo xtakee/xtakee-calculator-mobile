@@ -15,6 +15,7 @@ import '../../../domain/model/bundle.dart';
 import '../../../res.dart';
 import '../../../util/dimen.dart';
 import '../../../util/process_indicator.dart';
+import 'component/custom_clipper.dart';
 
 class FundWallet extends StatefulWidget {
   const FundWallet({super.key});
@@ -30,6 +31,8 @@ class _State extends State<FundWallet> {
   Bundle? selectedBundle;
   double amount = 0;
   int value = 0;
+
+  double additionalFee = 0;
 
   @override
   void initState() {
@@ -55,6 +58,9 @@ class _State extends State<FundWallet> {
           selectedBundle = bundles.firstOrNull;
           amount = (selectedBundle?.amount ?? 0) * 1.0;
           value = (selectedBundle?.value ?? 0);
+
+          additionalFee = (selectedBundle?.additionalCharge ?? 0) * 1.0;
+
           _processIndicator.dismiss();
         } else if (state is OnError) {
           _processIndicator.dismiss().then((value) => showSnack(context,
@@ -88,7 +94,41 @@ class _State extends State<FundWallet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  children: [_amount(), _bundles()],
+                  children: [
+                    _amount(),
+                    _bundles(),
+                    if (additionalFee > 0)
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 24.w, vertical: 24.h),
+                        child: ClipPath(
+                          clipper: XClipper(),
+                          child: Container(
+                            padding: EdgeInsets.all(16.h),
+                            color: primaryColor.withOpacity(0.2),
+                            child: RichText(
+                              text: TextSpan(
+                                  text:
+                                      "Please note that you will be charged additional ",
+                                  style: TextStyle(
+                                      fontSize: 15.sp,
+                                      color: const Color(0xFF212121)),
+                                  children: [
+                                    TextSpan(
+                                        text:
+                                            "${Formatter.format(additionalFee)}.",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
+                                    const TextSpan(
+                                      text: " This is a one off service fee.",
+                                    )
+                                  ]),
+                            ),
+                          ),
+                        ),
+                      )
+                  ],
                 ),
                 XButton(
                   label: "Continue",

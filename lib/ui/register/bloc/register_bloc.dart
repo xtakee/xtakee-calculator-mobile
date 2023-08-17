@@ -1,9 +1,7 @@
-import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/model/phone.dart';
 
 import '../../../domain/iaccount_repository.dart';
@@ -46,8 +44,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
       try {
         await _accountRepository.register(
-            email: event.email,
-            password: event.password.trim(),
+            email: event.email.trim(),
+            password: event.password,
             name: event.name.trim(),
             phone: event.phone);
 

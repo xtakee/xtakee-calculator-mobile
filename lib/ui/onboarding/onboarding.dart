@@ -21,7 +21,7 @@ class _State extends State<OnBoarding> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: primaryBackground,
+        backgroundColor: Colors.white,
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,

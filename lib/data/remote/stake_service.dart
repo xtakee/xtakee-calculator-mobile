@@ -14,7 +14,7 @@ import 'package:stake_calculator/data/remote/model/update_request.dart';
 import 'package:stake_calculator/domain/model/account.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
-import 'package:stake_calculator/domain/remote/iservice.dart';
+import 'package:stake_calculator/domain/remote/istake_service.dart';
 import 'package:stake_calculator/util/log.dart';
 
 import '../mapper/json_create_stake_request_mapper.dart';
@@ -22,10 +22,10 @@ import '../mapper/json_licence_response_mapper.dart';
 import '../model/api_response_state.dart';
 import 'model/validate_licence_response.dart';
 
-class Service extends IService {
+class StakeService extends IStakeService {
   Dio client;
 
-  Service({required this.client});
+  StakeService({required this.client});
 
   @override
   Future<Stake> computeStake(StakeRequest request) async {

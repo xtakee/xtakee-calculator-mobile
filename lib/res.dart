@@ -10,6 +10,7 @@ class Res {
   static const String coins_bal = "assets/coins_bal.svg";
   static const String empty = "assets/empty.json";
   static const String flutterwave = "assets/flutterwave.png";
+  static const String forgot_password = "assets/forgot_password.json";
   static const String games = "assets/games.png";
   static const String hurry_animation = "assets/hurry_animation.json";
   static const String intro_background = "assets/intro_background.svg";
@@ -21,6 +22,7 @@ class Res {
   static const String light_asset_bg = "assets/light_asset_bg.svg";
   static const String linear_loader = "assets/linear_loader.json";
   static const String loading_linear = "assets/loading_linear.json";
+  static const String lock_password = "assets/lock_password.json";
   static const String logo = "assets/logo.svg";
   static const String logo_dark = "assets/logo_dark.svg";
   static const String logo_with_name = "assets/logo_with_name.svg";
@@ -37,6 +39,7 @@ class Res {
   static const String trophy = "assets/trophy.png";
   static const String trophy_icon = "assets/trophy_icon.svg";
   static const String trophy_thick = "assets/trophy_thick.svg";
+  static const String verify_email = "assets/verify_email.json";
   static const String verve_card = "assets/verve_card.png";
   static const String visa_card = "assets/visa_card.png";
   static const String wallet = "assets/wallet.json";

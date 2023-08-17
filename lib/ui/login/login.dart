@@ -6,6 +6,7 @@ import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/core/xbutton.dart';
 import 'package:stake_calculator/ui/core/xtext_field.dart';
 import 'package:stake_calculator/ui/create_stake/create_stake.dart';
+import 'package:stake_calculator/ui/forgot_password/forgot_password.dart';
 import 'package:stake_calculator/ui/home/home.dart';
 import 'package:stake_calculator/ui/login/bloc/login_bloc.dart';
 import 'package:stake_calculator/ui/register/register.dart';
@@ -210,9 +211,13 @@ class _State extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Forgot Password?",
-                      style: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w300))
+                  GestureDetector(
+                    onTap: () =>
+                        AppRouter.gotoWidget(const ForgotPassword(), context),
+                    child: Text("Forgot Password?",
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w300)),
+                  )
                 ],
               ),
               XButton(

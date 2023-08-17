@@ -17,6 +17,7 @@ class JsonStakeMapper extends Mapper<Map<String, dynamic>, Stake> {
       wins: from['wins'],
       coins: from['coins'],
       stakes: from['stakes'],
+      rounded: from['rounded'],
       tolerance: from['tolerance'] * 1.0,
       overflow: from['overflow'] * 1.0,
       decay: from['decay'],
@@ -44,6 +45,7 @@ class JsonStakeMapper extends Mapper<Map<String, dynamic>, Stake> {
     map['coins'] = from.coins;
     map['stakes'] = from.stakes;
     map['wins'] = from.wins;
+    map['rounded'] = from.rounded;
     map['startingStake'] = from.startingStake;
     map['tolerance'] = from.tolerance;
     map['overflow'] = from.overflow;

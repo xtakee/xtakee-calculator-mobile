@@ -5,7 +5,7 @@ import '../data/remote/model/bet_history_response.dart';
 import 'model/odd.dart';
 import 'model/stake.dart';
 
-abstract class IRepository {
+abstract class IStakeRepository {
   Future<Stake> getStake({bool cached = false, bool tags = false});
 
   bool getOnBoarding();
@@ -30,6 +30,7 @@ abstract class IRepository {
       double? tolerance,
       required double startingStake,
       required bool decay,
+      required bool approxAmount,
       required bool clearLosses,
       required bool forfeit,
       required bool keepTag,

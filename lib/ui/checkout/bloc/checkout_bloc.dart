@@ -66,7 +66,11 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       try {
         final transaction =
             await _repository.completeTransaction(reference: event.reference);
-        emit(OnComplete(transaction: transaction));
+        if (transaction.status != "success") {
+          emit(OnTimeOutError());
+        } else {
+          emit(OnComplete(transaction: transaction));
+        }
       } catch (error) {
         emit(OnTimeOutError());
       }

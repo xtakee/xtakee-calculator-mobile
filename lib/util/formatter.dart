@@ -1,24 +1,18 @@
 import 'package:money_formatter/money_formatter.dart';
 
 class Formatter {
-  static var _setting = MoneyFormatterSettings(
+  static final _setting = MoneyFormatterSettings(
       symbol: '#',
       thousandSeparator: ',',
       decimalSeparator: '.',
       symbolAndNumberSeparator: '',
-      fractionDigits: 2,
+      fractionDigits: 0,
       compactFormatType: CompactFormatType.short);
 
-  static String format(double money, {String symbol = '#'}) {
-    if (symbol != '#') {
-      _setting = MoneyFormatterSettings(
-          symbol: symbol,
-          thousandSeparator: ',',
-          decimalSeparator: '.',
-          symbolAndNumberSeparator: '',
-          fractionDigits: 2,
-          compactFormatType: CompactFormatType.short);
-    }
+  static String format(double money, {String symbol = '#', int decimals = 2}) {
+    _setting.symbol = symbol;
+    _setting.fractionDigits = decimals;
+
     return MoneyFormatter(amount: money, settings: _setting)
         .output
         .symbolOnLeft;

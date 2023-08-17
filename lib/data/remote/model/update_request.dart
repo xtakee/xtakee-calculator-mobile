@@ -4,16 +4,17 @@ import 'dart:convert';
 /// profit : 50
 /// tolerance : 50000
 class UpdateRequest {
-  UpdateRequest({
-    double? profit,
-    double? startingStake,
-    double? tolerance,
-    bool? decay,
-    bool? forfeit,
-    int? restrictRounds
-  }) {
+  UpdateRequest(
+      {double? profit,
+      double? startingStake,
+      double? tolerance,
+      bool? decay,
+      bool? approxAmount,
+      bool? forfeit,
+      int? restrictRounds}) {
     _startingStake = startingStake;
     _profit = profit;
+    _approxAmount = approxAmount;
     _tolerance = tolerance;
     _restrictRounds = restrictRounds;
     _decay = decay;
@@ -25,6 +26,7 @@ class UpdateRequest {
   double? _tolerance;
   int? _restrictRounds;
   bool? _forfeit;
+  bool? _approxAmount;
   bool? _decay;
 
   double? get profit => _profit;
@@ -35,8 +37,9 @@ class UpdateRequest {
 
   bool? get decay => _decay;
 
+  bool? get approxAmount => _approxAmount;
+
   bool? get forfeit => _forfeit;
 
   int? get restrictRounds => _restrictRounds;
-
 }

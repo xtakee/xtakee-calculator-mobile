@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
+import 'package:stake_calculator/ui/core/widget/XState.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
 import 'package:stake_calculator/ui/core/xdelete_tag_warning.dart';
 import 'package:stake_calculator/ui/core/xdialog.dart';
@@ -21,7 +22,6 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
-import '../../util/process_indicator.dart';
 import '../commons.dart';
 import '../core/stake_item.dart';
 import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
@@ -42,8 +42,7 @@ class Home extends StatefulWidget {
   }
 }
 
-class _State extends State<Home> with TickerProviderStateMixin {
-  final ProcessIndicator _processIndicator = ProcessIndicator();
+class _State extends XState<Home> with TickerProviderStateMixin {
   final bloc = HomeBloc();
   bool isMultiple = false;
   GameType selectedGameType = GameType.MULTIPLE;
@@ -151,7 +150,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
   void dispose() {
     bloc.close();
     _disposeAllFocus();
-    _processIndicator.dismiss();
+    dismissProcessIndicator();
     super.dispose();
   }
 
@@ -231,61 +230,81 @@ class _State extends State<Home> with TickerProviderStateMixin {
         body: MultiBlocListener(
           listeners: [
             BlocListener(
-              listener: (BuildContext context, state) {
-                if (state is OnDataLoaded || state is OnError) {
-                  if (!bloc.isHomeToured()) {
-                    _initialPageTour();
-                    _showTour();
-                  }
+              listener: (_, HomeState state) {
+                if (!bloc.isHomeToured() && state.stake != null) {
+                  _initialPageTour();
+                  _showTour();
                 }
 
-                if (state is OnLoading) {
-                  _processIndicator.show(context);
-                } else if (state is OnDataLoaded) {
-                  _processIndicator.dismiss().then((value) {
-                    if (isWin) {
+                if (state.loading) {
+                  showProcessIndicator();
+                } else {
+                  dismissProcessIndicator().then((value) {
+                    if (isWin && state.stake != null) {
                       _showCelebration();
                     }
-                  });
-                  selectedGameType = GameType.values[bloc.stake.gameType ?? 0];
-                  odds = state.odds;
-                } else if (state is OnCreateStake) {
-                  _processIndicator.dismiss().then((value) => {
-                        AppRouter.gotoWidget(const Login(), context,
-                            clearStack: true)
+
+                    // data loaded
+                    if (state.stake != null) {
+                      setState(() {
+                        selectedGameType =
+                            GameType.values[state.stake?.gameType ?? 0];
+                        odds = state.tags ?? [];
                       });
-                } else if (state is OnError) {
-                  _processIndicator.dismiss().then((value) => showSnack(context,
-                      message: state.message, snackType: SnackType.ERROR));
-                } else if (state is OnTagAdded) {
-                  _scrollBottom();
-                } else if (state is OnShowLimitWarning) {
-                  XDialog(context,
-                      child: LimitWarning(
-                        onOk: () => bloc.resetStake(won: false),
-                        description: Text(
-                          "It is highly advised to not chase losses. We will reset your rounds. Kindly take a break and try again later",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 16.sp),
-                        ),
-                        title: 'Loss Limit Reached',
-                      )).show();
-                } else if (state is OnShowStreakWarning) {
-                  XDialog(context,
-                      child: StreakWarning(
-                        onOk: () => bloc.compute(
-                            cycle: state.cycle, odds: state.odds, force: true),
-                        description: Text(
-                          "You are on a losing streak. We will reset your rounds. We highly recommend taking a break and do not chase losses",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 16.sp),
-                        ),
-                        title: 'Rounds Limit Reached',
-                      )).show();
-                } else {
-                  _processIndicator.dismiss();
+                    }
+
+                    // process login
+                    if (state.login) {
+                      AppRouter.gotoWidget(const Login(), context,
+                          clearStack: true);
+                    }
+
+                    // show error
+                    if (state.error?.isNotEmpty == true) {
+                      dismissProcessIndicator().then((value) => showSnack(
+                          context,
+                          message: state.error!,
+                          snackType: SnackType.ERROR));
+                    }
+
+                    // tag added
+                    if (state.tagAdded) {
+                      _scrollBottom();
+                    }
+
+                    //show limit warning
+                    if (state.limitWarning) {
+                      XDialog(context,
+                          child: LimitWarning(
+                            onOk: () => bloc.resetStake(won: false),
+                            description: Text(
+                              "It is highly advised to not chase losses. We will reset your rounds. Kindly take a break and try again later",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 16.sp),
+                            ),
+                            title: 'Loss Limit Reached',
+                          )).show();
+                    }
+
+                    // show streak Warning
+                    if (state.streakWarning) {
+                      XDialog(context,
+                          child: StreakWarning(
+                            onOk: () => bloc.compute(
+                                cycle: state.stake!.cycle!,
+                                odds: state.tags ?? [],
+                                force: true),
+                            description: Text(
+                              "You are on a losing streak. We will reset your rounds. We highly recommend taking a break and do not chase losses",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 16.sp),
+                            ),
+                            title: 'Rounds Limit Reached',
+                          )).show();
+                    }
+                  });
                 }
               },
               bloc: bloc,
@@ -418,10 +437,10 @@ class _State extends State<Home> with TickerProviderStateMixin {
             mainAxisSize: MainAxisSize.max,
             children: [
               BlocBuilder(
-                builder: (context, state) {
+                builder: (context, HomeState state) {
                   double profit = 0;
-                  if (state is OnDataLoaded) {
-                    profit = bloc.stake.profit ?? 0;
+                  if (state.stake != null) {
+                    profit = state.stake?.profit ?? 0;
                   }
                   return Row(
                     key: profitKey,
@@ -441,11 +460,10 @@ class _State extends State<Home> with TickerProviderStateMixin {
                 width: 16.w,
               ),
               BlocBuilder(
-                builder: (context, state) {
+                builder: (_, HomeState state) {
                   int coins = 0;
-                  if (state is OnDataLoaded) {
-                    coins =
-                        (bloc.stake.coins ?? 0) - (bloc.stake.stakes ?? 0);
+                  if (state.stake != null) {
+                    coins = state.stake?.balance ?? 0;
                   }
                   return GestureDetector(
                     onTap: () => AppRouter.gotoWidget(const Wallet(), context),
@@ -494,13 +512,14 @@ class _State extends State<Home> with TickerProviderStateMixin {
                       fontSize: 16),
                 ),
                 BlocBuilder(
-                  builder: (context, state) {
-                    num? amount = 0;
-                    if (state is OnDataLoaded) {
-                      amount = bloc.stake.previousStake?.value;
+                  builder: (_, HomeState state) {
+                    num amount = 0;
+                    if (state.stake != null) {
+                      amount = state.stake?.previousStake?.value ?? 0;
                     }
                     return Text(
-                      Formatter.format(amount! * 1.0),
+                      Formatter.format(amount * 1.0,
+                          decimals: (state.stake?.rounded ?? false) ? 0 : 2),
                       textScaleFactor: scale,
                       style: const TextStyle(
                           color: primaryColor,
@@ -524,15 +543,15 @@ class _State extends State<Home> with TickerProviderStateMixin {
           XCard(
               elevation: 0,
               child: BlocBuilder(
-                builder: (context, state) {
+                builder: (_, HomeState state) {
                   num? win = 0;
                   double losses = 0;
                   int next = 1;
 
-                  if (state is OnDataLoaded) {
-                    win = bloc.stake.previousStake?.totalWin ?? 0.00;
-                    losses = (state.stake.losses ?? 0);
-                    next = state.stake.cycle ?? 0;
+                  if (state.stake != null) {
+                    win = state.stake?.previousStake?.totalWin ?? 0.00;
+                    losses = (state.stake?.losses ?? 0);
+                    next = state.stake?.cycle ?? 0;
                   }
                   return Container(
                       margin: EdgeInsets.only(left: 16.w, right: 16.w),
@@ -632,7 +651,7 @@ class _State extends State<Home> with TickerProviderStateMixin {
               }),
           BlocBuilder(
               bloc: bloc,
-              builder: (context, state) => XCard(
+              builder: (_, HomeState state) => XCard(
                   elevation: 0,
                   key: tagKey,
                   child: Container(

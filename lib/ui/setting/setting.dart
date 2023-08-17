@@ -28,6 +28,7 @@ class Setting extends StatefulWidget {
 class _State extends State<Setting> {
   bool restrictRounds = false;
   bool forfeitLosses = false;
+  bool approxAmount = true;
   bool decay = false;
   bool clearLosses = false;
   bool keepTags = false;
@@ -132,6 +133,7 @@ class _State extends State<Setting> {
                       state.stake.startingStake!.toString();
 
                   session = state.stake.id!;
+                  approxAmount = state.stake.rounded;
 
                   if (state.stake.restrictRounds! > 0) {
                     restrictRounds = true;
@@ -221,6 +223,18 @@ class _State extends State<Setting> {
                             "Reduce profit as your consecutive failing rounds increases to reduce risk exposure."),
                     _switch(
                         child: XSwitch(
+                            label: "Approximate Amount",
+                            activeColor: primaryColor,
+                            value: approxAmount,
+                            onChanged: (x) {
+                              setState(() {
+                                approxAmount = x;
+                              });
+                            }),
+                        description:
+                            "When set, amount to stake will be rounded up or down to the nearest 5 digit"),
+                    _switch(
+                        child: XSwitch(
                             label: "Forfeit Losses",
                             activeColor: primaryColor,
                             value: forfeitLosses,
@@ -298,6 +312,7 @@ class _State extends State<Setting> {
   void _save() {
     _bloc.updateStake(
         clearLosses: clearLosses,
+        approxAmount: approxAmount,
         profit: double.parse(
             _profitController.text.isNotEmpty ? _profitController.text : "0.0"),
         tolerance: double.parse(_toleranceController.text.isNotEmpty

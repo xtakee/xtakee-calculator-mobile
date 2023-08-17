@@ -7,22 +7,20 @@ import 'package:stake_calculator/data/remote/model/create_stake_request.dart';
 import 'package:stake_calculator/data/remote/model/reset_request.dart';
 import 'package:stake_calculator/data/remote/model/stake_request.dart';
 import 'package:stake_calculator/data/remote/model/update_request.dart';
-import 'package:stake_calculator/domain/irepository.dart';
+import 'package:stake_calculator/domain/istake_repository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
-import 'package:stake_calculator/domain/remote/iservice.dart';
+import 'package:stake_calculator/domain/remote/istake_service.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../domain/cache.dart';
 import '../domain/model/bundle.dart';
 import '../domain/model/odd.dart';
 
-class Repository extends IRepository {
-  IService service;
+class StakeRepository extends IStakeRepository {
+  IStakeService service;
   Cache cache;
 
-  List<Bundle> bundles = [];
-
-  Repository({required this.service, required this.cache});
+  StakeRepository({required this.service, required this.cache});
 
   @override
   Future<Stake> computeStake({required List<Odd> odds, int? cycle}) async {
@@ -81,6 +79,7 @@ class Repository extends IRepository {
       required bool decay,
       required bool isMultiple,
       required bool clearLosses,
+      required bool approxAmount,
       required double startingStake,
       required bool keepTag,
       required bool forfeit,
@@ -91,6 +90,7 @@ class Repository extends IRepository {
     return await service
         .updateState(UpdateRequest(
             profit: profit,
+            approxAmount: approxAmount,
             tolerance: tolerance,
             decay: decay,
             forfeit: forfeit,
@@ -197,12 +197,7 @@ class Repository extends IRepository {
 
   @override
   Future<List<Bundle>> getBundles() async {
-    if (bundles.isNotEmpty) return Future.value(bundles);
-
-    return await service.getBundles().then((value) {
-      bundles = value;
-      return value;
-    });
+    return await service.getBundles();
   }
 
   @override
@@ -240,5 +235,4 @@ class Repository extends IRepository {
   @override
   Future<void> setSettingTour({bool status = false}) =>
       cache.set(PREF_SETTING_TOUR, status);
-
 }

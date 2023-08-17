@@ -1,9 +1,8 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stake_calculator/domain/irepository.dart';
+import 'package:stake_calculator/domain/istake_repository.dart';
 
 import '../../../domain/model/stake.dart';
 
@@ -12,7 +11,7 @@ part 'setting_event.dart';
 part 'setting_state.dart';
 
 class SettingBloc extends Bloc<SettingEvent, SettingState> {
-  final _repository = GetIt.instance<IRepository>();
+  final _repository = GetIt.instance<IStakeRepository>();
 
   void getStake() => add(GetStake());
 
@@ -27,11 +26,13 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           required bool clearLosses,
           required bool isMultiple,
           required bool keepTag,
+          required bool approxAmount,
           required double statingStake,
           required int restrictRounds,
           required bool forfeit}) =>
       add(UpdateStake(
           profit: profit,
+          approxAmount: approxAmount,
           tolerance: tolerance,
           clearLosses: clearLosses,
           isMultiple: isMultiple,
@@ -46,7 +47,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       final stake = await _repository.getStake(cached: true);
       final bool clearLosses = await _repository.getClearLoss();
       final bool keepTag = await _repository.getKeepTag();
-      emit(OnDataLoaded(stake: stake, clearLosses: clearLosses, keepTag: keepTag));
+      emit(OnDataLoaded(
+          stake: stake, clearLosses: clearLosses, keepTag: keepTag));
     });
 
     on<UpdateStake>((event, emit) async {
@@ -70,6 +72,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
             decay: event.decay,
             isMultiple: event.isMultiple,
             tolerance: event.tolerance,
+            approxAmount: event.approxAmount,
             profit: event.profit,
             keepTag: event.keepTag,
             startingStake: event.staringStake,

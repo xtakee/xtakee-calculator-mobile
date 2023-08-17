@@ -23,6 +23,7 @@ class Stake {
     bool? authRequired,
     bool? forfeit,
     bool? forfeiture,
+    bool? rounded,
     bool? forfeited,
     String? id,
     String? createdAt,
@@ -35,6 +36,7 @@ class Stake {
     _cycle = cycle;
     _next = next;
     _wins = wins;
+    _rounded = rounded;
     _tolerance = tolerance;
     _overflow = overflow;
     _recovery = recovery;
@@ -72,6 +74,7 @@ class Stake {
   double? _recovery;
   int? _recoveryCycles;
   bool? _cycleRecovered;
+  bool? _rounded;
   bool? _authRequired;
   bool? _forfeit;
   bool? _forfeiture;
@@ -87,9 +90,13 @@ class Stake {
 
   double? get profit => _profit;
 
+  bool get rounded => _rounded ?? false;
+
   int? get cycle => _cycle;
 
   int? get coins => _coins;
+
+  int get balance => (_coins ?? 0) - (_stakes ?? 0);
 
   int get stakes => _stakes ?? 0;
 

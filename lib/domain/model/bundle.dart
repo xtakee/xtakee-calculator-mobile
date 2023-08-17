@@ -1,4 +1,3 @@
-
 class Bundle {
   Bundle({
     num? amount,
@@ -8,7 +7,8 @@ class Bundle {
     String? id,
     String? createdAt,
     String? updatedAt,
-    num? v,}) {
+    num? v,
+  }) {
     _amount = amount;
     _value = value;
     _additionalCharge = additionalCharge;
@@ -28,11 +28,13 @@ class Bundle {
   String? _updatedAt;
   num? _v;
 
-  num? get amount => _amount;
+  double get totalAmount => (amount + additionalCharge) * 1.0;
+
+  num get amount => _amount ?? 0;
 
   int? get value => _value;
 
-  num? get additionalCharge => _additionalCharge;
+  num get additionalCharge => _additionalCharge ?? 0;
 
   List<String>? get description => _description;
 

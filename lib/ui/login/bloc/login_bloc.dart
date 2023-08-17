@@ -7,7 +7,7 @@ import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/iaccount_repository.dart';
 
 import '../../../domain/cache.dart';
-import '../../../domain/irepository.dart';
+import '../../../domain/istake_repository.dart';
 
 part 'login_event.dart';
 
@@ -17,7 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final _accountRepository = GetIt.instance<IAccountRepository>();
 
   final _cache = GetIt.instance<Cache>();
-  final _repository = GetIt.instance<IRepository>();
+  final _repository = GetIt.instance<IStakeRepository>();
 
   final LoginState _state = LoginState(loading: false);
 
@@ -44,13 +44,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         await _accountRepository.login(
-            email: event.email, password: event.password);
+            email: event.email.trim(), password: event.password);
 
         emit(_state.copy(success: true));
       } on ApiException catch (error) {
         if (error is BadRequest) {
           emit(_state.copy(
               error: "You have entered an invalid email or password"));
+        }else {
+          emit(_state.copy(error: error.toString()));
         }
       } catch (error) {
         emit(_state.copy(error: error.toString()));

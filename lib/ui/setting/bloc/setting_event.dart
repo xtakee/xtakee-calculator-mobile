@@ -11,6 +11,7 @@ class UpdateStake extends SettingEvent {
   final bool decay;
   final bool isMultiple;
   final bool keepTag;
+  final bool approxAmount;
   final double staringStake;
   final bool forfeit;
   final bool clearLosses;
@@ -19,6 +20,7 @@ class UpdateStake extends SettingEvent {
   UpdateStake(
       {required this.profit,
       required this.keepTag,
+      required this.approxAmount,
       required this.isMultiple,
       required this.tolerance,
       required this.clearLosses,

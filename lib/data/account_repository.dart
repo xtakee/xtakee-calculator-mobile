@@ -73,4 +73,26 @@ class AccountRepository extends IAccountRepository {
 
   @override
   Future<Summary> getSummary() async => await service.getSummary();
+
+  @override
+  Future<void> resetPassword(
+      {required String otp, required String password}) async {
+    final data = <String, dynamic>{};
+    data['token'] = otp;
+    data['signature'] = cache.getString(PREF_SIGNATURE, "");
+    data['password'] = password;
+    await service
+        .resetPassword(data: data)
+        .then((value) => cache.delete(PREF_SIGNATURE));
+  }
+
+  @override
+  Future<bool> sendOtp({required String email}) async {
+    final data = <String, dynamic>{};
+    data['email'] = email;
+    return await service.sendOtp(data: data).then((signature) {
+      cache.set(PREF_SIGNATURE, signature);
+      return true;
+    });
+  }
 }

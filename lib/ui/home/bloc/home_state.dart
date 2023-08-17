@@ -1,77 +1,53 @@
 part of 'home_bloc.dart';
 
-@immutable
-abstract class HomeState extends Equatable {}
+/*
+* States -->
+* login
+* streakWarning
+* limitWarning
+* error
+* loading
+* tagAdded
+* stake
+* ----->
+ */
 
-class HomeInitial extends HomeState {
-  @override
-  List<Object?> get props => [];
-}
+class HomeState {
+  bool login;
+  bool streakWarning;
+  bool limitWarning;
+  String? error;
+  bool loading;
+  bool tagAdded;
+  Stake? stake;
+  List<Odd>? tags;
 
-class OnCreateStake extends HomeState {
-  @override
-  List<Object?> get props => [];
-}
+  HomeState(
+      {this.loading = false,
+      this.login = false,
+      this.error,
+      this.stake,
+      this.tags,
+      this.limitWarning = false,
+      this.streakWarning = false,
+      this.tagAdded = false});
 
-class OnShowStreakWarning extends HomeState {
-  final List<Odd> odds;
-  final int cycle;
-
-  OnShowStreakWarning({required this.cycle, required this.odds});
-
-  @override
-  List<Object?> get props => [];
-}
-
-class OnShowLimitWarning extends HomeState {
-  final List<Odd> odds;
-  final int cycle;
-
-  OnShowLimitWarning({required this.cycle, required this.odds});
-
-  @override
-  List<Object?> get props => [odds, cycle];
-}
-
-class OnAccount extends HomeState {
-  final Account account;
-
-  OnAccount({required this.account});
-
-  @override
-  List<Object?> get props => [account];
-}
-
-class OnError extends HomeState {
-  final String message;
-
-  OnError({required this.message});
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class OnLoading extends HomeState {
-  @override
-  List<Object?> get props => [];
-}
-
-class OnDataLoaded extends HomeState {
-  Stake stake;
-  List<Odd> odds;
-
-  OnDataLoaded({required this.odds, required this.stake});
-
-  @override
-  List<Object?> get props => [stake, odds];
-}
-
-class OnTagAdded extends HomeState {
-  Stake stake;
-  List<Odd> odds;
-
-  OnTagAdded({required this.odds, required this.stake});
-
-  @override
-  List<Object?> get props => [stake, odds];
+  HomeState copy(
+          {bool login = false,
+          bool streakWarning = false,
+          bool limitWarning = false,
+          String? error,
+          List<Odd>? tags,
+          bool loading = false,
+          bool tagAdded = false,
+          Stake? stake}) =>
+      HomeState(
+          error: error,
+          streakWarning: streakWarning,
+          limitWarning: limitWarning,
+          loading: loading,
+          login: login,
+          tagAdded: tagAdded,
+          tags: tags ?? this.tags,
+          stake: stake ?? this.stake);
 }

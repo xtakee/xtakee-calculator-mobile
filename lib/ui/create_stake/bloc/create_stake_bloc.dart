@@ -3,15 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-
-import '../../../domain/irepository.dart';
+import '../../../domain/istake_repository.dart';
 
 part 'create_stake_event.dart';
-
 part 'create_stake_state.dart';
 
 class CreateStakeBloc extends Bloc<CreateStakeEvent, CreateStakeState> {
-  final _repository = GetIt.instance<IRepository>();
+  final _repository = GetIt.instance<IStakeRepository>();
 
   void validateLicence({required String licence}) =>
       add(ValidateLicence(licence: licence));

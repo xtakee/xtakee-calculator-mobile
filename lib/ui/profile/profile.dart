@@ -92,7 +92,9 @@ class _State extends State<Profile> {
                           _item(
                               label: "Coins",
                               icon: Res.coins_bal,
-                              value: (state.stake?.coins).toString())
+                              value: ((state.stake?.coins ?? 0) -
+                                      (state.stake?.stakes ?? 0))
+                                  .toString())
                         else
                           _summaryItemLoader(),
                         Container(
@@ -220,6 +222,7 @@ class _State extends State<Profile> {
                             XSwitch(
                                 label: "Show Password",
                                 value: showPassword,
+                                alignment: MainAxisAlignment.end,
                                 onChanged: (x) {
                                   setState(() {
                                     showPassword = x;

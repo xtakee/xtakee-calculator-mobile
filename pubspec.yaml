@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.4+5
+version: 1.2.1+12
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
@@ -51,6 +51,7 @@ dependencies:
   floating: ^2.0.1
   lottie: ^2.6.0
   meta:
+  pinput: ^3.0.0
   percent_indicator: ^4.2.3
   flutterwave_standard: ^1.0.8
   infinite_scroll_pagination: ^3.2.0
@@ -60,6 +61,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.5
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.6.5
 
 dependency_overrides:
   webview_flutter: ^4.2.2
@@ -99,6 +102,7 @@ flutter:
     - assets/coins_bal.svg
     - assets/empty.json
     - assets/flutterwave.png
+    - assets/forgot_password.json
     - assets/games.png
     - assets/hurry_animation.json
     - assets/intro_background.svg
@@ -110,6 +114,7 @@ flutter:
     - assets/light_asset_bg.svg
     - assets/linear_loader.json
     - assets/loading_linear.json
+    - assets/lock_password.json
     - assets/logo.svg
     - assets/logo_dark.svg
     - assets/logo_with_name.svg
@@ -126,6 +131,7 @@ flutter:
     - assets/trophy.png
     - assets/trophy_icon.svg
     - assets/trophy_thick.svg
+    - assets/verify_email.json
     - assets/verve_card.png
     - assets/visa_card.png
     - assets/wallet.json

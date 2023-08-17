@@ -350,7 +350,7 @@ class _State extends State<Checkout> {
                     width: 5.w,
                   ),
                   Text(
-                    Formatter.format((widget.selectedBundle.amount ?? 0) * 1.0,
+                    Formatter.format((widget.selectedBundle.totalAmount) * 1.0,
                         symbol: ''),
                     textScaleFactor: scale,
                     style: const TextStyle(

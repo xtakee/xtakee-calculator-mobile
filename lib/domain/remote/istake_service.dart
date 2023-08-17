@@ -8,7 +8,7 @@ import '../../data/remote/model/validate_licence_response.dart';
 import '../model/bundle.dart';
 import '../model/stake.dart';
 
-abstract class IService {
+abstract class IStakeService {
   Future<Stake> getStake();
 
   Future<Stake> deleteTag({required String tagId, required bool won});

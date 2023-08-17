@@ -11,8 +11,6 @@ const baseProductionWebUrl = "https://xtakee.com/";
 const payStackProductionKey = "pk_live_9833f8c67365af28857226560114ba0dfd2840b3";
 const flutterWaveProductionKey = "FLWPUBK-537ba42f8bb83e6785c156a042e8a317-X";
 
-
 const privacyPolicy = "privacy";
 const termsAndConditions = "terms-and-conditions";
-const signUp = "#step-one";
 const faqs = "faqs";

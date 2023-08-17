@@ -4,14 +4,13 @@ import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/home/home.dart';
 import 'package:stake_calculator/ui/onboarding/onboarding.dart';
 import 'package:stake_calculator/util/dimen.dart';
-import 'package:stake_calculator/util/log.dart';
 
-import 'domain/irepository.dart';
+import 'domain/istake_repository.dart';
 
 final navigator = GlobalKey<NavigatorState>(); //Create a key for navigator
 
 class App extends StatelessWidget {
-  final _repository = GetIt.instance<IRepository>();
+  final _repository = GetIt.instance<IStakeRepository>();
 
   App({super.key});
 
