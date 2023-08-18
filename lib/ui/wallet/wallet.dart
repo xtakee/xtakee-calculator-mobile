@@ -91,8 +91,8 @@ class _State extends State<Wallet> {
                       children: [
                         Text(
                           "Transactions",
-                          textScaleFactor: scale,
-                          style: const TextStyle(color: Colors.black),
+                          style:
+                              TextStyle(color: Colors.black, fontSize: 18.sp),
                         )
                       ],
                     ) //CollapsedAppBarContent(movieDetails: movieDetails),
@@ -171,8 +171,7 @@ class _State extends State<Wallet> {
                 children: [
                   Text(
                     "Coins",
-                    textScaleFactor: scale,
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16.sp),
                   ),
                   BlocBuilder(
                       bloc: bloc,
@@ -188,10 +187,9 @@ class _State extends State<Wallet> {
 
                         return Text(
                           balance.toString(),
-                          textScaleFactor: scale,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: Colors.black87,
-                              fontSize: 28,
+                              fontSize: 28.sp,
                               fontWeight: FontWeight.w900),
                         );
                       }),
@@ -214,10 +212,10 @@ class _State extends State<Wallet> {
                           Container(
                             width: 8.w,
                           ),
-                          const Text(
+                          Text(
                             "Buy Coins",
                             style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white),
                           )
@@ -241,8 +239,7 @@ class _State extends State<Wallet> {
               children: [
                 Text(
                   "Recent Transactions",
-                  textScaleFactor: scale,
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 16.sp),
                 ),
                 GestureDetector(
                   onTap: () => AppRouter.gotoWidget(const Payment(), context),
@@ -250,9 +247,8 @@ class _State extends State<Wallet> {
                     children: [
                       Text(
                         "View All",
-                        textScaleFactor: scale,
-                        style: const TextStyle(
-                            fontSize: 16,
+                        style: TextStyle(
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: primaryColor),
                       ),

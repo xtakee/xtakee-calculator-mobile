@@ -133,35 +133,44 @@ class _State extends State<OnBoarding> {
           {required String title,
           required String description,
           required String image}) =>
-      Column(
+      Stack(
         children: [
-          SvgPicture.asset(
-            image,
-            height: 428.h,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(left: 16.w, bottom: 10.h, top: 32.h),
-                child: Text(
-                  title,
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 30.sp, height: 1.1.h),
-                ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  description,
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
-                ),
-              )
-            ],
-          )
+          Positioned(
+              bottom: 32.h,
+              top: 0,
+              right: 0,
+              left: 0,
+              child: SvgPicture.asset(image)),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              right: 16.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.only(
+                        left: 16.w, right: 16.w, bottom: 10.h, top: 32.h),
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28.sp,
+                          height: 1.1.h),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Text(
+                      description,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 16.sp),
+                    ),
+                  )
+                ],
+              ))
         ],
       );
 

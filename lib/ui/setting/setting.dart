@@ -103,8 +103,7 @@ class _State extends State<Setting> {
           children: [
             Text(
               "Settings",
-              textScaleFactor: scale,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontSize: 18.sp),
             ),
             GestureDetector(
               onTap: () => _save(),
@@ -288,10 +287,9 @@ class _State extends State<Setting> {
                                 borderRadius: BorderRadius.circular(10)),
                             child: Text(
                               "Save Changes",
-                              textScaleFactor: scale,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -355,9 +353,8 @@ class _State extends State<Setting> {
                 child,
                 Text(
                   description,
-                  textScaleFactor: scale,
                   textAlign: TextAlign.start,
-                  style: const TextStyle(fontSize: 14, color: Colors.black38),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black38),
                 ),
               ],
             ),

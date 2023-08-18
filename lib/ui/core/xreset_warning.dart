@@ -18,25 +18,24 @@ class XResetWarning extends StatelessWidget {
           children: [
             RichText(
               softWrap: true,
-              textScaleFactor: scale,
               overflow: TextOverflow.clip,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text: "Reset Rounds\n\n",
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.redAccent,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold),
                   children: [
-                    const TextSpan(
+                    TextSpan(
                         text:
                             "This will reset your rounds. Kindly tell us why.\n",
-                        style: TextStyle(color: Colors.black, fontSize: 16)),
+                        style: TextStyle(color: Colors.black, fontSize: 16.sp)),
                     TextSpan(
                         text: "Please note this is not reversible",
                         style: TextStyle(
                             color: Colors.redAccent.withOpacity(0.5),
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold))
                   ]),
             ),

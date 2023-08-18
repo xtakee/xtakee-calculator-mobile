@@ -9,7 +9,6 @@ import 'package:stake_calculator/ui/otp_verification/otp_verification.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
-import '../../util/dimen.dart';
 import '../commons.dart';
 import '../core/widget/XState.dart';
 
@@ -40,8 +39,7 @@ class _State extends XState<ForgotPassword> {
           ),
           title: Text(
             "Forgot Password",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
           backgroundColor: Colors.white,
         ),

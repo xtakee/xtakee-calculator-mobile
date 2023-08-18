@@ -75,8 +75,7 @@ class _State extends State<BetHistory> {
             children: [
               Text(
                 "History",
-                textScaleFactor: scale,
-                style: const TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 18.sp),
               ),
               GestureDetector(
                 onTap: () => setState(() {

@@ -53,8 +53,7 @@ class _State extends State<Payment> {
           ),
           title: Text(
             "Transactions",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
           backgroundColor: Colors.white,
         ),

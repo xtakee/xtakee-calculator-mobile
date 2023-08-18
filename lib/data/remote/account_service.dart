@@ -27,7 +27,7 @@ class AccountService extends IAccountService {
   @override
   Future<AuthResponse> login({required Map<String, dynamic> data}) async {
     try {
-      final response = await client.post('/account/app/login', data: data);
+      final response = await client.post('/account/login', data: data);
       return JsonAuthResponseMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);
@@ -37,7 +37,7 @@ class AccountService extends IAccountService {
   @override
   Future<AuthResponse> register({required Map<String, dynamic> data}) async {
     try {
-      final response = await client.post('/account/app/create', data: data);
+      final response = await client.post('/account', data: data);
       return JsonAuthResponseMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);

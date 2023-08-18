@@ -68,9 +68,8 @@ class _State extends State<PaymentMethod> {
               children: [
                 Text(
                   "Payment Method",
-                  textScaleFactor: scale,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
+                  style:
+                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 ),
                 Container(
                   height: 10.h,
@@ -127,17 +126,15 @@ class _State extends State<PaymentMethod> {
                                   children: [
                                     Text(
                                       "${mandate.brand!.toTitleCase()} Card",
-                                      textScaleFactor: scale,
-                                      style: const TextStyle(
-                                          fontSize: 15,
+                                      style: TextStyle(
+                                          fontSize: 15.sp,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.black),
                                     ),
                                     Text(
                                       "*********** ${mandate.last4}",
-                                      textScaleFactor: scale,
-                                      style: const TextStyle(
-                                          fontSize: 13,
+                                      style: TextStyle(
+                                          fontSize: 13.sp,
                                           fontWeight: FontWeight.w300,
                                           color: Colors.black),
                                     )
@@ -176,9 +173,7 @@ class _State extends State<PaymentMethod> {
             ),
           ),
           Positioned(
-              top: 3.h,
-              left: 0,
-              child: widget.selected!.gateway!.toGateway())
+              top: 3.h, left: 0, child: widget.selected!.gateway!.toGateway())
         ],
       );
 }

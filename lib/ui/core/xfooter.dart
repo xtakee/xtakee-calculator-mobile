@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:stake_calculator/ui/core/web_launcher.dart';
 import 'package:stake_calculator/util/dxt.dart';
@@ -11,51 +10,43 @@ class XFooter extends StatelessWidget {
   const XFooter({super.key});
 
   @override
-  Widget build(BuildContext context) =>  Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+  Widget build(BuildContext context) =>
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         GestureDetector(
             onTap: () => AppRouter.gotoWidget(
-                const WebLauncher(
-                    path: termsAndConditions),
-                context),
+                const WebLauncher(path: termsAndConditions), context),
             child: Text(
               "Terms & Conditions",
-              textScaleFactor: scale,
-              style: const TextStyle(
+              style: TextStyle(
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black87),
             )),
         _dot(),
         GestureDetector(
             onTap: () => AppRouter.gotoWidget(
-                const WebLauncher(
-                    path: privacyPolicy),
-                context),
+                const WebLauncher(path: privacyPolicy), context),
             child: Text("Privacy",
-                textScaleFactor: scale,
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.w500,
+                    fontSize: 16.sp,
                     color: Colors.black87))),
         _dot(),
         GestureDetector(
-          onTap: () => AppRouter.gotoWidget(
-              const WebLauncher(path: faqs), context),
+          onTap: () =>
+              AppRouter.gotoWidget(const WebLauncher(path: faqs), context),
           child: Text(
             "FAQs",
-            textScaleFactor: scale,
-            style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.black87),
+            style: TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 16.sp, color: Colors.black87),
           ),
         )
       ]);
 
   _dot() => Container(
-      width: 5.h,
-      height: 5.h,
+      width: 10.h,
+      height: 10.h,
       margin: EdgeInsets.symmetric(horizontal: 10.w),
       decoration:
-      const BoxDecoration(shape: BoxShape.circle, color: Colors.black87));
-
+          const BoxDecoration(shape: BoxShape.circle, color: Colors.black87));
 }

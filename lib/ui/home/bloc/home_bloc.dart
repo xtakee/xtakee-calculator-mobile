@@ -83,7 +83,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final stake = await _repository.getStake(cached: true);
 
         emit(
-            state.copy(tags: odds, stake: _getStake(stake: stake, tags: odds)));
+            state.copy(tags: odds, stake: _getStake(stake: stake, tags: odds), tagAdded: true));
       } catch (error) {
         emit(state.copy(error: "Error adding tag. Try again"));
       }

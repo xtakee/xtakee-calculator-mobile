@@ -15,7 +15,7 @@ extension ExtDouble on double {
 
   double get h => getHeight(this);
 
-  double get sp => getWidth(this * 1.0);
+  double get sp => (this * 1.0) / scaleFactor;
 }
 
 extension ExtInt on int {
@@ -23,7 +23,7 @@ extension ExtInt on int {
 
   double get h => getHeight(this * 1.0);
 
-  double get sp => getWidth(this * 1.0);
+  double get sp => (this * 1.0) / (scaleFactor / widthScale);
 }
 
 extension ExtStake on Stake {

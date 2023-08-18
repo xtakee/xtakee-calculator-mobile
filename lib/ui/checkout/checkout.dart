@@ -13,12 +13,10 @@ import 'package:stake_calculator/ui/checkout/component/payment_processor.dart';
 import 'package:stake_calculator/ui/checkout/component/payment_successful.dart';
 import 'package:stake_calculator/ui/checkout/component/payment_timeout.dart';
 import 'package:stake_calculator/ui/core/xcard.dart';
-import 'package:stake_calculator/ui/debit_card/debit_card.dart';
 import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
-import 'package:stake_calculator/util/log.dart';
 
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
@@ -82,8 +80,7 @@ class _State extends State<Checkout> {
           ),
           title: Text(
             "Checkout",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
         ),
         body: SafeArea(
@@ -200,17 +197,15 @@ class _State extends State<Checkout> {
                                         children: [
                                           Text(
                                             "${bloc.selected!.brand!.toTitleCase()} Card",
-                                            textScaleFactor: scale,
-                                            style: const TextStyle(
-                                                fontSize: 16,
+                                            style: TextStyle(
+                                                fontSize: 16.sp,
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.black),
                                           ),
                                           Text(
                                             "*********** ${bloc.selected!.last4}",
-                                            textScaleFactor: scale,
-                                            style: const TextStyle(
-                                                fontSize: 14,
+                                            style: TextStyle(
+                                                fontSize: 14.sp,
                                                 fontWeight: FontWeight.w300,
                                                 color: Colors.black),
                                           )
@@ -244,9 +239,8 @@ class _State extends State<Checkout> {
                                     margin: EdgeInsets.only(right: 10.w),
                                     child: Text(
                                       "Change",
-                                      textScaleFactor: scale,
-                                      style: const TextStyle(
-                                          fontSize: 14,
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w600,
                                           color: primaryColor),
                                     ),
@@ -259,7 +253,7 @@ class _State extends State<Checkout> {
                         Positioned(
                             top: 0,
                             right: 0,
-                            child: bloc.selected!.gateway!.toGateway())
+                            child: bloc.selected!.gateway!.toGateway(),)
                     ],
                   )),
             XCard(
@@ -291,19 +285,14 @@ class _State extends State<Checkout> {
                           ),
                           Text(
                             " New Payment Method",
-                            textScaleFactor: scale,
-                            style: const TextStyle(
-                                fontSize: 16,
+                            style: TextStyle(
+                                fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
                                 color: primaryColor),
                           )
                         ],
                       ),
                     ),
-                    ExpandablePanel(
-                      expand: isNewCard,
-                      child: const DebitCard(),
-                    )
                   ],
                 ))
           ],
@@ -319,9 +308,9 @@ class _State extends State<Checkout> {
           children: [
             Container(
               padding: EdgeInsets.only(bottom: 16.h),
-              child: const Text(
+              child: Text(
                 "Total",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16.sp),
               ),
             ),
             Container(
@@ -340,9 +329,9 @@ class _State extends State<Checkout> {
                     decoration: BoxDecoration(
                         color: colorGreen,
                         borderRadius: BorderRadius.circular(5)),
-                    child: const Text("#",
+                    child: Text("#",
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white)),
                   ),
@@ -352,9 +341,8 @@ class _State extends State<Checkout> {
                   Text(
                     Formatter.format((widget.selectedBundle.totalAmount) * 1.0,
                         symbol: ''),
-                    textScaleFactor: scale,
-                    style: const TextStyle(
-                        fontSize: 30,
+                    style: TextStyle(
+                        fontSize: 30.sp,
                         fontWeight: FontWeight.bold,
                         color: colorGreen),
                   )

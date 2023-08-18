@@ -50,6 +50,7 @@ class XTextField extends StatefulWidget {
 
 class _State extends State<XTextField> {
   bool showClear = false;
+  bool showSecret = false;
 
   @override
   void initState() {
@@ -73,7 +74,7 @@ class _State extends State<XTextField> {
         keyboardType: widget.inputType,
         controller: widget.controller,
         enabled: widget.enable,
-        obscureText: widget.isSecret,
+        obscureText: widget.isSecret && !showSecret,
         style: const TextStyle(fontWeight: FontWeight.w500),
         inputFormatters: widget.inputFormatters,
         onChanged: (x) {
@@ -103,14 +104,24 @@ class _State extends State<XTextField> {
             visible: showClear && widget.showSuffix,
             child: GestureDetector(
               onTap: () {
-                widget.focusNode?.requestFocus();
-                widget.controller.clear();
-                if (widget.onClear != null) {
-                  widget.onClear!();
+                if (!widget.isSecret) {
+                  widget.focusNode?.requestFocus();
+                  widget.controller.clear();
+                  if (widget.onClear != null) {
+                    widget.onClear!();
+                  }
+                } else {
+                  setState(() {
+                    showSecret = !showSecret;
+                  });
                 }
               },
-              child: const Icon(
-                Icons.clear,
+              child: Icon(
+                widget.isSecret
+                    ? (showSecret
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined)
+                    : Icons.clear,
                 color: Colors.black45,
               ),
             ),

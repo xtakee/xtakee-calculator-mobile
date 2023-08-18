@@ -26,31 +26,30 @@ class XDeleteTagWarning extends StatelessWidget {
           children: [
             RichText(
               softWrap: true,
-              textScaleFactor: scale,
               overflow: TextOverflow.clip,
               textAlign: TextAlign.center,
               text: TextSpan(
                   text: "Delete ",
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.redAccent,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
                         text: "${tag.name}?\n\n",
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: Colors.red,
-                            fontSize: 18,
+                            fontSize: 18.sp,
                             fontWeight: FontWeight.w900)),
-                    const TextSpan(
+                    TextSpan(
                         text:
                             "You are about to delete a tag. Kindly tell us why.\n",
-                        style: TextStyle(color: Colors.black, fontSize: 16)),
+                        style: TextStyle(color: Colors.black, fontSize: 16.sp)),
                     TextSpan(
                         text: "Please note this is not reversible",
                         style: TextStyle(
                             color: Colors.redAccent.withOpacity(0.5),
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold))
                   ]),
             ),

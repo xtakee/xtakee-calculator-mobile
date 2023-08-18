@@ -35,10 +35,9 @@ class XWarningButtons extends StatelessWidget {
                       color: colorGreen),
                   child: Text(
                     "I Won",
-                    textScaleFactor: scale,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: Colors.white,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -57,9 +56,9 @@ class XWarningButtons extends StatelessWidget {
                       color: Colors.red.withOpacity(0.7)),
                   child: Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: Colors.white,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -70,12 +69,12 @@ class XWarningButtons extends StatelessWidget {
             onTap: () => AppRouter.goBack(context),
             child: Container(
               margin: EdgeInsets.only(top: 16.w),
-              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-              child: const Text(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Text(
                 "Cancel",
                 style: TextStyle(
                     color: Colors.black45,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.bold),
               ),
             ),

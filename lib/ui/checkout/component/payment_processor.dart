@@ -25,8 +25,7 @@ class PaymentProcessor extends StatelessWidget {
           children: [
             Text(
               "Continue with",
-              textScaleFactor: scale,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
             ),
             _type(context,
                 icon: Image.asset(
@@ -83,9 +82,8 @@ class PaymentProcessor extends StatelessWidget {
                   ),
                   Text(
                     label,
-                    textScaleFactor: scale,
-                    style: const TextStyle(
-                        fontSize: 15,
+                    style: TextStyle(
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black),
                   )

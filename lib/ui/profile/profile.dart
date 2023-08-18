@@ -28,8 +28,6 @@ class _State extends State<Profile> {
 
   final _bloc = ProfileBloc();
 
-  bool showPassword = false;
-
   @override
   void initState() {
     super.initState();
@@ -53,8 +51,7 @@ class _State extends State<Profile> {
           ),
           title: Text(
             "Profile",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
           backgroundColor: Colors.white,
         ),
@@ -141,7 +138,7 @@ class _State extends State<Profile> {
                       "Personal Information",
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          color: Colors.black38,
+                          color: Colors.black54,
                           fontSize: 14.sp),
                     ),
                     XCard(
@@ -192,7 +189,7 @@ class _State extends State<Profile> {
                       "Change Password",
                       style: TextStyle(
                           fontWeight: FontWeight.w300,
-                          color: Colors.black38,
+                          color: Colors.black54,
                           fontSize: 14.sp),
                     ),
                     XCard(
@@ -205,7 +202,7 @@ class _State extends State<Profile> {
                                 label: "Old Password",
                                 inputType: TextInputType.text,
                                 errorText: state.oldPassError,
-                                isSecret: !showPassword,
+                                isSecret: true,
                                 controller: _oldTextController),
                             Container(
                               height: 16.h,
@@ -214,22 +211,10 @@ class _State extends State<Profile> {
                                 label: "New Password",
                                 errorText: state.newPassError,
                                 inputType: TextInputType.text,
-                                isSecret: !showPassword,
+                                isSecret: true,
                                 controller: _newTextController),
                             Container(
-                              height: 5.h,
-                            ),
-                            XSwitch(
-                                label: "Show Password",
-                                value: showPassword,
-                                alignment: MainAxisAlignment.end,
-                                onChanged: (x) {
-                                  setState(() {
-                                    showPassword = x;
-                                  });
-                                }),
-                            Container(
-                              height: 16.h,
+                              height: 24.h,
                             ),
                             XButton(
                                 label: "Save Changes",

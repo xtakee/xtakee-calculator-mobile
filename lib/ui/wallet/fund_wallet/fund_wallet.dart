@@ -84,8 +84,7 @@ class _State extends State<FundWallet> {
             ),
             title: Text(
               "Buy Coins",
-              textScaleFactor: scale,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontSize: 18.sp),
             ),
           ),
           backgroundColor: primaryBackground,
@@ -157,14 +156,14 @@ class _State extends State<FundWallet> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Amount: ",
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                     Text(
                       Formatter.format(amount),
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.sp, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -186,9 +185,8 @@ class _State extends State<FundWallet> {
                     ),
                     Text(
                       value.toString(),
-                      textScaleFactor: scale,
-                      style: const TextStyle(
-                          fontSize: 30,
+                      style: TextStyle(
+                          fontSize: 30.sp,
                           fontWeight: FontWeight.bold,
                           color: colorGreen),
                     )
@@ -212,8 +210,7 @@ class _State extends State<FundWallet> {
             alignment: Alignment.topLeft,
             child: Text(
               "Select a bundle to continue",
-              textScaleFactor: scale,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
             ),
           ),
           XChip(

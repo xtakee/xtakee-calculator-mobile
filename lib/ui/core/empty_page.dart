@@ -24,8 +24,7 @@ class EmptyPage extends StatelessWidget {
           Container(height: (MediaQuery.of(context).size.height * 0.2).h),
           Text(
             description,
-            textScaleFactor: scale,
-            style: const TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 18.sp),
           ),
           Container(
             height: 16.h,

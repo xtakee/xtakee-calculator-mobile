@@ -445,11 +445,14 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                   return Row(
                     key: profitKey,
                     children: [
-                      const Text("Profit: "),
+                      Text(
+                        "Profit: ",
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
                       Text(
                         Formatter.format(profit * 1.0),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16.sp),
                       )
                     ],
                   );
@@ -478,11 +481,10 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                         ),
                         Text(
                           "$coins",
-                          textScaleFactor: scale,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: primaryColor,
-                              fontSize: 16),
+                              fontSize: 16.sp),
                         )
                       ],
                     ),
@@ -505,11 +507,10 @@ class _State extends XState<Home> with TickerProviderStateMixin {
               children: [
                 Text(
                   "Amount to stake",
-                  textScaleFactor: scale,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: Colors.black54,
                       fontWeight: FontWeight.w600,
-                      fontSize: 16),
+                      fontSize: 16.sp),
                 ),
                 BlocBuilder(
                   builder: (_, HomeState state) {
@@ -520,10 +521,9 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                     return Text(
                       Formatter.format(amount * 1.0,
                           decimals: (state.stake?.rounded ?? false) ? 0 : 2),
-                      textScaleFactor: scale,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: primaryColor,
-                          fontSize: 32,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.w800),
                     );
                   },
@@ -565,18 +565,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                             children: [
                               Text(
                                 "Expected Win:",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 12,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
                               Text(
                                 Formatter.format(win.toDouble()),
-                                textScaleFactor: scale,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                     color: Colors.green.withOpacity(0.9)),
                               )
                             ],
@@ -587,17 +585,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                             children: [
                               Text(
                                 "Losses:",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 12,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
                               Text(
                                 Formatter.format(losses * 1.0),
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp),
                               )
                             ],
                           ),
@@ -607,17 +604,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                             children: [
                               Text(
                                 "Round:",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontSize: 12,
+                                style: TextStyle(
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black54),
                               ),
                               Text(
                                 "#$next",
-                                textScaleFactor: scale,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.sp),
                               )
                             ],
                           ),

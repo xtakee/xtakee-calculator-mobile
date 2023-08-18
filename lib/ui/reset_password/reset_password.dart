@@ -9,9 +9,7 @@ import 'package:stake_calculator/ui/core/xtext_field.dart';
 import 'package:stake_calculator/ui/reset_password/bloc/reset_password_bloc.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
-import '../../util/dimen.dart';
 import '../core/widget/XState.dart';
-import '../core/xswitch.dart';
 import 'component/password_reset_success.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -28,8 +26,6 @@ class _State extends XState<ResetPassword> {
   final _confirmPasswordController = TextEditingController();
 
   final _bloc = ResetPasswordBloc();
-
-  bool showPassword = false;
 
   @override
   void dispose() {
@@ -48,8 +44,7 @@ class _State extends XState<ResetPassword> {
           ),
           title: Text(
             "Reset Password",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
           backgroundColor: Colors.white,
         ),
@@ -103,7 +98,7 @@ class _State extends XState<ResetPassword> {
                           XTextField(
                               label: "Password",
                               inputType: TextInputType.text,
-                              isSecret: !showPassword,
+                              isSecret: true,
                               errorText: state.newPasswordError,
                               controller: _passwordController),
                           Container(
@@ -111,19 +106,10 @@ class _State extends XState<ResetPassword> {
                           ),
                           XTextField(
                               label: "Confirm Password",
-                              isSecret: !showPassword,
+                              isSecret: true,
                               inputType: TextInputType.text,
                               errorText: state.confirmPasswordError,
                               controller: _confirmPasswordController),
-                          XSwitch(
-                              label: "Show Password",
-                              alignment: MainAxisAlignment.end,
-                              value: showPassword,
-                              onChanged: (x) {
-                                setState(() {
-                                  showPassword = x;
-                                });
-                              }),
                           Container(
                             height: 32.h,
                           ),

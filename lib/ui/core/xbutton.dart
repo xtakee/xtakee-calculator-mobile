@@ -46,10 +46,9 @@ class XButton extends StatelessWidget {
                 )
               : Text(
                   label,
-                  textScaleFactor: scale,
                   style: TextStyle(
                       color: textColor,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.bold),
                 ),
         ),

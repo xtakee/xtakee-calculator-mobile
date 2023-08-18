@@ -52,8 +52,7 @@ class _State extends State<OtpVerification> {
           ),
           title: Text(
             "Verify Email Address",
-            textScaleFactor: scale,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 18.sp),
           ),
           backgroundColor: Colors.white,
         ),

@@ -14,6 +14,7 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
+import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 
 class Login extends StatefulWidget {
@@ -78,7 +79,9 @@ class _State extends State<Login> {
                   right: 16.w,
                   bottom: 0,
                   child: SafeArea(
-                    child: _page(),
+                    child: SingleChildScrollView(
+                      child: _page(),
+                    ),
                   ))
             ],
           ),
@@ -155,7 +158,7 @@ class _State extends State<Login> {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 32.h),
+            margin: EdgeInsets.only(top: 32.h, bottom: 16.h),
             alignment: Alignment.center,
             child: _create(),
           )
@@ -167,15 +170,14 @@ class _State extends State<Login> {
         child: RichText(
           softWrap: true,
           overflow: TextOverflow.clip,
-          text: const TextSpan(
+          text: TextSpan(
               text: "Don't have an account? ",
-              style: TextStyle(color: Colors.black45, fontSize: 16),
-              children: [
+              style: TextStyle(color: Colors.black45, fontSize: 16.sp),
+              children: const [
                 TextSpan(
                     text: "Sign Up",
                     style: TextStyle(
                         color: primaryColor,
-                        fontSize: 16,
                         fontWeight: FontWeight.w600))
               ]),
         ),
