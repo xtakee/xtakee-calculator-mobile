@@ -44,5 +44,6 @@ class Res {
   static const String visa_card = "assets/visa_card.png";
   static const String wallet = "assets/wallet.json";
   static const String wallet_fund = "assets/wallet_fund.svg";
+  static const String welcome = "assets/welcome.json";
   static const String wins = "assets/wins.svg";
 }

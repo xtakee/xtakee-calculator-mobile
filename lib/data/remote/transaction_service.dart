@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:stake_calculator/data/mapper/json_payment_gateway_mapper.dart';
 import 'package:stake_calculator/data/remote/model/transaction_history_response.dart';
 import 'package:stake_calculator/domain/model/mandate.dart';
+import 'package:stake_calculator/domain/model/payment_gateway.dart';
 import 'package:stake_calculator/domain/model/transaction.dart';
 import 'package:stake_calculator/domain/remote/itransaction_service.dart';
 
@@ -15,7 +17,8 @@ class TransactionService extends ITransactionService {
   TransactionService({required this.client});
 
   @override
-  Future<Transaction> createTransaction({required String bundle, required String gateway}) async {
+  Future<Transaction> createTransaction(
+      {required String bundle, required String gateway}) async {
     try {
       final data = <String, dynamic>{};
       data['bundle'] = bundle;
@@ -32,7 +35,8 @@ class TransactionService extends ITransactionService {
   Future<TransactionHistoryResponse> getTransactions(
       {required int page, required int limit}) async {
     try {
-      final response = await client.get('/transaction/me?page=$page&limit=$limit');
+      final response =
+          await client.get('/transaction/me?page=$page&limit=$limit');
       return JsonTransactionHistoryResponseMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);
@@ -71,7 +75,8 @@ class TransactionService extends ITransactionService {
       data['url'] = url;
       data['mandate'] = mandate;
 
-      final response = await client.post('/transaction/charge-mandate', data: data);
+      final response =
+          await client.post('/transaction/charge-mandate', data: data);
       return JsonTransactionMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);
@@ -82,6 +87,18 @@ class TransactionService extends ITransactionService {
   Future<void> deleteMandate({required String mandate}) async {
     try {
       await client.delete('/transaction/mandate/$mandate');
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<List<PaymentGateway>> getPaymentGateways() async {
+    try {
+      final response =
+          await client.get('/transaction/payment-gateway?status=true');
+      return List<PaymentGateway>.from(
+          response.data['data'].map((e) => JsonPaymentGatewayMapper().from(e)));
     } catch (error) {
       throw ApiErrorHandler.parse(error);
     }

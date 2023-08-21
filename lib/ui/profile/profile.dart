@@ -49,9 +49,9 @@ class _State extends State<Profile> {
           iconTheme: const IconThemeData(
             color: Colors.black, //change your color here
           ),
-          title: Text(
+          title: const Text(
             "Profile",
-            style: TextStyle(color: Colors.black, fontSize: 18.sp),
+            style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.white,
         ),

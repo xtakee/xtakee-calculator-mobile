@@ -9,7 +9,6 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
-import '../../util/dimen.dart';
 import '../commons.dart';
 import '../payment/component/transaction_item.dart';
 import 'fund_wallet/fund_wallet.dart';
@@ -24,7 +23,7 @@ class Wallet extends StatefulWidget {
 class _State extends State<Wallet> {
   final scrollController = ScrollController();
 
-  double collapsedBarHeight = 60.0.h;
+  double collapsedBarHeight = 64.0.h;
   double expandedBarHeight = 230.0.h;
 
   bool isCollapsed = false;

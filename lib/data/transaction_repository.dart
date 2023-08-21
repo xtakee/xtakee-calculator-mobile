@@ -5,16 +5,20 @@ import 'package:stake_calculator/domain/remote/itransaction_service.dart';
 
 import '../domain/cache.dart';
 import '../domain/itransaction_repository.dart';
+import '../domain/model/payment_gateway.dart';
 
 class TransactionRepository extends ITransactionRepository {
   ITransactionService service;
   Cache cache;
   List<Mandate> _mandates = [];
 
+  List<PaymentGateway> _gateways = [];
+
   TransactionRepository({required this.service, required this.cache});
 
   @override
-  Future<Transaction> createTransaction({required String bundle, required String gateway}) async {
+  Future<Transaction> createTransaction(
+      {required String bundle, required String gateway}) async {
     return await service.createTransaction(bundle: bundle, gateway: gateway);
   }
 
@@ -26,7 +30,9 @@ class TransactionRepository extends ITransactionRepository {
 
   @override
   Future<Transaction> completeTransaction({required String reference}) async {
-    return await service.completeTransaction(reference: reference).then((value) {
+    return await service
+        .completeTransaction(reference: reference)
+        .then((value) {
       service.getMandates().then((m) {
         _mandates = m;
       });
@@ -62,5 +68,20 @@ class TransactionRepository extends ITransactionRepository {
       _mandates.removeWhere((element) => element.id == mandate);
       return;
     });
+  }
+
+  @override
+  Future<List<PaymentGateway>> getPaymentGateways() async {
+    if (_gateways.isNotEmpty) {
+      service.getPaymentGateways().then((value) {
+        _gateways = value;
+      });
+      return _gateways;
+    } else {
+      return await service.getPaymentGateways().then((value) {
+        _gateways = value;
+        return value;
+      });
+    }
   }
 }

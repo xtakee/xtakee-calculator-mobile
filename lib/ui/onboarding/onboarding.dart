@@ -136,7 +136,7 @@ class _State extends State<OnBoarding> {
       Stack(
         children: [
           Positioned(
-              bottom: 32.h,
+              bottom: MediaQuery.of(context).size.height * 0.2,
               top: 0,
               right: 0,
               left: 0,

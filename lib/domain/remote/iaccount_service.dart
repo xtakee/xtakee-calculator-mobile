@@ -12,6 +12,8 @@ abstract class IAccountService {
 
   Future<String> sendOtp({required Map<String, dynamic> data});
 
+  Future<void> resendOtp({required Map<String, dynamic> data});
+
   Future<void> resetPassword({required Map<String, dynamic> data});
 
   Future<AuthResponse> register({required Map<String, dynamic> data});

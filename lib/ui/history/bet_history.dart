@@ -73,9 +73,9 @@ class _State extends State<BetHistory> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 "History",
-                style: TextStyle(color: Colors.black, fontSize: 18.sp),
+                style: TextStyle(color: Colors.black),
               ),
               GestureDetector(
                 onTap: () => setState(() {

@@ -103,7 +103,7 @@ class _State extends State<Setting> {
           children: [
             Text(
               "Settings",
-              style: TextStyle(color: Colors.black, fontSize: 18.sp),
+              style: TextStyle(color: Colors.black),
             ),
             GestureDetector(
               onTap: () => _save(),

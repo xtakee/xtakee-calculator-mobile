@@ -14,6 +14,8 @@ abstract class IAccountRepository {
 
   Future<Account> getAccount();
 
+  Future<void> resendOtp();
+
   Future<Summary> getSummary();
 
   Future<bool> sendOtp({required String email});

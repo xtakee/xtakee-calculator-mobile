@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutterwave_standard/core/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/requests/customizations.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/transaction.dart';
-import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/checkout/bloc/checkout_bloc.dart';
 import 'package:stake_calculator/ui/checkout/component/payment_processor.dart';
 import 'package:stake_calculator/ui/checkout/component/payment_successful.dart';
@@ -17,6 +14,8 @@ import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
+import 'package:stake_calculator/util/paystack_checkout.dart';
+import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
@@ -40,14 +39,11 @@ class _State extends State<Checkout> {
   bool isNewCard = false;
   bool isLoading = false;
 
-  final payStack = PaystackPlugin();
   final ProcessIndicator _processIndicator = ProcessIndicator();
 
   @override
   void initState() {
     super.initState();
-
-    payStack.initialize(publicKey: Config.shared.payStackPubKey);
     bloc.getMandates();
   }
 
@@ -78,9 +74,9 @@ class _State extends State<Checkout> {
           iconTheme: const IconThemeData(
             color: Colors.black, //change your color here
           ),
-          title: Text(
+          title: const Text(
             "Checkout",
-            style: TextStyle(color: Colors.black, fontSize: 18.sp),
+            style: TextStyle(color: Colors.black),
           ),
         ),
         body: SafeArea(
@@ -114,6 +110,17 @@ class _State extends State<Checkout> {
             } else if (state is OnTimeOutError) {
               _processIndicator.dismiss().then((_) =>
                   XDialog(context, child: const PaymentTimeout()).show());
+            } else if (state is OnPaymentGateway) {
+              _processIndicator.dismiss().then((_) => XBottomSheet(context,
+                  backgroundColor: primaryBackground,
+                  child: PaymentProcessor(
+                    gateways: state.gateways,
+                    onSelected: (x) {
+                      bloc.createTransaction(
+                          bundle: widget.selectedBundle.id ?? "",
+                          gateway: x.name);
+                    },
+                  )).show());
             }
           },
           builder: (_, state) {
@@ -251,9 +258,10 @@ class _State extends State<Checkout> {
                       ),
                       if (bloc.selected!.gateway != null)
                         Positioned(
-                            top: 0,
-                            right: 0,
-                            child: bloc.selected!.gateway!.toGateway(),)
+                          top: 0,
+                          right: 0,
+                          child: bloc.selected!.gateway!.toGateway(),
+                        )
                     ],
                   )),
             XCard(
@@ -261,16 +269,7 @@ class _State extends State<Checkout> {
                 borderSide: !isNewCard
                     ? BorderSide.none
                     : BorderSide(color: primaryColor, width: 0.5.w),
-                onTap: () {
-                  XBottomSheet(context, backgroundColor: primaryBackground,
-                      child: PaymentProcessor(
-                    onSelected: (x) {
-                      bloc.createTransaction(
-                          bundle: widget.selectedBundle.id ?? "",
-                          gateway: x.name);
-                    },
-                  )).show();
-                },
+                onTap: () => bloc.getGateways(),
                 padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 10.w),
                 child: Column(
                   children: [
@@ -386,31 +385,38 @@ class _State extends State<Checkout> {
   }
 
   void _processPayStackPayment({required Transaction transaction}) {
-    Charge charge = Charge()
-      ..amount = (transaction.amount ?? 0).toInt() * 100
-      ..currency = "NGN"
-      ..reference = transaction.reference
-      ..accessCode = transaction.auth
-      ..email = transaction.account!.email;
-
-    payStack
-        .checkout(context,
-            //fullscreen: true,
-            method: CheckoutMethod.selectable,
-            // Defaults to CheckoutMethod.selectable
-            charge: charge,
-            hideEmail: true,
-            logo: SvgPicture.asset(
-              Res.logo,
-              width: 38,
-              height: 38,
-            ))
-        .then((response) {
-      if (response.status == true) {
-        bloc.completeTransaction(reference: response.reference ?? "");
+    AppRouter.gotoWidget(
+            PaystackCheckout(path: transaction.checkoutUrl), context)
+        .then((result) {
+      if (result != null) {
+        bloc.completeTransaction(reference: transaction.reference ?? "");
       }
-    }).catchError((error) {
-      showSnack(context, message: error.toString(), snackType: SnackType.ERROR);
     });
+    // Charge charge = Charge()
+    //   ..amount = (transaction.amount ?? 0).toInt() * 100
+    //   ..currency = "NGN"
+    //   ..reference = transaction.reference
+    //   ..accessCode = transaction.auth
+    //   ..email = transaction.account!.email;
+    //
+    // payStack
+    //     .checkout(context,
+    //         //fullscreen: true,
+    //         method: CheckoutMethod.selectable,
+    //         // Defaults to CheckoutMethod.selectable
+    //         charge: charge,
+    //         hideEmail: true,
+    //         logo: SvgPicture.asset(
+    //           Res.logo,
+    //           width: 38,
+    //           height: 38,
+    //         ))
+    //     .then((response) {
+    //   if (response.status == true) {
+    //     bloc.completeTransaction(reference: response.reference ?? "");
+    //   }
+    // }).catchError((error) {
+    //   showSnack(context, message: error.toString(), snackType: SnackType.ERROR);
+    // });
   }
 }

@@ -95,4 +95,11 @@ class AccountRepository extends IAccountRepository {
       return true;
     });
   }
+
+  @override
+  Future<void> resendOtp() async {
+    final data = <String, dynamic>{};
+    data['signature'] = cache.getString(PREF_SIGNATURE, "");
+    return await service.resendOtp(data: data);
+  }
 }

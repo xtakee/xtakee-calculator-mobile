@@ -4,6 +4,7 @@ import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
+import '../../../domain/model/payment_gateway.dart';
 import '../../../util/dimen.dart';
 import '../../commons.dart';
 import '../../core/xcard.dart';
@@ -12,8 +13,10 @@ enum Processor { paystack, flutterwave }
 
 class PaymentProcessor extends StatelessWidget {
   final Function(Processor processor) onSelected;
+  final List<PaymentGateway> gateways;
 
-  const PaymentProcessor({super.key, required this.onSelected});
+  const PaymentProcessor(
+      {super.key, required this.onSelected, required this.gateways});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -27,27 +30,35 @@ class PaymentProcessor extends StatelessWidget {
               "Continue with",
               style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
             ),
-            _type(context,
-                icon: Image.asset(
-                  Res.flutterwave,
-                  height: 24.h,
-                  width: 24.w,
-                  fit: BoxFit.fill,
-                ),
-                label: "Flutterwave",
-                onTap: () => onSelected(Processor.flutterwave)),
-            // _type(context,
-            //     icon: Container(
-            //       height: 24.h,
-            //       width: 24.w,
-            //       padding: EdgeInsets.only(right: 6.w, left: 3.w),
-            //       child: SvgPicture.asset(
-            //         Res.paystack,
-            //         height: 15.h,
-            //       ),
-            //     ),
-            //     label: "Paystack",
-            //     onTap: () => onSelected(Processor.paystack))
+            if (gateways
+                    .where((gateway) => gateway.name == "Flutterwave")
+                    .firstOrNull !=
+                null)
+              _type(context,
+                  icon: Image.asset(
+                    Res.flutterwave,
+                    height: 24.h,
+                    width: 24.w,
+                    fit: BoxFit.fill,
+                  ),
+                  label: "Flutterwave",
+                  onTap: () => onSelected(Processor.flutterwave)),
+            if (gateways
+                    .where((gateway) => gateway.name == "Paystack")
+                    .firstOrNull !=
+                null)
+              _type(context,
+                  icon: Container(
+                    height: 24.h,
+                    width: 24.w,
+                    padding: EdgeInsets.only(right: 6.w, left: 3.w),
+                    child: SvgPicture.asset(
+                      Res.paystack,
+                      height: 15.h,
+                    ),
+                  ),
+                  label: "Paystack",
+                  onTap: () => onSelected(Processor.paystack))
           ],
         ),
       );

@@ -1,19 +1,20 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
+import 'package:stake_calculator/domain/iaccount_repository.dart';
 import 'package:stake_calculator/res.dart';
+import 'package:stake_calculator/ui/core/widget/XState.dart';
 import 'package:stake_calculator/ui/core/xbutton.dart';
 import 'package:stake_calculator/ui/reset_password/reset_password.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
-import '../../util/dimen.dart';
 import '../commons.dart';
 
 class OtpVerification extends StatefulWidget {
-
   final String emailAddress;
 
   const OtpVerification({super.key, required this.emailAddress});
@@ -22,7 +23,8 @@ class OtpVerification extends StatefulWidget {
   State<StatefulWidget> createState() => _State();
 }
 
-class _State extends State<OtpVerification> {
+class _State extends XState<OtpVerification> {
+  final _accountRepository = GetIt.instance<IAccountRepository>();
   final _controller = TextEditingController();
   final focusNode = FocusNode();
   bool canProceed = false;
@@ -110,9 +112,7 @@ class _State extends State<OtpVerification> {
                               _controller.setText(value);
                             },
                             hapticFeedbackType: HapticFeedbackType.lightImpact,
-                            onCompleted: (pin) {
-
-                            },
+                            onCompleted: (pin) {},
                             onChanged: (value) {
                               setState(() {
                                 canProceed = value.length == 4;
@@ -142,12 +142,43 @@ class _State extends State<OtpVerification> {
                                 context)),
                         Container(
                           height: 24.h,
-                        )
+                        ),
+                        _resendOtp(),
+                        Container(
+                          height: 24.h,
+                        ),
                       ],
                     ))
               ],
             ),
           ),
+        ),
+      );
+
+  Widget _resendOtp() => GestureDetector(
+        onTap: () {
+          showProcessIndicator();
+          _accountRepository.resendOtp().then((value) {
+            dismissProcessIndicator();
+          }).onError((error, stackTrace) {
+            dismissProcessIndicator().then((_) {
+              showMessage(
+                  message: error.toString(), snackType: SnackType.ERROR);
+            });
+          });
+        },
+        child: RichText(
+          softWrap: true,
+          overflow: TextOverflow.clip,
+          text: TextSpan(
+              text: "Didn't get OTP? ",
+              style: TextStyle(color: Colors.black45, fontSize: 16.sp),
+              children: const [
+                TextSpan(
+                    text: "Send again",
+                    style: TextStyle(
+                        color: primaryColor, fontWeight: FontWeight.w600))
+              ]),
         ),
       );
 }

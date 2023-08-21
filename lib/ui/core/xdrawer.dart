@@ -57,7 +57,7 @@ Widget _header(BuildContext context,
           Container(
             width: 38.h,
             height: 38.h,
-            margin: EdgeInsets.only(bottom: 16.h),
+            margin: EdgeInsets.only(bottom: 10.h),
             decoration: const BoxDecoration(
               color: backgroundAccent,
               shape: BoxShape.circle,
@@ -116,7 +116,7 @@ class _State extends State<XDrawer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  margin: EdgeInsets.only(left: 16.w, top: 48.h, bottom: 32.h),
+                  margin: EdgeInsets.only(left: 16.w, top: 32.h, bottom: 16.h),
                   child:
                       _header(context, account: account, loading: isLoading)),
               Container(

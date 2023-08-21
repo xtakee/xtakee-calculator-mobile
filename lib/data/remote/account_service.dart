@@ -82,4 +82,13 @@ class AccountService extends IAccountService {
       throw ApiErrorHandler.parse(error);
     }
   }
+
+  @override
+  Future<void> resendOtp({required Map<String, dynamic> data}) async {
+    try {
+      await client.post('/account/resend-reset-otp', data: data);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
 }

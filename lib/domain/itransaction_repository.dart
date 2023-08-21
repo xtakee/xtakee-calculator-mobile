@@ -1,6 +1,7 @@
 import 'package:stake_calculator/domain/model/mandate.dart';
 
 import '../data/remote/model/transaction_history_response.dart';
+import 'model/payment_gateway.dart';
 import 'model/transaction.dart';
 
 abstract class ITransactionRepository {
@@ -11,6 +12,8 @@ abstract class ITransactionRepository {
       {required String bundle, required String gateway});
 
   Future<Transaction> completeTransaction({required String reference});
+
+  Future<List<PaymentGateway>> getPaymentGateways();
 
   Future<List<Mandate>> getMandates();
 

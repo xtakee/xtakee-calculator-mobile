@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
+import 'package:stake_calculator/main.dart';
 import 'package:stake_calculator/ui/core/widget/XState.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
 import 'package:stake_calculator/ui/core/xdelete_tag_warning.dart';
@@ -11,9 +12,11 @@ import 'package:stake_calculator/ui/core/xdialog.dart';
 import 'package:stake_calculator/ui/core/xdrawer.dart';
 import 'package:stake_calculator/ui/home/bloc/home_bloc.dart';
 import 'package:stake_calculator/ui/home/component/limit_warning.dart';
+import 'package:stake_calculator/ui/home/component/setup_account.dart';
 import 'package:stake_calculator/ui/home/component/streak_warning.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
 import 'package:stake_calculator/ui/login/login.dart';
+import 'package:stake_calculator/ui/setting/setting.dart';
 import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
@@ -99,8 +102,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         paddingFocus: 10.h,
         hideSkip: false,
         opacityShadow: 0.9,
-        onFinish: () => bloc.setHomeToured(),
-        onSkip: () => bloc.setHomeToured());
+        onFinish: () => _finishTour(),
+        onSkip: () => _finishTour());
+  }
+
+  void _finishTour() {
+    bloc.setHomeToured();
+    XDialog(context,
+        child: SetupAccount(
+          onOk: () => AppRouter.gotoWidget(const Setting(), context),
+        )).show();
   }
 
   void _showTour() => Future.delayed(

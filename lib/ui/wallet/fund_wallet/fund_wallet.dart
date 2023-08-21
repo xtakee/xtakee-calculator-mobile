@@ -13,7 +13,6 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../../domain/model/bundle.dart';
 import '../../../res.dart';
-import '../../../util/dimen.dart';
 import '../../../util/process_indicator.dart';
 import 'component/custom_clipper.dart';
 
@@ -82,9 +81,9 @@ class _State extends State<FundWallet> {
             iconTheme: const IconThemeData(
               color: Colors.black, //change your color here
             ),
-            title: Text(
+            title: const Text(
               "Buy Coins",
-              style: TextStyle(color: Colors.black, fontSize: 18.sp),
+              style: TextStyle(color: Colors.black),
             ),
           ),
           backgroundColor: primaryBackground,

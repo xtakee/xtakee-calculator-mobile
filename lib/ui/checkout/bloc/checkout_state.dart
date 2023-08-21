@@ -46,6 +46,15 @@ class OnComplete extends CheckoutState {
   List<Object?> get props => [transaction];
 }
 
+class OnPaymentGateway extends CheckoutState {
+  final List<PaymentGateway> gateways;
+
+  const OnPaymentGateway({required this.gateways});
+
+  @override
+  List<Object?> get props => [gateways];
+}
+
 class OnMandates extends CheckoutState {
   final List<Mandate> mandates;
 

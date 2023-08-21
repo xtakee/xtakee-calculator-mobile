@@ -10,6 +10,7 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
       charge: from['charge'],
       status: from['status'],
       gateway: from['gateway'],
+      checkoutUrl: from['checkoutUrl'],
       createdAt: from['createdAt'],
       updatedAt: from['updatedAt'],
       auth: from['auth'],
@@ -42,6 +43,7 @@ class JsonTransactionMapper extends Mapper<Map<String, dynamic>, Transaction> {
       map['bundle'] = JsonBundleMapper().to(from.bundle!);
     }
     map['reference'] = from.reference;
+    map['checkoutUrl'] = from.checkoutUrl;
     map['createdAt'] = from.createdAt;
     map['updateAt'] = from.updatedAt;
     map['description'] = from.description;

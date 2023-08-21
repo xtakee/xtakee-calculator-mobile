@@ -58,7 +58,7 @@ class _State extends State<WebLauncher> {
           if (_percent < 1)
             LinearPercentIndicator(
                 percent: _percent,
-                lineHeight: 3.h,
+                lineHeight: 2.h,
                 progressColor: primaryColor),
           Expanded(child: WebViewWidget(controller: _controller))
         ],

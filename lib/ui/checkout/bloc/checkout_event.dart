@@ -37,3 +37,8 @@ class GetMandates extends CheckoutEvent {
   @override
   List<Object?> get props => [];
 }
+
+class GetGateways extends CheckoutEvent {
+  @override
+  List<Object?> get props => [];
+}

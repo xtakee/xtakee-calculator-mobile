@@ -9,6 +9,7 @@ class Transaction {
     String? auth,
     String? gateway,
     num? charge,
+    String? checkoutUrl,
     String? status,
     String? id,
     Account? account,
@@ -20,6 +21,7 @@ class Transaction {
     String? type,
   }) {
     _channel = channel;
+    _checkoutUrl = checkoutUrl;
     _gateway = gateway;
     _charge = charge;
     _createdAt = createdAt;
@@ -37,6 +39,7 @@ class Transaction {
   }
 
   String? _channel;
+  String? _checkoutUrl;
   String? _gateway;
   String? _createdAt;
   String? _updatedAt;
@@ -58,7 +61,9 @@ class Transaction {
 
   String? get updatedAt => _updatedAt;
 
-  String? get gateway => _gateway;
+  String get gateway => _gateway ?? "";
+
+  String get checkoutUrl => _checkoutUrl ?? "";
 
   String? get auth => _auth;
 

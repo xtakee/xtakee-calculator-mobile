@@ -1,4 +1,5 @@
 import 'package:stake_calculator/data/remote/model/transaction_history_response.dart';
+import 'package:stake_calculator/domain/model/payment_gateway.dart';
 
 import '../model/mandate.dart';
 import '../model/transaction.dart';
@@ -15,6 +16,8 @@ abstract class ITransactionService {
   Future<List<Mandate>> getMandates();
 
   Future<void> deleteMandate({required String mandate});
+
+  Future<List<PaymentGateway>> getPaymentGateways();
 
   Future<Transaction> chargeMandate(
       {required String mandate, required String bundle, required String url});
