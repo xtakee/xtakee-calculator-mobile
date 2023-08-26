@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterwave_standard/core/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/requests/customizations.dart';
+import 'package:paystack_standard/paystack_standard.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/transaction.dart';
 import 'package:stake_calculator/ui/checkout/bloc/checkout_bloc.dart';
@@ -14,9 +15,6 @@ import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
-import 'package:stake_calculator/util/paystack_checkout.dart';
-import 'package:stake_calculator/util/route_utils/app_router.dart';
-
 import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 import '../commons.dart';
@@ -158,8 +156,7 @@ class _State extends State<Checkout> {
           children: [
             Text(
               "Payment Method",
-              textScaleFactor: scale,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
             ),
             Container(
               margin: EdgeInsets.only(top: 10.h),
@@ -385,38 +382,12 @@ class _State extends State<Checkout> {
   }
 
   void _processPayStackPayment({required Transaction transaction}) {
-    AppRouter.gotoWidget(
-            PaystackCheckout(path: transaction.checkoutUrl), context)
-        .then((result) {
-      if (result != null) {
+    PaystackStandard(context)
+        .checkout(checkoutUrl: transaction.checkoutUrl)
+        .then((response) {
+      if (response.success) {
         bloc.completeTransaction(reference: transaction.reference ?? "");
       }
     });
-    // Charge charge = Charge()
-    //   ..amount = (transaction.amount ?? 0).toInt() * 100
-    //   ..currency = "NGN"
-    //   ..reference = transaction.reference
-    //   ..accessCode = transaction.auth
-    //   ..email = transaction.account!.email;
-    //
-    // payStack
-    //     .checkout(context,
-    //         //fullscreen: true,
-    //         method: CheckoutMethod.selectable,
-    //         // Defaults to CheckoutMethod.selectable
-    //         charge: charge,
-    //         hideEmail: true,
-    //         logo: SvgPicture.asset(
-    //           Res.logo,
-    //           width: 38,
-    //           height: 38,
-    //         ))
-    //     .then((response) {
-    //   if (response.status == true) {
-    //     bloc.completeTransaction(reference: response.reference ?? "");
-    //   }
-    // }).catchError((error) {
-    //   showSnack(context, message: error.toString(), snackType: SnackType.ERROR);
-    // });
   }
 }

@@ -15,7 +15,6 @@ import 'package:stake_calculator/domain/model/account.dart';
 import 'package:stake_calculator/domain/model/bundle.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/domain/remote/istake_service.dart';
-import 'package:stake_calculator/util/log.dart';
 
 import '../mapper/json_create_stake_request_mapper.dart';
 import '../mapper/json_licence_response_mapper.dart';

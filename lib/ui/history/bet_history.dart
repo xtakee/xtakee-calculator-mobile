@@ -10,7 +10,6 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 
 import '../../domain/model/history.dart';
-import '../../util/dimen.dart';
 import '../core/xchip.dart';
 
 class BetHistory extends StatefulWidget {

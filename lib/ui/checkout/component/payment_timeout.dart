@@ -38,7 +38,7 @@ class PaymentTimeout extends StatelessWidget {
                 color: primaryColor,
                 borderRadius: BorderRadius.circular(10)
             ),
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
             child: const Text(
               "Return Home",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),

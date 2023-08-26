@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
 import 'package:stake_calculator/domain/iaccount_repository.dart';
 import 'package:stake_calculator/res.dart';
-import 'package:stake_calculator/ui/core/widget/XState.dart';
+import 'package:stake_calculator/ui/core/widget/xstate.dart';
 import 'package:stake_calculator/ui/core/xbutton.dart';
 import 'package:stake_calculator/ui/reset_password/reset_password.dart';
 import 'package:stake_calculator/util/dxt.dart';

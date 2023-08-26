@@ -8,12 +8,10 @@ import 'package:stake_calculator/util/dxt.dart';
 
 import '../../res.dart';
 import '../../util/process_indicator.dart';
-import '../../util/route_utils/app_router.dart';
 import '../commons.dart';
 import '../core/xbutton.dart';
 import '../core/xfooter.dart';
 import '../core/xtext_field.dart';
-import '../home/home.dart';
 import 'bloc/register_bloc.dart';
 
 class Register extends StatefulWidget {

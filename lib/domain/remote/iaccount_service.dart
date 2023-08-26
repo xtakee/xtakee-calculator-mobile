@@ -6,9 +6,13 @@ import '../model/summary.dart';
 abstract class IAccountService {
   Future<AuthResponse> login({required Map<String, dynamic> data});
 
+  Future<void> ackNotification({required String campaign});
+
   Future<Summary> getSummary();
 
   Future<Account> getAccount();
+
+  Future<void> updatePushToken({required Map<String, dynamic> data});
 
   Future<String> sendOtp({required Map<String, dynamic> data});
 

@@ -10,7 +10,7 @@ import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../commons.dart';
-import '../core/widget/XState.dart';
+import '../core/widget/xstate.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});

@@ -1,11 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
-import 'package:stake_calculator/main.dart';
-import 'package:stake_calculator/ui/core/widget/XState.dart';
+import 'package:stake_calculator/ui/core/widget/xstate.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
 import 'package:stake_calculator/ui/core/xdelete_tag_warning.dart';
 import 'package:stake_calculator/ui/core/xdialog.dart';
@@ -21,10 +21,12 @@ import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
+import '../../util/notification_handler/notification_handler.dart';
 import '../commons.dart';
 import '../core/stake_item.dart';
 import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
@@ -34,6 +36,7 @@ import '../core/xchip.dart';
 import '../core/xreset_warning.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
+import '../notifications/notifications.dart';
 import 'component/home_tour.dart';
 
 class Home extends StatefulWidget {
@@ -82,6 +85,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
   Map<String, FocusNode> oddFocusNodes = {};
 
   List<Odd> odds = [];
+  int notificationCount = 0;
 
   void _initialPageTour() {
     _pageTour = TutorialCoachMark(
@@ -123,6 +127,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
     floating = Floating();
     _requestPipAvailable();
     bloc.getStake();
+    getFcmToken();
+
+    notificationCount = bloc.getUnReadNotificationsCount();
+    FirebaseMessaging.instance.requestPermission(alert: true);
+
+    notificationNotifier.addListener(() {
+      setState(() {
+        notificationCount = bloc.getUnReadNotificationsCount();
+      });
+    });
   }
 
   void _requestPipAvailable() async {
@@ -162,6 +176,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
     bloc.close();
     _disposeAllFocus();
     dismissProcessIndicator();
+    notificationNotifier.removeListener(() {});
     super.dispose();
   }
 
@@ -219,20 +234,37 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                 Res.logo_with_name,
                 height: 24.h,
               ),
-              Visibility(
-                visible: isPipAvailable,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      floating.enable(aspectRatio: const Rational(3, 2));
-                    });
-                  },
-                  child: Icon(
-                    Icons.picture_in_picture_alt,
-                    key: pipKey,
-                    color: Colors.black,
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () =>
+                        AppRouter.gotoWidget(const Notifications(), context),
+                    child: Lottie.asset(
+                        notificationCount > 0
+                            ? Res.notification_active
+                            : Res.notification_bell,
+                        height: 30.h,
+                        repeat: notificationCount > 0),
                   ),
-                ),
+                  Container(
+                    width: 24.w,
+                  ),
+                  Visibility(
+                    visible: isPipAvailable,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          floating.enable(aspectRatio: const Rational(3, 2));
+                        });
+                      },
+                      child: Icon(
+                        Icons.picture_in_picture_alt,
+                        key: pipKey,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                ],
               )
             ],
           ),
@@ -546,6 +578,39 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         ],
       ));
 
+  Widget _error() => Container(
+        padding: EdgeInsets.symmetric(vertical: 32.h),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.warning_amber,
+              color: Colors.deepOrangeAccent,
+              size: 32.h,
+            ),
+            Container(
+              height: 10.w,
+            ),
+            Text("An unknown error occurred.",
+                style: TextStyle(fontSize: 16.sp, color: Colors.black54)),
+            Container(
+              height: 10.w,
+            ),
+            GestureDetector(
+              onTap: () => bloc.getStake(),
+              child: Text(
+                "Tap here to try again",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
+                    color: primaryColor),
+              ),
+            )
+          ],
+        ),
+      );
+
   Widget _page() => ListView(
         shrinkWrap: true,
         controller: _controller,
@@ -663,63 +728,68 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                   key: tagKey,
                   child: Container(
                     margin: EdgeInsets.only(top: 16.h),
-                    child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: odds.length,
-                        itemBuilder: (context, index) {
-                          Odd odd = odds[index];
+                    child: (state.error ?? "").isEmpty
+                        ? ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: odds.length,
+                            itemBuilder: (context, index) {
+                              Odd odd = odds[index];
 
-                          oddControllers.putIfAbsent(
-                              odd.tag.toString(),
-                              () => TextEditingController(
-                                  text:
-                                      double.parse((odd.odd ?? 0).toString()) <=
+                              oddControllers.putIfAbsent(
+                                  odd.tag.toString(),
+                                  () => TextEditingController(
+                                      text: double.parse(
+                                                  (odd.odd ?? 0).toString()) <=
                                               0
                                           ? ""
                                           : odd.odd?.toString()));
 
-                          tagControllers.putIfAbsent(
-                              odd.tag.toString(),
-                              () => TextEditingController(
-                                  text: odd.name?.toString()));
+                              tagControllers.putIfAbsent(
+                                  odd.tag.toString(),
+                                  () => TextEditingController(
+                                      text: odd.name?.toString()));
 
-                          oddFocusNodes.putIfAbsent(
-                              odd.tag.toString(), () => FocusNode());
+                              oddFocusNodes.putIfAbsent(
+                                  odd.tag.toString(), () => FocusNode());
 
-                          tagFocusNodes.putIfAbsent(
-                              odd.tag.toString(), () => FocusNode());
+                              tagFocusNodes.putIfAbsent(
+                                  odd.tag.toString(), () => FocusNode());
 
-                          return StakeItem(
-                              isLast: odds.length == (index + 1),
-                              position: index,
-                              onDelete: (tag, pos) {
-                                XBottomSheet(context,
-                                        child: XDeleteTagWarning(
-                                            onDelete: (_, pos) {
-                                              bloc.deleteTag(
-                                                  position: pos, won: false);
-                                            },
-                                            onWon: (_, pos) {
-                                              bloc.deleteTag(
-                                                  position: pos, won: true);
-                                              isWin = true;
-                                            },
-                                            position: pos,
-                                            tag: tag))
-                                    .show();
-                              },
-                              onUpdate: (tag, pos) {
-                                bloc.updateTag(tag, pos);
-                              },
-                              oddFocusNode: oddFocusNodes[odd.tag.toString()],
-                              tagFocusNode: tagFocusNodes[odd.tag.toString()],
-                              oddController:
-                                  oddControllers[odd.tag.toString()]!,
-                              tagController:
-                                  tagControllers[odd.tag.toString()]!,
-                              isOnlyItem: odds.length == 1);
-                        }),
+                              return StakeItem(
+                                  isLast: odds.length == (index + 1),
+                                  position: index,
+                                  onDelete: (tag, pos) {
+                                    XBottomSheet(context,
+                                            child: XDeleteTagWarning(
+                                                onDelete: (_, pos) {
+                                                  bloc.deleteTag(
+                                                      position: pos,
+                                                      won: false);
+                                                },
+                                                onWon: (_, pos) {
+                                                  bloc.deleteTag(
+                                                      position: pos, won: true);
+                                                  isWin = true;
+                                                },
+                                                position: pos,
+                                                tag: tag))
+                                        .show();
+                                  },
+                                  onUpdate: (tag, pos) {
+                                    bloc.updateTag(tag, pos);
+                                  },
+                                  oddFocusNode:
+                                      oddFocusNodes[odd.tag.toString()],
+                                  tagFocusNode:
+                                      tagFocusNodes[odd.tag.toString()],
+                                  oddController:
+                                      oddControllers[odd.tag.toString()]!,
+                                  tagController:
+                                      tagControllers[odd.tag.toString()]!,
+                                  isOnlyItem: odds.length == 1);
+                            })
+                        : _error(),
                   ))),
         ],
       );

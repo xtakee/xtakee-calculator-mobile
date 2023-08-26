@@ -57,7 +57,7 @@ class AccountService extends IAccountService {
   @override
   Future<Account> getAccount() async {
     try {
-      final response = await client.get('/account/authorized');
+      final response = await client.get('/account/me');
       return JsonAccountMapper().from(response.data['data']);
     } catch (error) {
       throw ApiErrorHandler.parse(error);
@@ -87,6 +87,24 @@ class AccountService extends IAccountService {
   Future<void> resendOtp({required Map<String, dynamic> data}) async {
     try {
       await client.post('/account/resend-reset-otp', data: data);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<void> updatePushToken({required Map<String, dynamic> data}) async {
+    try {
+      await client.post('/account/push-token', data: data);
+    } catch (error) {
+      throw ApiErrorHandler.parse(error);
+    }
+  }
+
+  @override
+  Future<void> ackNotification({required String campaign}) async {
+    try {
+      await client.post('/campaign/$campaign/ack');
     } catch (error) {
       throw ApiErrorHandler.parse(error);
     }

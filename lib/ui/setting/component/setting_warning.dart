@@ -33,7 +33,7 @@ class SettingWarning extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: primaryColor,
                     borderRadius: BorderRadius.circular(10)),
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 48.w),
+                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 48.w),
                 margin: EdgeInsets.only(top: 32.h),
                 child: const Text(
                   "Ok",

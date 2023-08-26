@@ -2,9 +2,8 @@
 class Res {
   static const String animated_coins = "assets/animated_coins.json";
   static const String animation_caution = "assets/animation_caution.json";
+  static const String animation_jingle = "assets/animation_jingle.json";
   static const String animation_spray_new = "assets/animation_spray_new.json";
-  static const String bet_smarter = "assets/bet_smarter.svg";
-  static const String calc_risk = "assets/calc_risk.svg";
   static const String coins = "assets/coins.svg";
   static const String coins_animation = "assets/coins_animation.json";
   static const String coins_bal = "assets/coins_bal.svg";
@@ -13,6 +12,8 @@ class Res {
   static const String forgot_password = "assets/forgot_password.json";
   static const String games = "assets/games.png";
   static const String hurry_animation = "assets/hurry_animation.json";
+  static const String ic_bell = "assets/ic_bell.svg";
+  static const String ic_notify = "assets/ic_notify.svg";
   static const String intro_background = "assets/intro_background.svg";
   static const String intro_st1 = "assets/intro_st1.svg";
   static const String intro_st2 = "assets/intro_st2.svg";
@@ -29,6 +30,9 @@ class Res {
   static const String loss = "assets/loss.svg";
   static const String master_card = "assets/master_card.png";
   static const String not_found = "assets/not_found.json";
+  static const String notification_active = "assets/notification_active.json";
+  static const String notification_bell = "assets/notification_bell.json";
+  static const String notification_jingle = "assets/notification_jingle.json";
   static const String pay_failed = "assets/pay_failed.json";
   static const String pay_success = "assets/pay_success.json";
   static const String paystack = "assets/paystack.svg";

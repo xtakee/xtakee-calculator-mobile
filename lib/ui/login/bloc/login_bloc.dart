@@ -5,6 +5,8 @@ import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/iaccount_repository.dart';
+import 'package:stake_calculator/domain/inotification_repository.dart';
+import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 
 import '../../../domain/cache.dart';
 import '../../../domain/istake_repository.dart';
@@ -15,13 +17,17 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final _accountRepository = GetIt.instance<IAccountRepository>();
+  final _notificationRepository = GetIt.instance<INotificationRepository>();
 
   final _cache = GetIt.instance<Cache>();
   final _repository = GetIt.instance<IStakeRepository>();
 
   final LoginState _state = LoginState(loading: false);
 
-  void resetCache() => _cache.reset();
+  void resetCache() {
+    _cache.reset();
+    _notificationRepository.clear();
+  }
 
   void setOnboarded() => _repository.setOnBoarding(status: true);
 
@@ -51,7 +57,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (error is BadRequest) {
           emit(_state.copy(
               error: "You have entered an invalid email or password"));
-        }else {
+        } else {
           emit(_state.copy(error: error.toString()));
         }
       } catch (error) {

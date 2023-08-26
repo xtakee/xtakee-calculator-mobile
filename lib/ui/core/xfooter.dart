@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:stake_calculator/ui/core/web_launcher.dart';
+import 'package:stake_calculator/ui/core/xdot.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../util/constants.dart';
-import '../../util/dimen.dart';
 import '../../util/route_utils/app_router.dart';
 
 class XFooter extends StatelessWidget {
@@ -22,7 +22,13 @@ class XFooter extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: Colors.black87),
             )),
-        _dot(),
+        Container(
+          width: 10.w,
+        ),
+        const XDot(),
+        Container(
+          width: 10.w,
+        ),
         GestureDetector(
             onTap: () => AppRouter.gotoWidget(
                 const WebLauncher(path: privacyPolicy), context),
@@ -31,22 +37,23 @@ class XFooter extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     fontSize: 16.sp,
                     color: Colors.black87))),
-        _dot(),
+        Container(
+          width: 10.w,
+        ),
+        const XDot(),
+        Container(
+          width: 10.w,
+        ),
         GestureDetector(
           onTap: () =>
               AppRouter.gotoWidget(const WebLauncher(path: faqs), context),
           child: Text(
             "FAQs",
             style: TextStyle(
-                fontWeight: FontWeight.w500, fontSize: 16.sp, color: Colors.black87),
+                fontWeight: FontWeight.w500,
+                fontSize: 16.sp,
+                color: Colors.black87),
           ),
         )
       ]);
-
-  _dot() => Container(
-      width: 10.h,
-      height: 10.h,
-      margin: EdgeInsets.symmetric(horizontal: 10.w),
-      decoration:
-          const BoxDecoration(shape: BoxShape.circle, color: Colors.black87));
 }

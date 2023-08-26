@@ -9,7 +9,7 @@ import 'package:stake_calculator/ui/core/xtext_field.dart';
 import 'package:stake_calculator/ui/reset_password/bloc/reset_password_bloc.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
-import '../core/widget/XState.dart';
+import '../core/widget/xstate.dart';
 import 'component/password_reset_success.dart';
 
 class ResetPassword extends StatefulWidget {

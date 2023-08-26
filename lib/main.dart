@@ -4,6 +4,7 @@ import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/home/home.dart';
 import 'package:stake_calculator/ui/onboarding/onboarding.dart';
 import 'package:stake_calculator/util/dimen.dart';
+import 'package:stake_calculator/util/notification_handler/notification_handler.dart';
 
 import 'domain/istake_repository.dart';
 
@@ -18,6 +19,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     setScale(MediaQuery.of(context).size);
     final onBoarded = _repository.getOnBoarding();
+    setupPushNotification();
 
     return MaterialApp(
       title: 'Xtakee',

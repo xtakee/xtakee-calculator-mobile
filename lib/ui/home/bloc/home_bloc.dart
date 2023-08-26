@@ -1,15 +1,12 @@
-import 'dart:math';
-
-import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
+import 'package:stake_calculator/domain/inotification_repository.dart';
 import 'package:stake_calculator/domain/istake_repository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/game_type.dart';
-import '../../../domain/model/account.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -18,8 +15,12 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final _repository = GetIt.instance<IStakeRepository>();
+  final _notificationRepository = GetIt.instance<INotificationRepository>();
 
   void getStake({bool cache = false}) => add(GetStake(cache: cache));
+
+  int getUnReadNotificationsCount() =>
+      _notificationRepository.getUnread().length;
 
   bool isHomeToured() => _repository.getHomeTour();
 
@@ -82,8 +83,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final odds = await _repository.saveTag(odd: event.odd);
         final stake = await _repository.getStake(cached: true);
 
-        emit(
-            state.copy(tags: odds, stake: _getStake(stake: stake, tags: odds), tagAdded: true));
+        emit(state.copy(
+            tags: odds,
+            stake: _getStake(stake: stake, tags: odds),
+            tagAdded: true));
       } catch (error) {
         emit(state.copy(error: "Error adding tag. Try again"));
       }
@@ -174,7 +177,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final Odd error = event.odds.error;
 
         if (error.odd! > -1) {
-          emit(state.copy(error: "Odd must be at least 1.01 for ${error.name}"));
+          emit(
+              state.copy(error: "Odd must be at least 1.01 for ${error.name}"));
           return;
         }
 

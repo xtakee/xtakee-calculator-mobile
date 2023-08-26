@@ -55,7 +55,7 @@ class XWarningDialog extends StatelessWidget {
                     positive,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.redAccent,
+                        color: Colors.black,
                         fontSize: 16.sp),
                   ),
                 ),
@@ -70,7 +70,7 @@ class XWarningDialog extends StatelessWidget {
                   child: Text(negative,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey,
+                          color: Colors.black87,
                           fontSize: 16.sp)),
                 )
               ],

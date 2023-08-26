@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:stake_calculator/data/mapper/json_account_mapper.dart';
 import 'package:stake_calculator/domain/iaccount_repository.dart';
 import 'package:stake_calculator/domain/model/account.dart';
 import 'package:stake_calculator/domain/model/phone.dart';
 import 'package:stake_calculator/domain/model/summary.dart';
+import 'package:flutter_udid/flutter_udid.dart';
 import 'package:stake_calculator/domain/remote/iaccount_service.dart';
 
 import '../domain/cache.dart';
@@ -48,6 +50,7 @@ class AccountRepository extends IAccountRepository {
     data['email'] = email;
     data['password'] = password;
     data['name'] = name;
+    data['device'] = await FlutterUdid.consistentUdid;
     data['phone'] = {"code": "+234", "number": phone.number};
     data['country'] = {"code": "NG", "name": "Nigeria"};
 
@@ -101,5 +104,21 @@ class AccountRepository extends IAccountRepository {
     final data = <String, dynamic>{};
     data['signature'] = cache.getString(PREF_SIGNATURE, "");
     return await service.resendOtp(data: data);
+  }
+
+  @override
+  Future<void> updatePushToken({required String token}) async {
+    final data = <String, dynamic>{};
+    if (Platform.isIOS) {
+      data['ios'] = token;
+    } else {
+      data['android'] = token;
+    }
+    await service.updatePushToken(data: data);
+  }
+
+  @override
+  Future<void> ackNotification({required String campaign}) async {
+    await service.ackNotification(campaign: campaign);
   }
 }

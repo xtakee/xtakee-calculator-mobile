@@ -14,7 +14,11 @@ abstract class IAccountRepository {
 
   Future<Account> getAccount();
 
+  Future<void> ackNotification({required String campaign});
+
   Future<void> resendOtp();
+
+  Future<void> updatePushToken({required String token});
 
   Future<Summary> getSummary();
 
