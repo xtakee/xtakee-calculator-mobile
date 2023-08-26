@@ -16,22 +16,28 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   void deleteNotification({required Notification notification}) =>
       add(DeleteNotification(notification: notification));
 
+  void setRead({required Notification notification}) =>
+      _notificationRepository.setRead(notification: notification);
+
+  List<Notification> sortList(List<Notification> notifications) {
+    if (notifications.length > 1) {
+      notifications.sort((a, b) {
+        return b.createdAt!.compareTo(a.createdAt!);
+      });
+    }
+
+    return notifications;
+  }
+
   NotificationBloc() : super(NotificationState(notifications: [])) {
     on<NotificationEvent>((event, emit) {
-      final notifications = _notificationRepository.getNotifications();
-
-      if (notifications.length > 1) {
-        notifications.sort((a, b) {
-          return b.createdAt!.compareTo(a.createdAt!);
-        });
-      }
-
+      final notifications = sortList(_notificationRepository.getNotifications());
       emit(state.copy(notifications: notifications));
     });
 
     on<DeleteNotification>((event, emit) {
       _notificationRepository.delete(notification: event.notification);
-      final notifications = _notificationRepository.getNotifications();
+      final notifications = sortList(_notificationRepository.getNotifications());
       emit(state.copy(notifications: notifications));
     });
   }

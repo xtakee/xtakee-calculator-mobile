@@ -181,15 +181,6 @@ class _State extends XState<Home> with TickerProviderStateMixin {
   }
 
   _scrollBottom() {
-    // _controller
-    //     .animateTo(
-    //   MediaQuery.of(context).size.height,
-    //   curve: Curves.easeOut,
-    //   duration: const Duration(milliseconds: 300),
-    // )
-    //     .then((value) {
-    //   tagFocusNodes[odds.last.tag.toString()]?.requestFocus();
-    // });
     Future.delayed(const Duration(milliseconds: 200)).then((value) {
       tagFocusNodes[odds.last.tag.toString()]?.requestFocus();
     });
@@ -728,7 +719,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                   key: tagKey,
                   child: Container(
                     margin: EdgeInsets.only(top: 16.h),
-                    child: (state.error ?? "").isEmpty
+                    child: state.tags != null && odds.isNotEmpty
                         ? ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
@@ -739,9 +730,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                               oddControllers.putIfAbsent(
                                   odd.tag.toString(),
                                   () => TextEditingController(
-                                      text: double.parse(
-                                                  (odd.odd ?? 0).toString()) <=
-                                              0
+                                      text: double.parse((odd.odd ?? 0).toString()) <= 0
                                           ? ""
                                           : odd.odd?.toString()));
 

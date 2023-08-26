@@ -83,14 +83,15 @@ class NotificationItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 5.5.w,
-                    child: const XDot(
-                      size: 5,
-                      color: primaryColor,
-                    ))
+                if (!notification.read)
+                  Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: 5.5.w,
+                      child: const XDot(
+                        size: 5,
+                        color: primaryColor,
+                      ))
               ],
             ),
             Row(

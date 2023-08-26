@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stake_calculator/ui/core/widget/xstate.dart';
+import 'package:stake_calculator/ui/notifications/component/render/notification_render.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
+import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import 'bloc/notification_bloc.dart';
 import 'component/notification_empty_page.dart';
@@ -64,10 +66,27 @@ class _State extends XState<Notifications> {
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                _bloc.setRead(
+                                    notification: state.notifications![index]);
+
+                                notificationNotifier.notification =
+                                    state.notifications![index];
+
+                                AppRouter.gotoWidget(
+                                        NotificationRender(
+                                            notification:
+                                                state.notifications![index]),
+                                        context)
+                                    .then((_) {
+                                  setState(() {});
+                                });
+                              },
                               child: NotificationItem(
-                                onDelete: (x) =>
-                                    _bloc.deleteNotification(notification: x),
+                                onDelete: (x) {
+                                  _bloc.deleteNotification(notification: x);
+                                  notificationNotifier.notification = x;
+                                },
                                 notification: state.notifications![index],
                               ));
                         },

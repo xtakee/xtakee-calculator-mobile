@@ -9,6 +9,7 @@ class RemoteMessageToNotificationMapper
       type: from.data['type'],
       createdAt: from.sentTime,
       description: from.notification?.body,
+      body: from.data['meta'],
       title: from.notification?.title,
       categoryId: from.data['campaignId'],
       ack: from.data['ack'],
