@@ -67,9 +67,6 @@ class _State extends XState<Notifications> {
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                               onTap: () {
-                                _bloc.setRead(
-                                    notification: state.notifications![index]);
-
                                 notificationNotifier.notification =
                                     state.notifications![index];
 

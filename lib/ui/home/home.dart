@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:stake_calculator/data/mapper/json_notification_mapper.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/ui/core/widget/xstate.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
@@ -16,17 +20,21 @@ import 'package:stake_calculator/ui/home/component/setup_account.dart';
 import 'package:stake_calculator/ui/home/component/streak_warning.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
 import 'package:stake_calculator/ui/login/login.dart';
+import 'package:stake_calculator/ui/notifications/component/render/notification_render.dart';
 import 'package:stake_calculator/ui/setting/setting.dart';
 import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/notification_handler/notification_controller.dart';
 import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
+import '../../util/log.dart';
 import '../../util/notification_handler/notification_handler.dart';
+import '../../util/notification_handler/request_notification_permission.dart';
 import '../commons.dart';
 import '../core/stake_item.dart';
 import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
@@ -110,33 +118,43 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         onSkip: () => _finishTour());
   }
 
+  void _checkNotificationPermission() =>
+      AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+        if (!isAllowed) {
+          XDialog(context, child: const RequestNotificationPermission()).show();
+        }
+      });
+
   void _finishTour() {
     bloc.setHomeToured();
     XDialog(context,
         child: SetupAccount(
-          onOk: () => AppRouter.gotoWidget(const Setting(), context),
+          onDefault: () => _checkNotificationPermission(),
+          onOk: () => AppRouter.gotoWidget(const Setting(), context)
+              .then((_) => _checkNotificationPermission()),
         )).show();
   }
 
   void _showTour() => Future.delayed(
       const Duration(seconds: 1), () => _pageTour.show(context: context));
 
-  @override
-  void initState() {
-    super.initState();
+  void init() {
     floating = Floating();
     _requestPipAvailable();
     bloc.getStake();
     getFcmToken();
 
     notificationCount = bloc.getUnReadNotificationsCount();
-    FirebaseMessaging.instance.requestPermission(alert: true);
 
     notificationNotifier.addListener(() {
       setState(() {
         notificationCount = bloc.getUnReadNotificationsCount();
       });
     });
+
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: (ReceivedAction receivedAction) =>
+            NotificationController.onActionReceivedMethod(receivedAction));
   }
 
   void _requestPipAvailable() async {
@@ -265,9 +283,15 @@ class _State extends XState<Home> with TickerProviderStateMixin {
           listeners: [
             BlocListener(
               listener: (_, HomeState state) {
-                if (!bloc.isHomeToured() && state.stake != null) {
-                  _initialPageTour();
-                  _showTour();
+                if (state.stake != null) {
+                  dismissProcessIndicator().then((_) {
+                    if (!bloc.isHomeToured()) {
+                      _initialPageTour();
+                      _showTour();
+                    } else {
+                      _checkNotificationPermission();
+                    }
+                  });
                 }
 
                 if (state.loading) {
@@ -730,7 +754,9 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                               oddControllers.putIfAbsent(
                                   odd.tag.toString(),
                                   () => TextEditingController(
-                                      text: double.parse((odd.odd ?? 0).toString()) <= 0
+                                      text: double.parse(
+                                                  (odd.odd ?? 0).toString()) <=
+                                              0
                                           ? ""
                                           : odd.odd?.toString()));
 
@@ -782,4 +808,9 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                   ))),
         ],
       );
+
+  @override
+  void postInitState() {
+    init();
+  }
 }

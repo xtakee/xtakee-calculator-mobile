@@ -10,7 +10,6 @@ import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import 'package:stake_calculator/util/dxt.dart';
-import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
 import '../core/xdialog.dart';
@@ -101,7 +100,7 @@ class _State extends State<Setting> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               "Settings",
               style: TextStyle(color: Colors.black),
             ),

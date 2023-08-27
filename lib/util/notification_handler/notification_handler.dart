@@ -42,7 +42,7 @@ void processNotification(RemoteMessage message) {
 
     final notificationRepository = GetIt.instance<INotificationRepository>();
     notificationRepository.save(
-        notification: notification);
+        notification: notification..createdAt = DateTime.now());
 
     notificationNotifier.notification = notification;
   }

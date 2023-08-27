@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:stake_calculator/data/mapper/json_notification_mapper.dart';
 import 'package:stake_calculator/domain/model/notification.dart';
+
+import '../../domain/mapper/remote_message_to_notification_mapper.dart';
 
 const String PROMOTIONAL_NOTIFICATION_KEY = 'promotional_channel';
 const String PROMOTIONAL_NOTIFICATION_CHANNEL = 'Promotional Notifications';
@@ -12,7 +17,7 @@ Future<void> showCampaignNotifications(Notification notification) async {
           id: _createUniqueId(),
           channelKey: PROMOTIONAL_NOTIFICATION_KEY,
           title: notification.title,
-          payload: {"data": notification.body},
+          payload: JsonNotificationMapper().to(notification),
           notificationLayout: NotificationLayout.Default,
           body: notification.description ?? ''));
 }

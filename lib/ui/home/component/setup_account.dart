@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:stake_calculator/ui/core/xbutton.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../../../res.dart';
@@ -8,8 +9,9 @@ import '../../commons.dart';
 
 class SetupAccount extends StatelessWidget {
   final Function() onOk;
+  final Function() onDefault;
 
-  const SetupAccount({super.key, required this.onOk});
+  const SetupAccount({super.key, required this.onOk, required this.onDefault});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -29,29 +31,19 @@ class SetupAccount extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16.sp),
             ),
-            GestureDetector(
-              onTap: () {
+            XButton(
+              margin: EdgeInsets.only(top: 32.h, left: 48.w, right: 48.w),
+              label: "Go to Setting",
+              height: 45.h,
+              onClick: () {
                 AppRouter.goBack(context);
                 onOk();
               },
-              child: Container(
-                decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(10)),
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 48.w),
-                margin: EdgeInsets.only(top: 32.h),
-                child: const Text(
-                  "Go to Setting",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white),
-                ),
-              ),
             ),
             GestureDetector(
               onTap: () {
                 AppRouter.goBack(context);
+                onDefault();
               },
               child: Container(
                 margin: EdgeInsets.only(top: 24.h, bottom: 10.h),

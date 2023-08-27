@@ -133,6 +133,7 @@ flutter:
     - assets/notification_active.json
     - assets/notification_bell.json
     - assets/notification_jingle.json
+    - assets/notification_permission.json
     - assets/pay_failed.json
     - assets/pay_success.json
     - assets/paystack.svg

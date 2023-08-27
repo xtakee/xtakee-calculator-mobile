@@ -33,6 +33,7 @@ class Res {
   static const String notification_active = "assets/notification_active.json";
   static const String notification_bell = "assets/notification_bell.json";
   static const String notification_jingle = "assets/notification_jingle.json";
+  static const String notification_permission = "assets/notification_permission.json";
   static const String pay_failed = "assets/pay_failed.json";
   static const String pay_success = "assets/pay_success.json";
   static const String paystack = "assets/paystack.svg";

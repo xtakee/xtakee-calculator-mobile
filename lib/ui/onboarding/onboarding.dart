@@ -115,7 +115,7 @@ class _State extends State<OnBoarding> {
         onTap: () =>
             AppRouter.gotoWidget(const Login(), context, clearStack: true),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           alignment: Alignment.center,
           decoration: BoxDecoration(
               color: primaryColor, borderRadius: BorderRadius.circular(10.h)),

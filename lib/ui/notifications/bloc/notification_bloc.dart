@@ -16,9 +16,6 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   void deleteNotification({required Notification notification}) =>
       add(DeleteNotification(notification: notification));
 
-  void setRead({required Notification notification}) =>
-      _notificationRepository.setRead(notification: notification);
-
   List<Notification> sortList(List<Notification> notifications) {
     if (notifications.length > 1) {
       notifications.sort((a, b) {

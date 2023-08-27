@@ -102,6 +102,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       try {
         await _repository.saveGameType(type: event.type.index);
+        final odds = await _repository.getTags();
+        emit(state.copy(stake: _getStake(stake: state.stake!, tags: odds)));
       } catch (error) {
         emit(state.copy(error: "Error computing stake. Try again"));
       }
