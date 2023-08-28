@@ -147,9 +147,11 @@ class _State extends XState<Home> with TickerProviderStateMixin {
     notificationCount = bloc.getUnReadNotificationsCount();
 
     notificationNotifier.addListener(() {
-      setState(() {
-        notificationCount = bloc.getUnReadNotificationsCount();
-      });
+      if (mounted) {
+        setState(() {
+          notificationCount = bloc.getUnReadNotificationsCount();
+        });
+      }
     });
 
     AwesomeNotifications().setListeners(
@@ -252,7 +254,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                         notificationCount > 0
                             ? Res.notification_active
                             : Res.notification_bell,
-                        height: 30.h,
+                        height: 28.h,
                         repeat: notificationCount > 0),
                   ),
                   Container(
@@ -804,7 +806,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                                       tagControllers[odd.tag.toString()]!,
                                   isOnlyItem: odds.length == 1);
                             })
-                        : _error(),
+                        : (state.loading ? Container() : _error()),
                   ))),
         ],
       );

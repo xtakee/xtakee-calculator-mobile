@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:stake_calculator/ui/core/widget/xstate.dart';
 import 'package:stake_calculator/domain/model/notification.dart' as xnot;
 import 'package:stake_calculator/ui/notifications/component/render/text_render.dart';
+import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 
 import '../../../../domain/inotification_repository.dart';
 
@@ -19,9 +20,9 @@ class _State extends XState<NotificationRender> {
   final _notificationRepository = GetIt.instance<INotificationRepository>();
 
   @override
-  void initState() {
-    super.initState();
+  void postInitState() {
     _notificationRepository.setRead(notification: widget.notification);
+    notificationNotifier.notification = widget.notification;
   }
 
   @override
