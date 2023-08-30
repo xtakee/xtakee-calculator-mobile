@@ -11,6 +11,7 @@ import 'package:stake_calculator/domain/istake_repository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/domain/remote/istake_service.dart';
 import 'package:stake_calculator/util/dxt.dart';
+import 'package:stake_calculator/util/log.dart';
 
 import '../domain/cache.dart';
 import '../domain/model/bundle.dart';
@@ -27,10 +28,17 @@ class StakeRepository extends IStakeRepository {
     final stake =
         JsonStakeMapper().from(jsonDecode(cache.getString(PREF_STAKE, '')));
 
+    if (odds.length == 1) odds.clearPairs();
+
     return await service
         .computeStake(StakeRequest(odds: odds, cycle: stake.next))
         .then((value) {
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
+
+      final tags = _getTags();
+      tags.clearPairs();
+      cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
+
       return value;
     });
   }
@@ -47,7 +55,7 @@ class StakeRepository extends IStakeRepository {
     return await service.getStake().then((value) async {
       cache.set(PREF_STAKE, jsonEncode(JsonStakeMapper().to(value)));
       if (tags && value.previousStake != null) {
-        List<Odd> list = await _getTags();
+        List<Odd> list = _getTags();
         if (list.isEmpty) {
           if (value.previousStake!.odds.isEmpty) {
             list.add(Odd(name: 'Default', odd: 0));
@@ -133,14 +141,14 @@ class StakeRepository extends IStakeRepository {
     });
   }
 
-  Future<List<Odd>> _getTags() async {
+  List<Odd> _getTags() {
     final data = cache.getString(PREF_TAGS_, '');
     return data.isNotEmpty ? OddsJsonMapper().from(jsonDecode(data)) : [];
   }
 
   @override
   Future<Stake> deleteTag({required int position, bool won = false}) async {
-    List<Odd> tags = await _getTags();
+    List<Odd> tags = _getTags();
     final tag = tags.get(position);
 
     return await service
@@ -158,12 +166,12 @@ class StakeRepository extends IStakeRepository {
 
   @override
   Future<List<Odd>> getTags() async {
-    return await _getTags();
+    return _getTags();
   }
 
   @override
   Future<List<Odd>> saveTag({required Odd odd}) async {
-    List<Odd> odds = await _getTags();
+    List<Odd> odds = _getTags();
     odds.save(odd);
 
     await cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(odds)));
@@ -172,7 +180,7 @@ class StakeRepository extends IStakeRepository {
 
   @override
   Future<List<Odd>> updateTag({required Odd odd, required int position}) async {
-    List<Odd> tags = await _getTags();
+    List<Odd> tags = _getTags();
     tags.update(odd, position);
 
     await cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));

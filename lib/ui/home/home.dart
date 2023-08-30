@@ -1,13 +1,10 @@
-import 'dart:convert';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:blinking_text/blinking_text.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
-import 'package:stake_calculator/data/mapper/json_notification_mapper.dart';
 import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/ui/core/widget/xstate.dart';
 import 'package:stake_calculator/ui/core/xbottom_sheet.dart';
@@ -20,19 +17,16 @@ import 'package:stake_calculator/ui/home/component/setup_account.dart';
 import 'package:stake_calculator/ui/home/component/streak_warning.dart';
 import 'package:stake_calculator/ui/home/pip/pip.dart';
 import 'package:stake_calculator/ui/login/login.dart';
-import 'package:stake_calculator/ui/notifications/component/render/notification_render.dart';
 import 'package:stake_calculator/ui/setting/setting.dart';
 import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
 import 'package:stake_calculator/util/game_type.dart';
-import 'package:stake_calculator/util/notification_handler/notification_controller.dart';
 import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
-import '../../util/log.dart';
 import '../../util/notification_handler/notification_handler.dart';
 import '../../util/notification_handler/request_notification_permission.dart';
 import '../commons.dart';
@@ -45,6 +39,7 @@ import '../core/xreset_warning.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
 import '../notifications/notifications.dart';
+import '../wallet/fund_wallet/component/custom_clipper.dart';
 import 'component/home_tour.dart';
 
 class Home extends StatefulWidget {
@@ -89,6 +84,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
 
   Map<String, TextEditingController> oddControllers = {};
   Map<String, TextEditingController> tagControllers = {};
+  Map<String, bool> tagPairs = {};
   Map<String, FocusNode> tagFocusNodes = {};
   Map<String, FocusNode> oddFocusNodes = {};
 
@@ -153,10 +149,6 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         });
       }
     });
-
-    AwesomeNotifications().setListeners(
-        onActionReceivedMethod: (ReceivedAction receivedAction) =>
-            NotificationController.onActionReceivedMethod(receivedAction));
   }
 
   void _requestPipAvailable() async {
@@ -285,7 +277,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
           listeners: [
             BlocListener(
               listener: (_, HomeState state) {
-                if (state.stake != null) {
+                if (state.stake != null && !state.loading) {
                   dismissProcessIndicator().then((_) {
                     if (!bloc.isHomeToured()) {
                       _initialPageTour();
@@ -309,6 +301,7 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                       setState(() {
                         selectedGameType =
                             GameType.values[state.stake?.gameType ?? 0];
+                        tagPairs.clear();
                         odds = state.tags ?? [];
                       });
                     }
@@ -595,6 +588,21 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         ],
       ));
 
+  Widget _winStreak() => ClipPath(
+        clipper: XClipper(),
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 5.h),
+          padding: EdgeInsets.all(8.h),
+          color: primaryColor.withOpacity(0.2),
+          child: BlinkText(
+            "You are on a wining streak 🏆. You can reset rounds to prevent losses else you will be reset automatically",
+            textAlign: TextAlign.center,
+            times: 3,
+            style: TextStyle(fontSize: 15.sp, color: const Color(0xFF212121)),
+          ),
+        ),
+      );
+
   Widget _error() => Container(
         padding: EdgeInsets.symmetric(vertical: 32.h),
         child: Column(
@@ -633,6 +641,14 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         controller: _controller,
         children: [
           _amount(),
+          BlocBuilder(
+              bloc: bloc,
+              builder: (_, HomeState state) {
+                return ExpandablePanel(
+                    expand: state.stake != null &&
+                        state.stake?.isWiningStreak == true,
+                    child: _winStreak());
+              }),
           XCard(
               elevation: 0,
               child: BlocBuilder(
@@ -753,6 +769,9 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                             itemBuilder: (context, index) {
                               Odd odd = odds[index];
 
+                              tagPairs.putIfAbsent(odd.tag.toString(),
+                                  () => odd.isPair ?? false);
+
                               oddControllers.putIfAbsent(
                                   odd.tag.toString(),
                                   () => TextEditingController(
@@ -774,7 +793,8 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                                   odd.tag.toString(), () => FocusNode());
 
                               return StakeItem(
-                                  isLast: odds.length == (index + 1),
+                                  isLast: odds.length == 1,
+                                  isPair: tagPairs[odd.tag.toString()]!,
                                   position: index,
                                   onDelete: (tag, pos) {
                                     XBottomSheet(context,
@@ -793,8 +813,11 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                                                 tag: tag))
                                         .show();
                                   },
-                                  onUpdate: (tag, pos) {
+                                  onUpdate: (tag, pos, pair) {
                                     bloc.updateTag(tag, pos);
+                                    setState(() {
+                                      tagPairs[odd.tag.toString()] = pair;
+                                    });
                                   },
                                   oddFocusNode:
                                       oddFocusNodes[odd.tag.toString()],

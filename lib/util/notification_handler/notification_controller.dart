@@ -1,5 +1,4 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/material.dart';
 import 'package:stake_calculator/env/main_development.dart';
 
 import '../../data/mapper/json_notification_mapper.dart';

@@ -8,6 +8,7 @@ class Stake {
     this.losses,
     this.gameType,
     double? profit,
+    bool? isWiningStreak,
     int? cycle,
     int? coins,
     int? stakes,
@@ -16,6 +17,7 @@ class Stake {
     double? tolerance,
     double? overflow,
     double? recovery,
+    num? cumLosses,
     bool? decay,
     int? restrictRounds,
     int? recoveryCycles,
@@ -33,9 +35,11 @@ class Stake {
   }) {
     _previousStake = previousStake;
     _profit = profit;
+    _cumLosses = cumLosses;
     _cycle = cycle;
     _next = next;
     _wins = wins;
+    _isWiningStreak = isWiningStreak;
     _rounded = rounded;
     _tolerance = tolerance;
     _overflow = overflow;
@@ -59,6 +63,7 @@ class Stake {
 
   PreviousStake? _previousStake;
   double? losses;
+  num? _cumLosses;
   int? gameType;
   double? _profit;
   int? _cycle;
@@ -75,6 +80,7 @@ class Stake {
   int? _recoveryCycles;
   bool? _cycleRecovered;
   bool? _rounded;
+  bool? _isWiningStreak;
   bool? _authRequired;
   bool? _forfeit;
   bool? _forfeiture;
@@ -90,7 +96,11 @@ class Stake {
 
   double? get profit => _profit;
 
+  num? get cumLosses => _cumLosses;
+
   bool get rounded => _rounded ?? false;
+
+  bool get isWiningStreak => _isWiningStreak ?? false;
 
   int? get cycle => _cycle;
 

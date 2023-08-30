@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:stake_calculator/data/mapper/odds_json_mapper.dart';
 import 'package:stake_calculator/data/model/api_response_state.dart';
 import 'package:stake_calculator/domain/inotification_repository.dart';
 import 'package:stake_calculator/domain/istake_repository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/log.dart';
 import '../../../domain/model/odd.dart';
 
 part 'home_event.dart';
@@ -102,8 +104,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
       try {
         await _repository.saveGameType(type: event.type.index);
+        final stake = await _repository.getStake(cached: true);
         final odds = await _repository.getTags();
-        emit(state.copy(stake: _getStake(stake: state.stake!, tags: odds)));
+        emit(state.copy(stake: _getStake(stake: stake, tags: odds)));
       } catch (error) {
         emit(state.copy(error: "Error computing stake. Try again"));
       }
@@ -184,6 +187,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           return;
         }
 
+        if (!event.odds.isValidPairs()) {
+          emit(state.copy(
+              error:
+                  "Missing pair of tags. Kindly select matching pairs of tags"));
+          return;
+        }
+
         if (!event.force) {
           final losses = _getApproximateLosses(stake: state.stake!);
 
@@ -200,8 +210,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copy(loading: true));
         final stake = await _repository.computeStake(
             odds: event.odds, cycle: event.cycle);
+        final tags = await _repository.getTags();
 
-        emit(state.copy(stake: _getStake(stake: stake, tags: state.tags!)));
+        emit(state.copy(stake: _getStake(stake: stake, tags: tags), tags: tags));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(state.copy(login: true));

@@ -4,12 +4,16 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:stake_calculator/data/mapper/json_notification_mapper.dart';
 import 'package:stake_calculator/domain/model/notification.dart';
 
-import '../../domain/mapper/remote_message_to_notification_mapper.dart';
+import 'notification_controller.dart';
 
 const String PROMOTIONAL_NOTIFICATION_KEY = 'promotional_channel';
 const String PROMOTIONAL_NOTIFICATION_CHANNEL = 'Promotional Notifications';
 
 _createUniqueId() => DateTime.now().millisecondsSinceEpoch.remainder(100000);
+
+final listener = AwesomeNotifications().setListeners(
+    onActionReceivedMethod: (ReceivedAction receivedAction) =>
+        NotificationController.onActionReceivedMethod(receivedAction));
 
 Future<void> showCampaignNotifications(Notification notification) async {
   await AwesomeNotifications().createNotification(

@@ -37,6 +37,14 @@ extension ExtPreviosStake on PreviousStake {
 extension ExtTags on List<Odd> {
   delete(int position) => removeAt(position);
 
+  int pairs() => where((element) => element.isPair == true).toList().length;
+
+  void clearPairs() => forEach((element) {
+        element.isPair = false;
+      });
+
+  bool isValidPairs() => length == 1 ? true : (pairs() % 2 == 0);
+
   Odd get(int position) => this[position];
 
   Odd findByTag(String tag) => firstWhere((element) => element.tag == tag,

@@ -56,9 +56,11 @@ class _State extends State<XTextField> {
   void initState() {
     widget.focusNode?.addListener(() {
       if (widget.focusNode!.hasFocus && widget.controller.text.isNotEmpty) {
-        setState(() {
+        if(mounted) {
+          setState(() {
           showClear = true;
         });
+        }
       }
     });
     super.initState();
@@ -78,9 +80,11 @@ class _State extends State<XTextField> {
         style: const TextStyle(fontWeight: FontWeight.w500),
         inputFormatters: widget.inputFormatters,
         onChanged: (x) {
-          setState(() {
+          if(mounted) {
+            setState(() {
             showClear = x.isNotEmpty;
           });
+          }
           if (widget.onChanged != null) {
             widget.onChanged!(x);
           }
@@ -111,9 +115,11 @@ class _State extends State<XTextField> {
                     widget.onClear!();
                   }
                 } else {
-                  setState(() {
+                  if(mounted) {
+                    setState(() {
                     showSecret = !showSecret;
                   });
+                  }
                 }
               },
               child: Icon(

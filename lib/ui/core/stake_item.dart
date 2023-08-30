@@ -11,11 +11,12 @@ class StakeItem extends StatelessWidget {
   final TextEditingController tagController;
   final TextEditingController oddController;
   final Function(Odd odd, int position) onDelete;
-  final Function(Odd odd, int position) onUpdate;
+  final Function(Odd odd, int position, bool isPair) onUpdate;
   final bool isOnlyItem;
   final FocusNode? oddFocusNode;
   final FocusNode? tagFocusNode;
   final bool isLast;
+  final bool isPair;
   final int position;
 
   const StakeItem(
@@ -28,11 +29,12 @@ class StakeItem extends StatelessWidget {
       required this.onUpdate,
       required this.isOnlyItem,
       required this.oddController,
-      required this.tagController});
+      required this.tagController,
+      required this.isPair});
 
   @override
   Widget build(BuildContext context) => Container(
-      margin: EdgeInsets.only(left: 16.w, right: 10.w, bottom: 10.h),
+      margin: EdgeInsets.only(right: 10.w, bottom: 10.h),
       width: double.infinity,
       child: Column(
         children: [
@@ -40,6 +42,20 @@ class StakeItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Checkbox(
+                  value: isPair,
+                  activeColor: primaryColor,
+                  onChanged: isLast
+                      ? null
+                      : (x) => onUpdate(
+                          Odd(
+                              odd: double.parse(oddController.text.isEmpty
+                                  ? "0.00"
+                                  : oddController.text),
+                              name: tagController.text,
+                              isPair: x ?? false),
+                          position,
+                          x ?? false)),
               Expanded(
                 child: XTextField(
                     inputType: TextInputType.text,
@@ -52,8 +68,10 @@ class StakeItem extends StatelessWidget {
                       onUpdate(
                           Odd(
                               odd: double.parse(odd.isEmpty ? "0.00" : odd),
-                              name: s),
-                          position);
+                              name: s,
+                              isPair: isPair),
+                          position,
+                          isPair);
                     }),
               ),
               Container(
@@ -70,16 +88,24 @@ class StakeItem extends StatelessWidget {
                     ],
                     onClear: () {
                       onUpdate(
-                          Odd(odd: 0.00, name: tagController.text), position);
+                          Odd(
+                              odd: 0.00,
+                              name: tagController.text,
+                              isPair: isPair),
+                          position,
+                          isPair);
                     },
                     onChanged: (s) {
                       onUpdate(
                           Odd(
                               odd: double.parse(s.isEmpty ? "0" : s),
-                              name: tagController.text),
-                          position);
+                              name: tagController.text,
+                              isPair: isPair),
+                          position,
+                          isPair);
                     },
-                    inputType: const TextInputType.numberWithOptions(decimal: true),
+                    inputType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     controller: oddController),
               ),
               Container(
