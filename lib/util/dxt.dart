@@ -31,7 +31,7 @@ extension ExtStake on Stake {
 }
 
 extension ExtPreviosStake on PreviousStake {
-  num? get expectedWin => value! * odd! * lot!;
+  num? get expectedWin => value! * odd! * odds.length;
 }
 
 extension ExtTags on List<Odd> {

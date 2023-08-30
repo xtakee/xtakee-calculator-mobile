@@ -131,8 +131,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final odds = await _repository.updateTag(
             odd: event.odd, position: event.position);
 
+        String? error;
+        if (!odds.isValidPairs()) error = "Select a matching pair of tag";
+
         emit(state.copy(
-            tags: odds, stake: _getStake(stake: state.stake!, tags: odds)));
+            tags: odds,
+            stake: _getStake(stake: state.stake!, tags: odds),
+            error: error));
       } catch (error) {
         emit(state.copy(error: "Error updating tag. Try again"));
       }
@@ -212,7 +217,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             odds: event.odds, cycle: event.cycle);
         final tags = await _repository.getTags();
 
-        emit(state.copy(stake: _getStake(stake: stake, tags: tags), tags: tags));
+        emit(
+            state.copy(stake: _getStake(stake: stake, tags: tags), tags: tags));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(state.copy(login: true));
