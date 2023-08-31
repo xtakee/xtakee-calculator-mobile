@@ -9,6 +9,7 @@ class UpdateRequest {
       double? startingStake,
       double? tolerance,
       bool? decay,
+      String? mode,
       bool? approxAmount,
       bool? forfeit,
       int? restrictRounds}) {
@@ -18,6 +19,7 @@ class UpdateRequest {
     _tolerance = tolerance;
     _restrictRounds = restrictRounds;
     _decay = decay;
+    _mode = mode;
     _forfeit = forfeit;
   }
 
@@ -26,6 +28,7 @@ class UpdateRequest {
   double? _tolerance;
   int? _restrictRounds;
   bool? _forfeit;
+  String? _mode;
   bool? _approxAmount;
   bool? _decay;
 
@@ -38,6 +41,8 @@ class UpdateRequest {
   bool? get decay => _decay;
 
   bool? get approxAmount => _approxAmount;
+
+  String get mode => _mode ?? "";
 
   bool? get forfeit => _forfeit;
 

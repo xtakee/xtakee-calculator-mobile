@@ -29,6 +29,7 @@ class JsonStakeMapper extends Mapper<Map<String, dynamic>, Stake> {
       cycleRecovered: from['cycleRecovered'],
       authRequired: from['authRequired'],
       forfeit: from['forfeit'],
+      mode: from['mode'],
       forfeiture: from['forfeiture'],
       id: from['_id'],
       createdAt: from['createdAt'],
@@ -48,6 +49,7 @@ class JsonStakeMapper extends Mapper<Map<String, dynamic>, Stake> {
     map['cumLosses'] = from.cumLosses;
     map['stakes'] = from.stakes;
     map['wins'] = from.wins;
+    map['mode'] = from.mode;
     map['rounded'] = from.rounded;
     map['startingStake'] = from.startingStake;
     map['tolerance'] = from.tolerance;

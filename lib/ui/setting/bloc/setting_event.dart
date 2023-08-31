@@ -14,18 +14,20 @@ class UpdateStake extends SettingEvent {
   final bool approxAmount;
   final double staringStake;
   final bool forfeit;
+  final String mode;
+
   final bool clearLosses;
   final int restrictRounds;
 
-  UpdateStake(
-      {required this.profit,
-      required this.keepTag,
-      required this.approxAmount,
-      required this.isMultiple,
-      required this.tolerance,
-      required this.clearLosses,
-      required this.decay,
-      required this.staringStake,
-      required this.restrictRounds,
-      required this.forfeit});
+  UpdateStake({required this.profit,
+    required this.keepTag,
+    required this.mode,
+    required this.approxAmount,
+    required this.isMultiple,
+    required this.tolerance,
+    required this.clearLosses,
+    required this.decay,
+    required this.staringStake,
+    required this.restrictRounds,
+    required this.forfeit});
 }

@@ -13,6 +13,7 @@ class JsonUpdateRequestMapper
     final map = <String, dynamic>{};
     map['profit'] = from.profit;
     map['forfeit'] = from.forfeit;
+    map['mode'] = from.mode;
     map['rounded'] = from.approxAmount;
     map['restrictRounds'] = from.restrictRounds;
     map['decay'] = from.decay;

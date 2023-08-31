@@ -28,6 +28,7 @@ class Stake {
     bool? rounded,
     bool? forfeited,
     String? id,
+    String? mode,
     String? createdAt,
     String? updatedAt,
     double? startingStake,
@@ -39,6 +40,7 @@ class Stake {
     _cycle = cycle;
     _next = next;
     _wins = wins;
+    _mode = mode;
     _isWiningStreak = isWiningStreak;
     _rounded = rounded;
     _tolerance = tolerance;
@@ -86,6 +88,7 @@ class Stake {
   bool? _forfeiture;
   bool? _forfeited;
   String? _id;
+  String? _mode;
   String? _createdAt;
   String? _updatedAt;
   int? _v;
@@ -137,6 +140,8 @@ class Stake {
   bool? get forfeited => _forfeited;
 
   String? get id => _id;
+
+  String get mode => _mode ?? "";
 
   String? get createdAt => _createdAt;
 

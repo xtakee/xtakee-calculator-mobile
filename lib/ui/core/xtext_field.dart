@@ -56,10 +56,10 @@ class _State extends State<XTextField> {
   void initState() {
     widget.focusNode?.addListener(() {
       if (widget.focusNode!.hasFocus && widget.controller.text.isNotEmpty) {
-        if(mounted) {
+        if (mounted) {
           setState(() {
-          showClear = true;
-        });
+            showClear = true;
+          });
         }
       }
     });
@@ -77,13 +77,13 @@ class _State extends State<XTextField> {
         controller: widget.controller,
         enabled: widget.enable,
         obscureText: widget.isSecret && !showSecret,
-        style: const TextStyle(fontWeight: FontWeight.w500),
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
         inputFormatters: widget.inputFormatters,
         onChanged: (x) {
-          if(mounted) {
+          if (mounted) {
             setState(() {
-            showClear = x.isNotEmpty;
-          });
+              showClear = x.isNotEmpty;
+            });
           }
           if (widget.onChanged != null) {
             widget.onChanged!(x);
@@ -99,7 +99,7 @@ class _State extends State<XTextField> {
               borderRadius: BorderRadius.circular(5)),
           label: Text(
             widget.label,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.black, fontSize: 14.sp),
           ),
           border: OutlineInputBorder(
               borderSide: BorderSide.none,
@@ -115,10 +115,10 @@ class _State extends State<XTextField> {
                     widget.onClear!();
                   }
                 } else {
-                  if(mounted) {
+                  if (mounted) {
                     setState(() {
-                    showSecret = !showSecret;
-                  });
+                      showSecret = !showSecret;
+                    });
                   }
                 }
               },
@@ -133,7 +133,7 @@ class _State extends State<XTextField> {
             ),
           ),
           contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.w, vertical: widget.lines == 1 ? 0 : 10.h),
+              horizontal: 10.w, vertical: widget.lines == 1 ? 0 : 10.h),
         ),
       );
 }

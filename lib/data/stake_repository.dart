@@ -11,7 +11,6 @@ import 'package:stake_calculator/domain/istake_repository.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/domain/remote/istake_service.dart';
 import 'package:stake_calculator/util/dxt.dart';
-import 'package:stake_calculator/util/log.dart';
 
 import '../domain/cache.dart';
 import '../domain/model/bundle.dart';
@@ -84,6 +83,7 @@ class StakeRepository extends IStakeRepository {
   Future<Stake> updateState(
       {double? profit,
       double? tolerance,
+      required String mode,
       required bool decay,
       required bool isMultiple,
       required bool clearLosses,
@@ -101,6 +101,7 @@ class StakeRepository extends IStakeRepository {
             approxAmount: approxAmount,
             tolerance: tolerance,
             decay: decay,
+            mode: mode,
             forfeit: forfeit,
             restrictRounds: restrictRounds,
             startingStake: startingStake))

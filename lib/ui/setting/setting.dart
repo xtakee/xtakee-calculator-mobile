@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_the_tooltip/just_the_tooltip.dart';
 import 'package:stake_calculator/ui/commons.dart';
 import 'package:stake_calculator/ui/core/xswitch.dart';
 import 'package:stake_calculator/ui/core/xtext_field.dart';
@@ -12,6 +13,7 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import '../../util/process_indicator.dart';
 import '../core/tutorial_coach_mark/toturial_coach_mark.dart';
+import '../core/xchip.dart';
 import '../core/xdialog.dart';
 import 'component/setting_tour.dart';
 
@@ -38,7 +40,21 @@ class _State extends State<Setting> {
   final GlobalKey lossKey = GlobalKey();
   final GlobalKey startStakeKey = GlobalKey();
 
+  final JustTheController pController = JustTheController();
+  final JustTheController tController = JustTheController();
+  final JustTheController sController = JustTheController();
+
   late TutorialCoachMark _pageTour;
+
+  final Map<String, String> modeString = {
+    "generic":
+        "Highest risk exposure with higher profit. Losses a are cumulative of each amount staked at each round. Requires high capital",
+    "saver":
+        "Lowest risk exposure at a consistent profit. Losses are cleared on every profit providing room for more rounds with low stake amount",
+    "advance":
+        "Average risk exposure with an average profit. Profit are computed from last point of profit, allowing for low risk exposure",
+    "single": "Minimal risk exposure with consistent profit. All games are considered as a whole, with cumulative profit equal to set profit"
+  };
 
   void _initialPageTour() {
     _pageTour = TutorialCoachMark(
@@ -76,6 +92,9 @@ class _State extends State<Setting> {
     _toleranceController.dispose();
     _roundsController.dispose();
     _processIndicator.dismiss();
+    sController.dispose();
+    tController.dispose();
+    pController.dispose();
     super.dispose();
   }
 
@@ -122,6 +141,7 @@ class _State extends State<Setting> {
                   decay = state.stake.decay!;
                   clearLosses = state.clearLosses;
                   keepTags = state.keepTag;
+                  selectedTab = state.stake.mode;
 
                   String? profit = state.stake.profit!.toString();
                   _profitController.text = profit ?? "";
@@ -169,30 +189,70 @@ class _State extends State<Setting> {
                           Container(
                             height: 32.h,
                           ),
-                          XTextField(
-                              key: profitKey,
-                              label: "Profit",
-                              controller: _profitController),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                  child: XTextField(
+                                      key: profitKey,
+                                      label: "Profit",
+                                      controller: _profitController)),
+                              Container(
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  child: GestureDetector(
+                                    onTap: () => pController.showTooltip(),
+                                    child: _infoTip(
+                                        message: profitMessage,
+                                        controller: pController),
+                                  ))
+                            ],
+                          ),
                           Container(
                             height: 24.h,
                           ),
-                          XTextField(
-                              key: lossKey,
-                              label: "Loss Tolerance",
-                              controller: _toleranceController),
+                          Row(
+                            children: [
+                              Flexible(
+                                  child: XTextField(
+                                      key: lossKey,
+                                      label: "Loss Tolerance",
+                                      controller: _toleranceController)),
+                              Container(
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  child: GestureDetector(
+                                    onTap: () => tController.showTooltip(),
+                                    child: _infoTip(
+                                        message: toleranceMessage,
+                                        controller: tController),
+                                  ))
+                            ],
+                          ),
                           Container(
                             height: 24.h,
                           ),
-                          XTextField(
-                              key: startStakeKey,
-                              label: "Starting Stake",
-                              controller: _startingStakeController),
+                          Row(
+                            children: [
+                              Flexible(
+                                  child: XTextField(
+                                      key: startStakeKey,
+                                      label: "Starting Stake",
+                                      controller: _startingStakeController)),
+                              Container(
+                                  margin: EdgeInsets.only(left: 10.w),
+                                  child: GestureDetector(
+                                      onTap: () => sController.showTooltip(),
+                                      child: _infoTip(
+                                          message: stakeMessage,
+                                          controller: sController)))
+                            ],
+                          ),
                           Container(
                             height: 16.h,
                           ),
                         ],
                       ),
                     ),
+                    _mode(),
                     _switch(
                         child: XSwitch(
                             label: "Decay",
@@ -306,9 +366,73 @@ class _State extends State<Setting> {
     );
   }
 
+  final _tabsNames = ["generic", "single", "saver"];
+  String selectedTab = "generic";
+
+  Widget _mode() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 8.h,
+                ),
+                const Text(
+                  "Working Mode",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                Container(
+                  height: 10.h,
+                ),
+                XChip(
+                  choices: _tabsNames,
+                  wrapAlignment: WrapAlignment.center,
+                  defaultSelected: selectedTab,
+                  onSelectedChanged: (String choice) {
+                    setState(() {
+                      selectedTab = choice;
+                    });
+                  },
+                ),
+                Container(
+                  height: 5.h,
+                ),
+                Text(
+                  modeString[selectedTab] ?? "",
+                  textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black45),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10.h),
+            height: 1,
+            color: Colors.black12,
+          )
+        ],
+      );
+
+  Widget _infoTip(
+          {required String message, required JustTheController controller}) =>
+      JustTheTooltip(
+          controller: controller,
+          content: Padding(
+            padding: EdgeInsets.all(8.h),
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+            ),
+          ),
+          child: const Icon(Icons.info_outline));
+
   void _save() {
     _bloc.updateStake(
         clearLosses: clearLosses,
+        mode: selectedTab,
         approxAmount: approxAmount,
         profit: double.parse(
             _profitController.text.isNotEmpty ? _profitController.text : "0.0"),
@@ -353,7 +477,7 @@ class _State extends State<Setting> {
                 Text(
                   description,
                   textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 14.sp, color: Colors.black38),
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black45),
                 ),
               ],
             ),

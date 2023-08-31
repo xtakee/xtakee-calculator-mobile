@@ -23,6 +23,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           {required double profit,
           required double tolerance,
           required bool decay,
+          required String mode,
           required bool clearLosses,
           required bool isMultiple,
           required bool keepTag,
@@ -34,6 +35,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           profit: profit,
           approxAmount: approxAmount,
           tolerance: tolerance,
+          mode: mode,
           clearLosses: clearLosses,
           isMultiple: isMultiple,
           staringStake: statingStake,
@@ -70,6 +72,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       try {
         await _repository.updateState(
             decay: event.decay,
+            mode: event.mode.toLowerCase(),
             isMultiple: event.isMultiple,
             tolerance: event.tolerance,
             approxAmount: event.approxAmount,

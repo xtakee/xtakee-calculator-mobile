@@ -50,7 +50,7 @@ class AccountRepository extends IAccountRepository {
     data['email'] = email;
     data['password'] = password;
     data['name'] = name;
-    data['device'] = await FlutterUdid.udid;
+    data['device'] = await FlutterUdid.consistentUdid;
     data['phone'] = {"code": "+234", "number": phone.number};
     data['country'] = {"code": "NG", "name": "Nigeria"};
 

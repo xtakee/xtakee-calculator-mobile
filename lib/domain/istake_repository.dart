@@ -30,6 +30,7 @@ abstract class IStakeRepository {
       double? tolerance,
       required double startingStake,
       required bool decay,
+      required String mode,
       required bool approxAmount,
       required bool clearLosses,
       required bool forfeit,
