@@ -11,6 +11,7 @@ class Res {
   static const String flutterwave = "assets/flutterwave.png";
   static const String forgot_password = "assets/forgot_password.json";
   static const String games = "assets/games.png";
+  static const String happy_setup = "assets/happy_setup.json";
   static const String hurry_animation = "assets/hurry_animation.json";
   static const String ic_bell = "assets/ic_bell.svg";
   static const String ic_notify = "assets/ic_notify.svg";

@@ -77,7 +77,7 @@ class _State extends State<XTextField> {
         controller: widget.controller,
         enabled: widget.enable,
         obscureText: widget.isSecret && !showSecret,
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14.sp),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
         inputFormatters: widget.inputFormatters,
         onChanged: (x) {
           if (mounted) {

@@ -33,7 +33,6 @@ void processNotification(RemoteMessage message) {
     messageId = message.messageId ?? "";
 
     final notification = RemoteMessageToNotificationMapper().from(message);
-    showCampaignNotifications(notification);
 
     final accountRepository = GetIt.instance<IAccountRepository>();
     accountRepository
@@ -45,6 +44,8 @@ void processNotification(RemoteMessage message) {
         notification: notification..createdAt = DateTime.now());
 
     notificationNotifier.notification = notification;
+
+    showCampaignNotifications(notification);
   }
 }
 

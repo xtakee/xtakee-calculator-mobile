@@ -18,7 +18,7 @@ class SetupAccount extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: Column(
           children: [
-            Lottie.asset(Res.welcome, repeat: false),
+            Lottie.asset(Res.happy_setup, repeat: false, height: 220.h),
             const Text(
               "Setup Account",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),

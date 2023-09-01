@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:4684751407987440424",
-      "lastPropertyId": "11:5047953282115359255",
+      "lastPropertyId": "12:872383792838145339",
       "name": "Notification",
       "properties": [
         {
@@ -57,6 +57,11 @@
         {
           "id": "11:5047953282115359255",
           "name": "categoryId",
+          "type": 9
+        },
+        {
+          "id": "12:872383792838145339",
+          "name": "messageId",
           "type": 9
         }
       ],

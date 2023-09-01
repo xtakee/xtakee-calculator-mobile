@@ -32,6 +32,8 @@ class XChip extends StatelessWidget {
     for (var choice in choices) {
       chips.add(ChoiceChip(
         side: const BorderSide(color: primaryBackground),
+        labelStyle: TextStyle(fontSize: 14.sp),
+        labelPadding: const EdgeInsets.all(0),
         backgroundColor: primaryBackground,
         label: Text(choice),
         selected: defaultSelected == choice,

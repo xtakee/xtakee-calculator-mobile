@@ -8,6 +8,7 @@ class JsonNotificationMapper extends Mapper<Map<String, String?>, Notification> 
       createdAt: DateTime.parse(from['createdAt']!),
       description: from['description'],
       body: from['body'],
+      messageId: from['messageId'],
       title: from['title'],
       ack: from['ack'],
       category: from['category'],
@@ -21,6 +22,7 @@ class JsonNotificationMapper extends Mapper<Map<String, String?>, Notification> 
     map['description'] = from.description ?? "";
     map['body'] = from.body ?? "";
     map['title'] = from.title ?? "";
+    map['messageId'] = from.messageId;
     map['categoryId'] = from.categoryId ?? "";
     map['ack'] = from.ack ?? "";
     map['category'] = from.category ?? "";

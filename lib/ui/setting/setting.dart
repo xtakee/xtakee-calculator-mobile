@@ -366,7 +366,7 @@ class _State extends State<Setting> {
     );
   }
 
-  final _tabsNames = ["generic", "single", "saver"];
+  final _tabsNames = ["generic", "single", "saver", "advance"];
   String selectedTab = "generic";
 
   Widget _mode() => Column(
@@ -389,7 +389,7 @@ class _State extends State<Setting> {
                 ),
                 XChip(
                   choices: _tabsNames,
-                  wrapAlignment: WrapAlignment.center,
+                  wrapAlignment: WrapAlignment.start,
                   defaultSelected: selectedTab,
                   onSelectedChanged: (String choice) {
                     setState(() {

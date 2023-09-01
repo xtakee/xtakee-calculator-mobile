@@ -22,7 +22,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 4684751407987440424),
       name: 'Notification',
-      lastPropertyId: const IdUid(11, 5047953282115359255),
+      lastPropertyId: const IdUid(12, 872383792838145339),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -73,6 +73,11 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(11, 5047953282115359255),
             name: 'categoryId',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(12, 872383792838145339),
+            name: 'messageId',
             type: 9,
             flags: 0)
       ],
@@ -146,7 +151,10 @@ ModelDefinition getObjectBoxModel() {
           final categoryIdOffset = object.categoryId == null
               ? null
               : fbb.writeString(object.categoryId!);
-          fbb.startTable(12);
+          final messageIdOffset = object.messageId == null
+              ? null
+              : fbb.writeString(object.messageId!);
+          fbb.startTable(13);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, typeOffset);
           fbb.addOffset(2, descriptionOffset);
@@ -157,6 +165,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addBool(8, object.read);
           fbb.addOffset(9, ackOffset);
           fbb.addOffset(10, categoryIdOffset);
+          fbb.addOffset(11, messageIdOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -171,6 +180,8 @@ ModelDefinition getObjectBoxModel() {
               .vTableGetNullable(buffer, rootOffset, 10);
           final ackParam = const fb.StringReader(asciiOptimization: true)
               .vTableGetNullable(buffer, rootOffset, 22);
+          final messageIdParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGetNullable(buffer, rootOffset, 26);
           final createdAtParam = createdAtValue == null
               ? null
               : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
@@ -189,6 +200,7 @@ ModelDefinition getObjectBoxModel() {
               type: typeParam,
               body: bodyParam,
               ack: ackParam,
+              messageId: messageIdParam,
               createdAt: createdAtParam,
               read: readParam,
               description: descriptionParam,
@@ -245,4 +257,8 @@ class Notification_ {
   /// see [Notification.categoryId]
   static final categoryId =
       QueryStringProperty<Notification>(_entities[0].properties[9]);
+
+  /// see [Notification.messageId]
+  static final messageId =
+      QueryStringProperty<Notification>(_entities[0].properties[10]);
 }

@@ -25,12 +25,21 @@ class NotificationRepository extends INotificationRepository {
 
   @override
   void save({required Notification notification}) {
+    final exists = _getByMessageId(messageId: notification.messageId ?? "");
+    if (exists != null) return;
     store.box<Notification>().put(notification);
   }
 
   @override
   void setRead({required Notification notification}) =>
       store.box<Notification>().put(notification..read = true);
+
+  Notification? _getByMessageId({required String messageId}) => store
+      .box<Notification>()
+      .query(Notification_.messageId.equals(messageId))
+      .build()
+      .find()
+      .firstOrNull;
 
   @override
   List<Notification> getUnread() => store

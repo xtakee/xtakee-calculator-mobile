@@ -8,8 +8,6 @@ import 'package:stake_calculator/util/constants.dart';
 import '../di/injector.dart';
 import '../main.dart';
 
-final navigator = GlobalKey<NavigatorState>(); //Create a key for navigator
-
 class _HttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {

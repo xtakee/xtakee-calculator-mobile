@@ -27,6 +27,8 @@ import 'package:stake_calculator/util/route_utils/app_router.dart';
 
 import '../../res.dart';
 import '../../util/dimen.dart';
+import '../../util/notification_handler/local_notification.dart';
+import '../../util/notification_handler/notification_controller.dart';
 import '../../util/notification_handler/notification_handler.dart';
 import '../../util/notification_handler/request_notification_permission.dart';
 import '../commons.dart';
@@ -133,6 +135,13 @@ class _State extends XState<Home> with TickerProviderStateMixin {
 
   void _showTour() => Future.delayed(
       const Duration(seconds: 1), () => _pageTour.show(context: context));
+
+  @override
+  void initState() {
+    super.initState();
+
+    NotificationController.startListeningToNotificationEvents();
+  }
 
   void init() {
     floating = Floating();

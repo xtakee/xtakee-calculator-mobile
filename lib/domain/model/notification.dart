@@ -10,6 +10,7 @@ class Notification {
   String? title;
   String? category;
   String? ack;
+  String? messageId;
   String? categoryId;
   bool read;
 
@@ -20,6 +21,7 @@ class Notification {
       {this.type,
       this.body,
       this.ack,
+      this.messageId,
       this.createdAt,
       this.read = false,
       this.description,

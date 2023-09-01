@@ -22,7 +22,6 @@ class _State extends XState<Notifications> {
 
   @override
   void postInitState() {
-    super.initState();
     notificationNotifier.addListener(() {
       _bloc.getNotifications();
     });
