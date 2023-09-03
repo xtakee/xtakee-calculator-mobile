@@ -9,10 +9,12 @@ class XDialog {
 
   show() => showDialog(
       context: context,
-      builder: (_) => Dialog(
-        backgroundColor: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          child: IntrinsicHeight(child: child)),
+      builder: (_) => WillPopScope(
+          child: Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: IntrinsicHeight(child: child)),
+          onWillPop: () async => false),
       barrierDismissible: dismissible);
 }

@@ -1,4 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:stake_calculator/domain/model/notification.dart';
+import 'package:stake_calculator/ui/setting/setting.dart';
 import '../../data/mapper/json_notification_mapper.dart';
 import '../../main.dart';
 import '../../ui/notifications/component/render/notification_render.dart';
@@ -28,12 +30,19 @@ class NotificationController {
 
     if (payload != null && navigator.currentContext != null) {
       final notification = JsonNotificationMapper().from(payload);
-      switch (notification.category) {
-        case 'campaign':
-          AppRouter.gotoWidget(NotificationRender(notification: notification),
-              navigator.currentContext!);
-          return;
-      }
+      manageNotifications(notification);
+    }
+  }
+
+  // category --> campaign, settings, transaction
+  @pragma("vm:entry-point")
+  static void manageNotifications(Notification notification) {
+    switch (notification.category) {
+      case 'campaign':
+        AppRouter.gotoWidget(NotificationRender(notification: notification),
+            navigator.currentContext!);
+      case 'settings':
+        AppRouter.gotoWidget(const Setting(), navigator.currentContext!);
     }
   }
 }

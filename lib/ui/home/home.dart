@@ -22,9 +22,11 @@ import 'package:stake_calculator/ui/wallet/wallet.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
 import 'package:stake_calculator/util/game_type.dart';
+import 'package:stake_calculator/util/log.dart';
 import 'package:stake_calculator/util/notification_handler/notification_notifier.dart';
 import 'package:stake_calculator/util/route_utils/app_router.dart';
 
+import '../../data/mapper/json_notification_mapper.dart';
 import '../../res.dart';
 import '../../util/dimen.dart';
 import '../../util/notification_handler/local_notification.dart';
@@ -156,6 +158,16 @@ class _State extends XState<Home> with TickerProviderStateMixin {
         setState(() {
           notificationCount = bloc.getUnReadNotificationsCount();
         });
+      }
+    });
+
+    AwesomeNotifications()
+        .getInitialNotificationAction()
+        .then((receivedAction) {
+      final payload = receivedAction?.payload;
+      if (payload != null) {
+        final notification = JsonNotificationMapper().from(payload);
+        NotificationController.manageNotifications(notification);
       }
     });
   }

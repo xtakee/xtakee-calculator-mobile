@@ -3,8 +3,6 @@ import 'package:stake_calculator/domain/model/odd.dart';
 import 'package:stake_calculator/ui/core/xwarning_buttons.dart';
 import 'package:stake_calculator/util/dxt.dart';
 
-import '../../util/dimen.dart';
-
 class XDeleteTagWarning extends StatelessWidget {
   final Function(Odd odd, int position) onDelete;
   final Function(Odd odd, int position) onWon;
