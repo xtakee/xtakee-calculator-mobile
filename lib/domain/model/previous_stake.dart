@@ -5,6 +5,7 @@ class PreviousStake {
       {num? odd,
       this.value,
       this.totalWin = 0,
+      this.profit,
       String? id,
       num? lot,
       List<Odd>? odds}) {
@@ -19,6 +20,7 @@ class PreviousStake {
   num? _lot;
   num? value;
   num totalWin;
+  num? profit;
   String? _id;
 
   num? get odd => _odd;

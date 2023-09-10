@@ -98,10 +98,7 @@ class _State extends State<PaymentMethod> {
                     child: XCard(
                         elevation: 0,
                         margin: EdgeInsets.only(top: 5.h),
-                        onTap: () {
-                          widget.onSelected(mandate);
-                          AppRouter.goBack(context);
-                        },
+                        onTap: () => _selected(mandate),
                         backgroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
                             vertical: 5.h, horizontal: 8.w),
@@ -145,7 +142,7 @@ class _State extends State<PaymentMethod> {
                             Radio(
                               value: isSelected,
                               groupValue: true,
-                              onChanged: (x) {},
+                              onChanged: (x) => _selected(mandate),
                               activeColor: primaryColor,
                             )
                           ],
@@ -173,7 +170,12 @@ class _State extends State<PaymentMethod> {
             ),
           ),
           Positioned(
-              top: 3.h, left: 0, child: widget.selected!.gateway!.toGateway())
+              top: 3.h, left: 0, child: (mandate.gateway ?? "").toGateway())
         ],
       );
+
+  void _selected(Mandate mandate) {
+    widget.onSelected(mandate);
+    AppRouter.goBack(context);
+  }
 }

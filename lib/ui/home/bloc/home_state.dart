@@ -18,6 +18,7 @@ class HomeState {
   bool limitWarning;
   String? error;
   bool loading;
+  bool reset;
   bool tagAdded;
   Stake? stake;
   List<Odd>? tags;
@@ -25,6 +26,7 @@ class HomeState {
   HomeState(
       {this.loading = false,
       this.login = false,
+      this.reset = false,
       this.error,
       this.stake,
       this.tags,
@@ -36,6 +38,7 @@ class HomeState {
           {bool login = false,
           bool streakWarning = false,
           bool limitWarning = false,
+          bool reset = false,
           String? error,
           List<Odd>? tags,
           bool loading = false,
@@ -47,6 +50,7 @@ class HomeState {
           limitWarning: limitWarning,
           loading: loading,
           login: login,
+          reset: reset,
           tagAdded: tagAdded,
           tags: tags ?? this.tags,
           stake: stake ?? this.stake);

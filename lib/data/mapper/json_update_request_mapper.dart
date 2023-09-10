@@ -14,6 +14,7 @@ class JsonUpdateRequestMapper
     map['profit'] = from.profit;
     map['forfeit'] = from.forfeit;
     map['mode'] = from.mode;
+    map['targetEarning'] = from.targetEarning;
     map['rounded'] = from.approxAmount;
     map['restrictRounds'] = from.restrictRounds;
     map['decay'] = from.decay;

@@ -6,6 +6,7 @@ import 'package:stake_calculator/domain/model/previous_stake.dart';
 import 'package:stake_calculator/domain/model/stake.dart';
 import 'package:stake_calculator/res.dart';
 import 'package:stake_calculator/ui/commons.dart';
+import 'package:stake_calculator/util/log.dart';
 
 import '../domain/model/history.dart';
 import 'dimen.dart';
@@ -42,6 +43,10 @@ extension ExtTags on List<Odd> {
   void clearPairs() => forEach((element) {
         element.isPair = false;
       });
+
+  void clearOdds() => forEach((element) {
+    element.odd = 0;
+  });
 
   bool isValidPairs() => length == 1 ? true : (pairs() % 2 == 0);
 

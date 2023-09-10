@@ -36,6 +36,7 @@ class StakeRepository extends IStakeRepository {
 
       final tags = _getTags();
       tags.clearPairs();
+      tags.clearOdds();
       cache.set(PREF_TAGS_, jsonEncode(OddsJsonMapper().to(tags)));
 
       return value;
@@ -83,6 +84,7 @@ class StakeRepository extends IStakeRepository {
   Future<Stake> updateState(
       {double? profit,
       double? tolerance,
+      required double? targetEarning,
       required String mode,
       required bool decay,
       required bool isMultiple,
@@ -99,6 +101,7 @@ class StakeRepository extends IStakeRepository {
         .updateState(UpdateRequest(
             profit: profit,
             approxAmount: approxAmount,
+            targetEarning: targetEarning,
             tolerance: tolerance,
             decay: decay,
             mode: mode,

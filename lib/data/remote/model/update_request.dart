@@ -9,12 +9,14 @@ class UpdateRequest {
       double? startingStake,
       double? tolerance,
       bool? decay,
+      double? targetEarning,
       String? mode,
       bool? approxAmount,
       bool? forfeit,
       int? restrictRounds}) {
     _startingStake = startingStake;
     _profit = profit;
+    _targetEarning = targetEarning;
     _approxAmount = approxAmount;
     _tolerance = tolerance;
     _restrictRounds = restrictRounds;
@@ -26,6 +28,7 @@ class UpdateRequest {
   double? _profit;
   double? _startingStake;
   double? _tolerance;
+  double? _targetEarning;
   int? _restrictRounds;
   bool? _forfeit;
   String? _mode;
@@ -33,6 +36,8 @@ class UpdateRequest {
   bool? _decay;
 
   double? get profit => _profit;
+
+  double? get targetEarning => _targetEarning ?? 0;
 
   double? get tolerance => _tolerance;
 

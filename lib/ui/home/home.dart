@@ -219,6 +219,15 @@ class _State extends XState<Home> with TickerProviderStateMixin {
     });
   }
 
+  _scrollTop() {
+    Future.delayed(const Duration(milliseconds: 200)).then((value) {
+      _controller.jumpTo(0);
+      setState(() {
+        _clearAllFocus();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     setScale(MediaQuery.of(context).size);
@@ -228,7 +237,6 @@ class _State extends XState<Home> with TickerProviderStateMixin {
 
   void _showCelebration() {
     Future.delayed(const Duration(milliseconds: 200)).then((value) {
-      _clearAllFocus();
       setState(() {
         showCelebration = true;
         isWin = false;
@@ -324,6 +332,10 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                             GameType.values[state.stake?.gameType ?? 0];
                         tagPairs.clear();
                         odds = state.tags ?? [];
+                        if (state.reset) {
+                          oddControllers.clear();
+                          _scrollTop();
+                        }
                       });
                     }
 
@@ -615,12 +627,19 @@ class _State extends XState<Home> with TickerProviderStateMixin {
           margin: EdgeInsets.symmetric(vertical: 5.h),
           padding: EdgeInsets.all(8.h),
           color: primaryColor.withOpacity(0.2),
-          child: BlinkText(
-            "You are on a wining streak 🏆. You can reset rounds to prevent losses else you will be reset automatically",
-            textAlign: TextAlign.center,
-            times: 3,
-            style: TextStyle(fontSize: 15.sp, color: const Color(0xFF212121)),
-          ),
+          child: BlocBuilder(
+              bloc: bloc,
+              builder: (_, HomeState state) {
+                num profit = (state.stake?.previousStake?.profit ?? 0) -
+                    (state.stake?.cumLosses ?? 0);
+                return BlinkText(
+                  "You are on a wining streak 🏆 ${Formatter.format(profit * 1.0)}. You can reset rounds to prevent losses else you will be reset automatically",
+                  textAlign: TextAlign.center,
+                  times: 3,
+                  style: TextStyle(
+                      fontSize: 15.sp, color: const Color(0xFF212121)),
+                );
+              }),
         ),
       );
 
@@ -850,7 +869,9 @@ class _State extends XState<Home> with TickerProviderStateMixin {
                                       tagControllers[odd.tag.toString()]!,
                                   isOnlyItem: odds.length == 1);
                             })
-                        : (state.loading ? Container() : _error()),
+                        : ((state.loading || state.error == null)
+                            ? Container()
+                            : _error()),
                   ))),
         ],
       );

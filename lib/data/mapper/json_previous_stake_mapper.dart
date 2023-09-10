@@ -11,6 +11,7 @@ class JsonPreviousStakeMapper
       value: from['value'] * 1.0,
       odd: from['odd'] * 1.0,
       id: from['_id'],
+      profit: from['profit'],
       odds: from['odds'] != null
           ? List<Odd>.from(from['odds'].map((e) => OddJsonMapper().from(e)))
           : [],
@@ -22,6 +23,7 @@ class JsonPreviousStakeMapper
     final map = <String, dynamic>{};
     map['odd'] = from.odd;
     map['value'] = from.value;
+    map['profit']  = from.profit;
     map['_id'] = from.id;
     map['odds'] = from.odds.map((e) => OddJsonMapper().to(e)).toList();
     map['lot'] = from.lot;

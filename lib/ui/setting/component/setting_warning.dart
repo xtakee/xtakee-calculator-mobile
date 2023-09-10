@@ -9,9 +9,13 @@ import '../../commons.dart';
 class SettingWarning extends StatelessWidget {
   final String title;
   final Widget description;
+  final Function() onOk;
 
   const SettingWarning(
-      {super.key, required this.description, required this.title});
+      {super.key,
+      required this.description,
+      required this.title,
+      required this.onOk});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -27,23 +31,37 @@ class SettingWarning extends StatelessWidget {
               height: 5.h,
             ),
             description,
-            GestureDetector(
-              onTap: () => AppRouter.goBack(context),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(10)),
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 48.w),
-                margin: EdgeInsets.only(top: 32.h),
-                child: const Text(
-                  "Ok",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.white),
-                ),
+            Container(
+              margin: EdgeInsets.only(top: 24.h, bottom: 16.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      AppRouter.goBack(context);
+                      onOk();
+                    },
+                    child: const Text(
+                      "Ok",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.redAccent),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => AppRouter.goBack(context),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black),
+                    ),
+                  )
+                ],
               ),
-            ),
+            )
           ],
         ),
       );

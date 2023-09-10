@@ -28,7 +28,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           required bool isMultiple,
           required bool keepTag,
           required bool approxAmount,
-          required double statingStake,
+          required double targetEarning,
+          required double startingStake,
           required int restrictRounds,
           required bool forfeit}) =>
       add(UpdateStake(
@@ -38,7 +39,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
           mode: mode,
           clearLosses: clearLosses,
           isMultiple: isMultiple,
-          staringStake: statingStake,
+          targetEarning: targetEarning,
+          startingStake: startingStake,
           decay: decay,
           keepTag: keepTag,
           forfeit: forfeit,
@@ -63,7 +65,7 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
       } else if (event.restrictRounds < 0) {
         emit(OnError(message: "Invalid rounds provided"));
         return;
-      } else if (event.staringStake < 0) {
+      } else if (event.startingStake < 0) {
         emit(OnError(message: "Invalid starting stake provided"));
         return;
       }
@@ -78,7 +80,8 @@ class SettingBloc extends Bloc<SettingEvent, SettingState> {
             approxAmount: event.approxAmount,
             profit: event.profit,
             keepTag: event.keepTag,
-            startingStake: event.staringStake,
+            targetEarning: event.targetEarning,
+            startingStake: event.startingStake,
             forfeit: event.forfeit,
             restrictRounds: event.restrictRounds,
             clearLosses: event.clearLosses);

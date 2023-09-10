@@ -27,6 +27,8 @@ class Stake {
     bool? forfeiture,
     bool? rounded,
     bool? forfeited,
+    double? targetEarning,
+    double? earning,
     String? id,
     String? mode,
     String? createdAt,
@@ -53,6 +55,8 @@ class Stake {
     _forfeiture = forfeiture;
     _forfeited = forfeited;
     _id = id;
+    _targetEarning = targetEarning;
+    _earning = earning;
     _coins = coins;
     _stakes = stakes;
     _decay = decay;
@@ -65,6 +69,8 @@ class Stake {
 
   PreviousStake? _previousStake;
   double? losses;
+  double? _targetEarning;
+  double? _earning;
   num? _cumLosses;
   int? gameType;
   double? _profit;
@@ -98,6 +104,10 @@ class Stake {
   double? get startingStake => _startingStake;
 
   double? get profit => _profit;
+
+  double get earning => _earning ?? 0;
+
+  double get targetEarning => _targetEarning ?? 0;
 
   num? get cumLosses => _cumLosses;
 

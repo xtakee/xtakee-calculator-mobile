@@ -8,6 +8,7 @@ class OddJsonMapper extends Mapper<Map<String, dynamic>, Odd> {
       tag: from['tag'],
       name: from['name'],
       won: from['won'],
+      cycle: from['cycle'],
       id: from['_id'],
       isPair: from['isPair']);
 
@@ -18,6 +19,7 @@ class OddJsonMapper extends Mapper<Map<String, dynamic>, Odd> {
     map['name'] = from.name;
     map['tag'] = from.tag;
     map['won'] = from.won;
+    map['cycle'] = from.cycle;
     map['_id'] = from.id;
     map['isPair'] = from.isPair;
     return map;

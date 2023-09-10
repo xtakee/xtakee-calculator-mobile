@@ -2,13 +2,14 @@ class Odd {
   Odd(
       {String? name,
       this.isPair,
-      num? odd,
+      this.odd,
       num? won,
       String? id,
+      int? cycle,
       String? tag}) {
     _name = name;
-    _odd = odd;
     _won = won;
+    _cycle = cycle ?? 0;
     _id = id;
     isNew = tag == null;
     this.tag = tag ?? DateTime.now().microsecondsSinceEpoch.toString();
@@ -16,15 +17,16 @@ class Odd {
 
   String? tag;
   String? _name;
-  num? _odd;
+  num? odd;
   num? _won;
+  int? _cycle;
   bool? isPair;
   String? _id;
   bool isNew = true;
 
   String? get name => _name;
 
-  num? get odd => _odd;
+  int? get cycle => _cycle ?? 0;
 
   num? get won => _won;
 

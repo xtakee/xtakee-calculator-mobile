@@ -29,6 +29,7 @@ abstract class IStakeRepository {
       {double? profit,
       double? tolerance,
       required double startingStake,
+      required double targetEarning,
       required bool decay,
       required String mode,
       required bool approxAmount,

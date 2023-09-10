@@ -217,8 +217,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             odds: event.odds, cycle: event.cycle);
         final tags = await _repository.getTags();
 
-        emit(
-            state.copy(stake: _getStake(stake: stake, tags: tags), tags: tags));
+        emit(state.copy(
+            stake: _getStake(stake: stake, tags: tags),
+            tags: tags,
+            reset: true));
       } on ApiException catch (error) {
         if (error is NotFound) {
           emit(state.copy(login: true));

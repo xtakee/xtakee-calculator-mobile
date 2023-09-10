@@ -15,7 +15,6 @@ import 'package:stake_calculator/util/config.dart';
 import 'package:stake_calculator/util/dxt.dart';
 import 'package:stake_calculator/util/expandable_panel.dart';
 import 'package:stake_calculator/util/formatter.dart';
-import '../../util/dimen.dart';
 import '../../util/process_indicator.dart';
 import '../commons.dart';
 import '../core/xbottom_sheet.dart';
